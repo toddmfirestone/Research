@@ -1,0 +1,983 @@
+% ============================================================
+%  Algebraic Limits of the Cl(6) Programme --- LIMITS / NO-GO PAPER
+%  Todd M. Firestone
+%  DRAFT --- not for circulation
+%  Assembled from approved section drafts (§§1--7 + front matter).
+%
+%  FLAGS USED IN THIS FILE:
+%    % NOTE:   --- placeholder or content to confirm at submission
+%    % VERIFY: --- bibliographic detail to confirm (vol/page/year)
+%    % ASM:    --- assembly decision left open
+% ============================================================
+
+\documentclass[12pt]{article}
+
+% --- Encoding & fonts ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}
+\usepackage{microtype}
+
+% --- Page geometry (arXiv standard margins) ---
+\usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}
+
+% --- Mathematics ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+% --- Tables ---
+\usepackage{booktabs}
+\usepackage{array}
+
+% --- Citations: numbered, sorted ---
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat}
+
+% --- Color (needed for blue!60!black link-color mixing below) ---
+\usepackage{xcolor}
+
+% --- Hyperlinks (arXiv-safe) ---
+\usepackage[
+colorlinks=true,
+linkcolor=blue!60!black,
+citecolor=blue!60!black,
+urlcolor=blue!60!black,
+pdftitle={Algebraic Limits of the Cl(6) Programme},
+pdfauthor={Todd M. Firestone}
+]{hyperref}
+
+% ============================================================
+%  THEOREM ENVIRONMENTS  (section-prefixed; shared counter)
+% ============================================================
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ============================================================
+%  MACROS
+% ============================================================
+\newcommand{\cl}{\mathrm{Cl}}
+\newcommand{\spin}{\mathrm{Spin}}
+\newcommand{\su}{\mathrm{SU}}
+\newcommand{\UU}{\mathrm{U}}
+\newcommand{\tr}{\mathrm{Tr}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\HH}{\mathbb{H}}
+\newcommand{\OO}{\mathbb{O}}
+\newcommand{\Dix}{\R\otimes\Cplx\otimes\HH\otimes\OO}
+\newcommand{\grtensor}{\mathbin{\widehat{\otimes}}}  % graded tensor product
+\newcommand{\half}{\tfrac{1}{2}}
+\newcommand{\Comm}{\mathrm{Comm}}
+
+% ============================================================
+\begin{document}
+
+\title{%
+	\textbf{Algebraic Limits of the \texorpdfstring{$\cl(6)$}{Cl(6)}
+		Programme:}\\[4pt]
+	\textbf{A Schur Obstruction, the Forced Extension to
+		\texorpdfstring{$\cl(10)$}{Cl(10)},}\\[4pt]
+	\textbf{and Two No-Go Results for the Electroweak Sector}%
+}
+\author{Todd M.\ Firestone}
+% NOTE: Target: Advances in Applied Clifford Algebras (short communication),
+% with Phys. Lett. B brief report as alternative. Same venue as Stoica (2018),
+% engaged directly in Sec.~\ref{sec:deriv}.
+\date{}
+\maketitle
+
+% ============================================================
+\begin{abstract}
+% ============================================================
+We delimit what the Clifford-algebra $\cl(6)$ approach to Standard-Model
+structure can and cannot determine, establishing three results.  First, a
+\emph{Schur obstruction}: any weak isospin $\su(2)$ commuting with color on the
+eight-dimensional $\cl(6)$ ideal acts only on the color singlets, leaving the
+quark triplet invariant.  Quarks therefore cannot be weak doublets within
+$\cl(6)$; the result is exact and independent of the chosen embedding, and shows
+that $\cl(6)$ is algebraically maximal for QCD.  Second, we exhibit the minimal
+resolution as the graded tensor product
+$\cl(10)=\cl(6)\grtensor\cl(4)$: weak isospin acts on the adjoined $\cl(4)$
+factor, the Pati--Salam embedding
+$\spin(10)\supset\su(4)\times\su(2)_L\times\su(2)_R$ restores the doublet
+assignment, and all sixteen charges of one fermion generation are reproduced.
+This construction is a structural re-expression of known Pati--Salam content;
+its value is as an explicit bridge among the lattice $\cl(6)$, the
+Furey--Gresnigt algebraic, and the Catterall K\"ahler--Dirac programmes.  Third,
+we prove two no-go statements bounding the dynamics: the diagonal electroweak
+grade decomposition is inert, equal to one-half at all couplings, and carries no
+dynamical information; and no parameter of the Higgs potential follows from the
+algebra, leaving the electroweak scale and Higgs mass undetermined.  We clarify,
+rather than refute, Stoica's ``broken by geometry'' characterization: the
+geometry fixes the breaking \emph{pattern} and embedding ratios, not the
+breaking \emph{dynamics}.
+\end{abstract}
+
+\bigskip
+\noindent\textit{Keywords:} Clifford algebra; $\cl(6)$; Schur's lemma;
+Pati--Salam; $\cl(10)$; lattice gauge theory; electroweak symmetry breaking;
+derivability limit; no-go theorem.
+
+% ============================================================
+\section{Introduction}
+\label{sec:intro}
+% ============================================================
+
+The Clifford algebra $\cl(6)$ has proven a natural algebraic home for the color
+sector of the Standard Model.  Its eight-dimensional minimal left ideal carries
+the $\su(3)_C$ representation content
+$\mathbf{3}\oplus\bar{\mathbf{3}}\oplus\mathbf{1}\oplus\mathbf{1}$, and Papers~1
+and~2 of this series showed that this structure supports genuine dynamical
+calculation: Paper~1~\cite{FirestoneP1} verified a Wilson--Dirac operator built
+in $\cl(6)$ against sixteen independent benchmarks, and
+Paper~2~\cite{FirestoneP2} constructed and measured grade-decomposed QCD
+correlators on quenched lattice ensembles.  The natural next question is whether
+the rest of the Standard-Model gauge structure---in particular weak isospin
+$\su(2)_L$---can be accommodated within the same algebraic setting.
+
+This paper answers that question by establishing where the algebraic machinery
+reaches and where it stops.  We organize the paper around three results.  First
+(Sec.~\ref{sec:schur}), a Schur obstruction: no $\su(2)$ commuting with color
+can act on the $\cl(6)$ ideal except on the color singlets, so quarks cannot be
+weak doublets within $\cl(6)$.  The result is exact and embedding-independent,
+and it shows that $\cl(6)$ is algebraically maximal for QCD.  Second
+(Sec.~\ref{sec:cl10}), the minimal resolution: the graded tensor product
+$\cl(10)=\cl(6)\grtensor\cl(4)$ adjoins a factor on which weak isospin can act,
+restoring the doublet assignment through the Pati--Salam embedding and
+reproducing one full fermion generation.  Third (Secs.~\ref{sec:rigidity}
+and~\ref{sec:deriv}), two no-go statements that bound the dynamics: the diagonal
+electroweak grade decomposition is inert at all couplings
+(Sec.~\ref{sec:rigidity}), and no parameter of the Higgs potential follows from
+the algebra (Sec.~\ref{sec:deriv}).
+
+These results sit alongside, and sharpen, an existing body of work.  Furey and
+collaborators~\cite{Furey2012,Furey2014,Furey2015,Furey2018a,Furey2018b} have
+developed the algebraic Standard-Model programme from division algebras,
+recovering the gauge group and one generation's quantum numbers;
+Stoica~\cite{Stoica2018}, in this journal, constructed the electroweak sector in
+the $\cl(6)$ language and characterized the electroweak symmetry as ``already
+broken by the geometry of the algebra.''  We engage that characterization
+directly in Sec.~\ref{sec:deriv}, where we argue it should be read as a
+statement about the breaking \emph{pattern} and embedding ratios rather than the
+breaking \emph{dynamics}---a clarification, not a contradiction.
+
+The paper is therefore a limits note within the series: its contribution is to
+delimit precisely what the $\cl(6)$ construction determines, to exhibit the
+forced extension that lifts its central obstruction, and to bridge the lattice
+construction of Papers~1--2 to the broader algebraic and lattice programmes it
+neighbors.
+
+% ============================================================
+\section{The Schur Obstruction}
+\label{sec:schur}
+% ============================================================
+
+\subsection{Setup}
+\label{sec:schur-setup}
+
+Papers~1 and~2 of this series established that the eight-dimensional minimal
+left ideal of the Euclidean Clifford algebra $\cl(6)$, with generators
+satisfying $\{e_i,e_j\}=2\delta_{ij}$, is the algebraic home of the QCD color
+sector.  The color gauge group $\su(3)_C$ is embedded through the chain
+$\spin(6)\supset\su(3)\times\UU(1)$, and under $\su(3)_C$ the ideal decomposes
+into irreducible representations as
+\begin{equation}
+	\mathbf{8} \;=\; \mathbf{3}\ \oplus\ \bar{\mathbf{3}}\ \oplus\
+	\mathbf{1}_a\ \oplus\ \mathbf{1}_b.
+	\label{eq:decomp}
+\end{equation}
+The triplet $\mathbf{3}$ carries the quark color charge; the antitriplet
+$\bar{\mathbf{3}}$ carries the antiquark charge; and the two color singlets
+$\mathbf{1}_a,\mathbf{1}_b$ complete the space.  This decomposition is fixed by
+the embedding and is verified at machine precision in Paper~1.
+
+The question this section settles is whether a second non-abelian gauge factor
+---specifically a weak-isospin $\su(2)_L$ commuting with color, as the Standard
+Model requires---can be realized on this same eight-dimensional space.  The
+answer is no, and the obstruction is exact and embedding-independent.
+
+\subsection{The Commutant of \texorpdfstring{$\su(3)_C$}{SU(3)\_C}}
+\label{sec:commutant}
+
+In the Standard Model, color and weak isospin commute:
+$[\su(3)_C,\su(2)_L]=0$.  Any candidate $\su(2)_L$ acting on the ideal must
+therefore have all of its generators in the commutant of the $\su(3)_C$
+representation.  By Schur's lemma~\cite{FultonHarris}, the commutant of a
+completely reducible representation is determined entirely by its irreducible
+content and the multiplicities with which the irreducibles appear.
+
+Reading off the multiplicities from~\eqref{eq:decomp}:
+\begin{itemize}
+	\item The triplet $\mathbf{3}$ appears once.
+	\item The antitriplet $\bar{\mathbf{3}}$ appears once.  For $\su(3)$ the
+	fundamental and the antifundamental are \emph{inequivalent} irreducible
+	representations---the fundamental is complex, not self-conjugate---so no
+	nonzero intertwiner maps the $\mathbf{3}$ block to the $\bar{\mathbf{3}}$
+	block.
+	\item The trivial representation appears twice, as $\mathbf{1}_a$ and
+	$\mathbf{1}_b$.  These two copies are equivalent (both trivial), so
+	intertwiners may freely mix them.
+\end{itemize}
+Schur's lemma then gives the commutant as a direct sum of one matrix algebra per
+equivalence class of irreducible, of size equal to the multiplicity:
+\begin{equation}
+	\Comm\bigl(\su(3)_C\bigr) \;=\; \Cplx\ \oplus\ \Cplx\ \oplus\ M_2(\Cplx),
+	\label{eq:commutant}
+\end{equation}
+of total complex dimension $1+1+4=6$.  The first two summands are the scalar
+multiples of the identity on the $\mathbf{3}$ and $\bar{\mathbf{3}}$ blocks
+respectively; the third is the full algebra of $2\times2$ complex matrices
+acting on the two-dimensional space spanned by the color singlets
+$\{\mathbf{1}_a,\mathbf{1}_b\}$.
+
+\subsection{The Obstruction}
+\label{sec:obstruction}
+
+The Lie algebra of the commutant~\eqref{eq:commutant} is
+\begin{equation}
+	\mathfrak{u}(1)\ \oplus\ \mathfrak{u}(1)\ \oplus\ \mathfrak{u}(2)
+	\;=\; \mathfrak{u}(1)^{\oplus 3}\ \oplus\ \mathfrak{su}(2).
+	\label{eq:liealg}
+\end{equation}
+Its only non-abelian simple ideal is the $\mathfrak{su}(2)$ contained in
+$\mathfrak{u}(2)$.  That $\mathfrak{su}(2)$ acts on the two-dimensional space of
+color singlets and is trivial on every other block.  We record the consequence
+as a theorem.
+
+\begin{theorem}[Schur Obstruction]
+	\label{thm:schur}
+	Let $\su(3)_C$ act on the eight-dimensional $\cl(6)$ ideal by the
+	decomposition~\eqref{eq:decomp}.  Then every $\su(2)$ subgroup commuting
+	with $\su(3)_C$ acts nontrivially only on the two color singlets
+	$\mathbf{1}_a,\mathbf{1}_b$, and acts as the identity on the color triplet
+	$\mathbf{3}$ and antitriplet $\bar{\mathbf{3}}$.  Consequently the quark
+	triplet is a singlet under any such $\su(2)$, the exact opposite of the
+	Standard Model assignment in which left-handed quarks form weak-isospin
+	doublets.  The conclusion depends only on the irreducible content and
+	multiplicities in~\eqref{eq:decomp}, and is therefore independent of the
+	choice of generator matrices.
+\end{theorem}
+
+\begin{proof}
+	By the commutativity requirement, the generators of any color-commuting
+	$\su(2)$ lie in $\Comm(\su(3)_C)$.  By Schur's lemma this commutant
+	is~\eqref{eq:commutant}, whose Lie algebra~\eqref{eq:liealg} has
+	$\mathfrak{su}(2)$ as its only non-abelian simple ideal.  That
+	$\mathfrak{su}(2)$ is supported on the span of
+	$\{\mathbf{1}_a,\mathbf{1}_b\}$ and annihilates the $\mathbf{3}$ and
+	$\bar{\mathbf{3}}$ blocks.  Hence any color-commuting $\su(2)$ leaves the
+	triplet invariant.  The argument uses only~\eqref{eq:decomp}, so it holds
+	for every embedding producing that decomposition.
+\end{proof}
+
+The inequivalence of $\mathbf{3}$ and $\bar{\mathbf{3}}$ is the load-bearing
+step: it is what reduces each of those two blocks to a single scalar rather than
+a larger matrix algebra.  Were the representation real or pseudoreal in those
+blocks, the commutant would be larger and the conclusion could differ; for
+$\su(3)$ it is not.
+
+\subsection{Algebraic Maximality}
+\label{sec:maximality}
+
+\begin{corollary}[Algebraic Maximality for QCD]
+	\label{cor:maximal}
+	The $\cl(6)$ Wilson--Dirac framework of Papers~1 and~2 is algebraically
+	maximal for QCD: $\su(3)_C$ exhausts the nontrivial gauge structure the
+	eight-dimensional ideal can carry while keeping quarks in the color
+	triplet.  A nontrivial weak-isospin $\su(2)_L$ acting correctly on quarks
+	cannot be added within $\cl(6)$; it requires enlarging the algebra.
+\end{corollary}
+
+This reframes what might look like a limitation as a positive structural
+statement.  $\cl(6)$ is exactly the right size for the color sector---neither
+too small to carry $\su(3)_C$ nor large enough to accommodate a spurious extra
+non-abelian factor on the quarks.  The next section shows that the minimal
+enlargement consistent with the Standard Model assignment is forced to be
+$\cl(10)$.
+
+\subsection{Numerical Confirmation}
+\label{sec:schur-numeric}
+
+The theorem is exact algebra and needs no numerics, but a direct check rules out
+the most natural attempt to build a color-commuting weak generator by hand.
+Constructing a candidate $T_3$ in the eight-dimensional space and testing it
+against the off-diagonal Gell-Mann generators of $\su(3)_C$ gives
+\begin{equation}
+	\bigl\|\,[\,T_3,\,T_a\,]\,\bigr\| \;=\; 1.0
+	\qquad \text{for } a\in\{1,2,6,7\},
+	\label{eq:commnumeric}
+\end{equation}
+i.e.\ the commutator fails to vanish.  This matches the prediction of
+Theorem~\ref{thm:schur} that no such color-commuting $\su(2)$ generator exists
+on the triplet.  The full check is reproduced in the verification script
+accompanying this paper.
+
+% ============================================================
+\section{The Forced Extension:
+	\texorpdfstring{$\cl(10)=\cl(6)\grtensor\cl(4)$}{Cl(10)=Cl(6)(x)Cl(4)}}
+\label{sec:cl10}
+% ============================================================
+
+Theorem~\ref{thm:schur} showed that weak isospin has no color-commuting home
+inside $\cl(6)$: any $\su(2)$ commuting with $\su(3)_C$ is supported on the color
+singlets and leaves quarks invariant.  The Standard Model requires the
+opposite---left-handed quarks are weak doublets.  The resolution is not a
+different embedding of $\su(2)_L$ within $\cl(6)$, which Theorem~\ref{thm:schur}
+rules out for all embeddings, but an enlargement of the algebra itself.  This
+section exhibits the minimal such enlargement that restores the doublet
+assignment and shows precisely how it sidesteps the obstruction.
+
+\subsection{The Graded Tensor Product Construction}
+\label{sec:graded-tensor}
+
+We construct $\cl(10)$ as the graded ($\mathbb{Z}_2$-graded, or ``super'')
+tensor product of $\cl(6)$ with $\cl(4)$,
+\begin{equation}
+	\cl(10) \;=\; \cl(6)\grtensor\cl(4),
+	\label{eq:cl10}
+\end{equation}
+acting on the $32$-dimensional space $\Cplx^8\otimes\Cplx^4$.  Let
+$\Gamma_7=i\,e_1e_2\cdots e_6$ denote the $\cl(6)$ chirality element, normalized
+so that $\Gamma_7^2=+I_8$, and let $\{f_1,f_2,f_3,f_4\}$ generate $\cl(4)$ with
+$\{f_j,f_k\}=2\delta_{jk}$.  The ten generators of $\cl(10)$ are
+\begin{align}
+	\Gamma_i     &= e_i\otimes I_4        && (i=1,\ldots,6),
+	\label{eq:gen-a}\\
+	\Gamma_{6+j} &= \Gamma_7\otimes f_j   && (j=1,\ldots,4).
+	\label{eq:gen-b}
+\end{align}
+The factor $\Gamma_7$ in~\eqref{eq:gen-b} is the grading cocycle of the graded
+tensor product.  It is exactly what is needed to make the cross anticommutators
+vanish: for $i\in\{1,\ldots,6\}$ and $j\in\{1,\ldots,4\}$,
+\begin{equation}
+	\{\Gamma_i,\Gamma_{6+j}\}
+	= \bigl(e_i\Gamma_7 + \Gamma_7 e_i\bigr)\otimes f_j
+	= 0,
+	\label{eq:cross}
+\end{equation}
+because $e_i$ anticommutes with the top-grade element $\Gamma_7$ in $\cl(6)$.
+Without the $\Gamma_7$ insertion these would not vanish and~\eqref{eq:cl10}
+would fail.  With it, one verifies the full Clifford relation
+\begin{equation}
+	\{\Gamma_a,\Gamma_b\} = 2\delta_{ab}\,I_{32},
+	\qquad a,b\in\{1,\ldots,10\},
+	\label{eq:closure}
+\end{equation}
+confirmed at machine precision in the verification script accompanying this
+paper.
+
+The factorization $\cl(6)\otimes\cl(4)\cong\cl(10)$, with the color structure
+carried by the $\cl(6)$ factor and the weak structure by the $\cl(4)$ factor, is
+due to Gresnigt~\cite{Gresnigt2020}; we adopt it directly.  Our contribution in
+this section is the explicit \emph{graded} tensor-product realization with the
+$\Gamma_7$ cocycle~\eqref{eq:gen-b}, which makes the $\cl(10)$ closure manifest,
+and the use of that realization to lift the obstruction of
+Theorem~\ref{thm:schur}; the underlying $\cl(6)\otimes\cl(4)$ assignment is
+Gresnigt's.
+
+\subsection{Chirality and the 16-Dimensional Weyl Spinor}
+\label{sec:chirality}
+
+The $\cl(10)$ chirality element factorizes cleanly across the two tensor
+factors:
+\begin{equation}
+	\Gamma_{\mathrm{chiral}}^{\cl(10)}
+	\;=\; \Gamma_7^{\cl(6)}\otimes\gamma_5^{\cl(4)},
+	\label{eq:chiral-fact}
+\end{equation}
+where $\gamma_5^{\cl(4)}=f_1f_2f_3f_4$ is the $\cl(4)$ chirality.  Its $+1$
+eigenspace is $16$-dimensional and carries exactly one Standard Model
+generation.
+
+\subsection{The Pati--Salam Embedding}
+\label{sec:patisalam}
+
+The $\spin(10)$ Lie algebra is spanned by the bivectors
+$\Sigma_{ab}=\tfrac{i}{4}[\Gamma_a,\Gamma_b]$.  It contains the Pati--Salam
+subalgebra
+\begin{equation}
+	\spin(10)\;\supset\;\su(4)\times\su(2)_L\times\su(2)_R,
+	\label{eq:ps-embed}
+\end{equation}
+under which the $16$-dimensional Weyl spinor branches as
+\begin{equation}
+	\mathbf{16} \;=\; (\mathbf{4},\mathbf{2},\mathbf{1})\ \oplus\
+	(\bar{\mathbf{4}},\mathbf{1},\mathbf{2}).
+	\label{eq:branching}
+\end{equation}
+The $(\mathbf{4},\mathbf{2},\mathbf{1})$ carries the left-handed fields; the
+$(\bar{\mathbf{4}},\mathbf{1},\mathbf{2})$ carries the right-handed fields as a
+charge-conjugate multiplet.  This embedding and branching are
+standard~\cite{PatiSalam1974,BaezHuerta2010}; we use them, and do not claim them
+as new.  What is constructed here is their explicit realization through the
+graded tensor product~\eqref{eq:cl10}--\eqref{eq:gen-b}.
+
+\subsection{How the Enlargement Evades the Schur Obstruction}
+\label{sec:evasion}
+
+This is the structural point of the section, and it connects directly to
+Theorem~\ref{thm:schur}.  Inside $\su(4)$ the color group sits as
+\begin{equation}
+	\su(4)\;\supset\;\su(3)_C\times\UU(1)_{B-L},
+	\label{eq:su4}
+\end{equation}
+with $\su(3)_C$ residing entirely in the $\cl(6)$ tensor factor: the fundamental
+$\mathbf{4}$ of $\su(4)$ is the $\Gamma_7=+1$ sector of the $\cl(6)$
+construction, and the $B-L$ charge is proportional to the $\cl(6)$ Cartan
+generator, $B-L=\tfrac{2}{3}H$.
+
+Weak isospin $\su(2)_L$, by contrast, acts on the adjoined $\cl(4)$ factor---a
+different tensor slot from color.  This is precisely why the obstruction of
+Theorem~\ref{thm:schur} does not apply.  That theorem constrained any $\su(2)$
+lying in the commutant of $\su(3)_C$ \emph{within} $\cl(6)$, forcing it onto the
+color singlets.  Here $\su(2)_L$ does not live in $\cl(6)$ at all; it lives in
+the $\cl(4)$ factor that the tensor product adjoins.  Because color acts as
+$I_4$ on that factor~\eqref{eq:gen-a}, $\su(2)_L$ commutes with $\su(3)_C$
+automatically and acts on the full $\su(4)$ multiplet---and therefore on the
+quarks---as a genuine doublet symmetry.  The tensor enlargement is exactly the
+minimal step that supplies weak isospin a home where it can act on quarks the
+way the Standard Model demands.
+
+\subsection{Charge Assignments}
+\label{sec:charges}
+
+The electroweak hypercharge and electric charge are recovered from the
+Pati--Salam data by the standard relations
+\begin{equation}
+	Y = T_{3R} + \half(B-L),
+	\qquad
+	Q = T_{3L} + Y,
+	\label{eq:YQ}
+\end{equation}
+with $T_{3L},T_{3R}$ the Cartan generators of $\su(2)_L,\su(2)_R$.  Evaluating
+\eqref{eq:YQ} on all sixteen states of one generation---the left-handed doublets
+$(\nu_L,e_L)$, $(u_L,d_L)$ and the right-handed singlets $e_R,u_R,d_R,\nu_R$---
+reproduces every Standard Model charge, with residual at most
+$1.4\times10^{-16}$ and total charge $\sum Q=0$ over the generation (verification
+script, $16$-charge table).
+
+One subtlety must be stated.  The right-handed fields sit in the
+charge-conjugate block $(\bar{\mathbf{4}},\mathbf{1},\mathbf{2})$.  Consequently
+$\su(2)_R$ must be represented on that block by $-\tau^*/2$ rather than
+$+\tau/2$; representing it without the conjugation yields incorrect right-handed
+charges.  This is a representation-theoretic bookkeeping point about the
+conjugate multiplet, not a physical input, and it is built into the
+construction.
+
+\subsection{Status of the Result}
+\label{sec:cl10-status}
+
+We state plainly what this section is and is not.  The Pati--Salam content of
+$\spin(10)$ is known and credited above; we make no claim of new physics here,
+and by the informational-novelty standard applied throughout this series this
+section is a structural re-expression rather than an informational advance.  Its
+value is constructive and connective: it provides an explicit graded-tensor-
+product realization $\cl(10)=\cl(6)\grtensor\cl(4)$ that (i)~takes the
+lattice-ready $\cl(6)$ framework of Papers~1--2 as a literal tensor factor,
+(ii)~restores the weak-doublet assignment that Theorem~\ref{thm:schur} forbids
+inside $\cl(6)$ alone, and (iii)~thereby links three otherwise-separate
+programmes---the lattice $\cl(6)$ construction of this series, the algebraic
+Standard-Model work of Furey~\cite{Furey2018a,Furey2018b} and
+Gresnigt~\cite{Gresnigt2020}, and the K\"ahler--Dirac\,/\,Pati--Salam lattice
+work of Catterall~\cite{Catterall2023,Catterall2024}.  The extension is ``minimal'' in the
+precise sense that it is the smallest graded-tensor enlargement of $\cl(6)$
+restoring the doublet assignment; we do not claim it is the unique conceivable
+enlargement.
+
+% ============================================================
+\section{Algebraic Rigidity of the
+	\texorpdfstring{$T_3$}{T3}-Diagonal Grade Decomposition}
+\label{sec:rigidity}
+% ============================================================
+
+Section~\ref{sec:deriv} will show that the algebra does not constrain the Higgs
+potential.  This section establishes a companion negative result on the gauge
+side: the diagonal part of the electroweak grade decomposition is dynamically
+inert.  It equals one-half identically---for every gauge configuration and at
+every coupling---and therefore carries no dynamical information.  We state this
+precisely and prove it, then contrast it with the genuinely dynamical color
+decomposition of Paper~2, since the two look superficially similar and are not
+the same kind of object.
+
+\subsection{The Decomposition}
+\label{sec:rigidity-decomp}
+
+Working in $\su(2)$ pure gauge theory implemented in the eight-dimensional space
+of Paper~3's successor construction, the weak-isospin generators are embedded in
+the second tensor factor, $T_a=I_2\otimes(\sigma_a/2)\otimes I_2$, and a gauge
+link $U\in\su(2)$ is embedded as $I_2\otimes U\otimes I_2$.  The $T_3$ spectral
+projectors are
+\begin{equation}
+	P_{\pm}^{\mathrm{EW}} \;=\; I_2\otimes P_{\uparrow/\downarrow}\otimes I_2,
+	\label{eq:Ppm}
+\end{equation}
+with $P_{\uparrow}=(I+\sigma_z)/2$, $P_{\downarrow}=(I-\sigma_z)/2$.  Inserting
+these into the gauge correlator splits it into diagonal and off-diagonal parts,
+\begin{equation}
+	G(t) \;=\; G^{(+)}(t) + G^{(-)}(t) + \Delta_{\mathrm{cross}}(t),
+	\label{eq:Gdecomp}
+\end{equation}
+where $G^{(\pm)}(t)$ are the $T_3$-diagonal projected correlators and
+$\Delta_{\mathrm{cross}}(t)$ is the off-diagonal contribution.  The off-diagonal
+term is the carrier of the non-trivial dynamics; it reduces to
+$\Delta_{\mathrm{cross}}(t)=8\sum_{x,\mu}\mathrm{Re}\,[\,b(x,t)\,\bar
+b(x,0)\,]$, where $b$ is the off-diagonal $\su(2)$ link element.  We do not
+develop $\Delta_{\mathrm{cross}}$ in this paper; it is the subject of later work
+and is noted again in Sec.~\ref{sec:discussion}.
+
+\subsection{The Rigidity Result}
+\label{sec:rigidity-prop}
+
+Define the diagonal grade fractions
+\begin{equation}
+	f_{\pm}(t) \;=\; \frac{G^{(\pm)}(t)}{G^{(+)}(t)+G^{(-)}(t)}.
+	\label{eq:fpm}
+\end{equation}
+
+\begin{proposition}[Algebraic Rigidity of the Diagonal Decomposition]
+	\label{prop:rigidity}
+	For every gauge configuration, and at all values of the coupling,
+	$f_{+}(t)=f_{-}(t)=\half$.  The diagonal grade fractions are constant by
+	construction and contain no dynamical information.
+\end{proposition}
+
+\begin{proof}
+	The diagonal projectors~\eqref{eq:Ppm} extract the $(1,1)$ and $(2,2)$
+	matrix elements of the $\su(2)$-valued line product $W(t)=\prod U$ entering
+	the correlator.  Since $W(t)\in\su(2)$, unitarity and unimodularity give
+	$W_{22}=(W_{11})^{*}$, hence $|W_{11}|=|W_{22}|$.  The diagonal correlators
+	$G^{(\pm)}$ depend on these matrix elements only through their moduli and do
+	so symmetrically, so $G^{(+)}(t)=G^{(-)}(t)$ configuration by
+	configuration, independent of the coupling.  The fractions~\eqref{eq:fpm}
+	are therefore each $\half$.  The full tensor-index proof, including the
+	rank-one collapse step, is given in Paper~4 of this series.
+\end{proof}
+
+The content of Proposition~\ref{prop:rigidity} is that the equality is exact and
+unconditional.  There are no deviations from $\half$ to measure: the diagonal
+decomposition is rigid.
+
+\subsection{What This Result Is, and What It Is Not}
+\label{sec:rigidity-contrast}
+
+Proposition~\ref{prop:rigidity} resembles the color-sector result of Paper~2
+only on the surface.  The two differ in kind, and conflating them would
+misrepresent both.
+
+In Paper~2 the color grade fractions satisfy $f_r=\dim(r)/8$ \emph{exactly in
+the free field} and only \emph{approximately} in the interacting theory; the
+deviations are genuine and dynamical.  The mechanism is traceable: the Cartan
+grading operator is $H=B_{12}+B_{34}+B_{56}$, and the spacetime Dirac generators
+$e_1,\ldots,e_4$ act on the same tensor factors (qubits~1 and~2) as $B_{12}$ and
+$B_{34}$.  Dirac\,/\,chirality structure therefore feeds the color-grade label,
+and the interacting-theory deviations record it.  That is a kinematic limit
+theorem with measurable config-by-config departures.
+
+In the present case the diagonal fractions equal $\half$ at \emph{all}
+couplings, exactly.  This is an algebraic identity, not a kinematic limit
+theorem, and it must not be called one.  The diagonal projection is sensitive
+only to $|W_{11}|=|W_{22}|$; it is blind to the gauge dynamics by construction.
+Where the color decomposition has a dynamical signal sitting on top of its
+free-field value, the diagonal electroweak decomposition has nothing on top of
+its constant value at all.
+
+We also fix terminology.  The object in~\eqref{eq:Gdecomp} is the $T_3$-diagonal
+grade decomposition of the $\su(2)$ gauge-link correlator.  It is not a
+``$W$-boson correlator'': there is no $W$ boson in pure $\su(2)$ gauge theory
+absent electroweak symmetry breaking, and no Higgs sector is present here.  And,
+by the above, it is not governed by a kinematic limit theorem.  These naming
+points are not pedantry; the earlier ``kinematic theorem'' framing obscured
+exactly the free-versus-all-couplings distinction that distinguishes
+Proposition~\ref{prop:rigidity} from the Paper~2 result.
+
+\subsection{The No-Go Content}
+\label{sec:rigidity-nogo}
+
+Proposition~\ref{prop:rigidity} is the electroweak companion to the Derivability
+Limit of Sec.~\ref{sec:deriv}.  Both delimit the algebraic machinery from below:
+the algebra fixes neither the Higgs potential (Sec.~\ref{sec:deriv}) nor any
+dynamics in the diagonal electroweak grade channel (this section).  The diagonal
+grade decomposition is a consistency-bookkeeping device, not a probe of gauge
+dynamics.  The channel that does carry dynamics is the off-diagonal
+$\Delta_{\mathrm{cross}}$ of~\eqref{eq:Gdecomp}, which lies outside the scope of
+this limits paper and is taken up separately (Sec.~\ref{sec:discussion}).
+
+% ============================================================
+\section{The Derivability Limit}
+\label{sec:deriv}
+% ============================================================
+
+\subsection{Statement and Proof}
+\label{sec:deriv-thm}
+
+We state the central negative result on the scalar sector.
+
+\begin{theorem}[Derivability Limit]
+	\label{thm:deriv}
+	No condition on the Higgs potential
+	\begin{equation}
+		V(\phi) = \mu^2\,|\phi|^2 + \lambda\,|\phi|^4
+		\label{eq:V}
+	\end{equation}
+	follows from the algebraic structure of $\Dix$ alone.
+\end{theorem}
+
+\begin{proof}
+	The algebraic structure encodes three things: the representation content of
+	the fundamental fields, the action of the gauge group on those
+	representations, and the charge assignments and symmetry relations among
+	them.  It does not encode a choice of Lagrangian.
+
+	The Higgs field transforms as the doublet $(\mathbf{2},\half)$ of
+	$\su(2)_L\times\UU(1)_Y$.  For a single such doublet, $\phi^\dagger\phi$ is
+	the unique quadratic gauge invariant, and every positive power of it is
+	likewise invariant.  Hence for any $\mu^2\in\R$ and any $\lambda>0$, the
+	potential~\eqref{eq:V} is fully invariant under $\su(2)_L\times\UU(1)_Y$:
+	the algebraic structure is consistent with this choice of dynamics.
+
+	Since the algebra is consistent with the entire two-parameter family
+	$\{(\mu^2,\lambda):\mu^2\in\R,\,\lambda>0\}$, it constrains no member of it.
+	In particular it is consistent with $\mu^2>0$ (unbroken symmetry),
+	$\mu^2=0$ (massless tree-level scalar), and $\mu^2<0$ (the physical broken
+	case), and with any magnitude of $\lambda$.  The algebra constrains neither
+	the sign of $\mu^2$ nor the value of $\lambda$.
+\end{proof}
+
+\begin{corollary}
+	\label{cor:vscale}
+	The electroweak scale $v=\sqrt{-\mu^2/\lambda}$ is unconstrained by the
+	algebra; in particular the algebra does not explain why $v$ is of order
+	$246~\mathrm{GeV}$ rather than the Planck scale.
+\end{corollary}
+
+\begin{corollary}
+	\label{cor:mhmass}
+	The Higgs boson mass $m_H^2=2\lambda v^2=-2\mu^2$ is unconstrained by the
+	algebra.
+\end{corollary}
+
+\subsection{What the Theorem Is: A Precise Statement of Standard Lore}
+\label{sec:deriv-debill}
+
+We are deliberate about the status of Theorem~\ref{thm:deriv}, because it is
+easy to overstate.  At its core it is the standard effective-field-theory fact
+that a symmetry determines the \emph{form} of the operators it permits, not their
+\emph{coefficients}~\cite{Weinberg1995}.  Gauge invariance tells us that
+$|\phi|^2$ and $|\phi|^4$ are admissible terms; it is silent on $\mu^2$ and
+$\lambda$.  This is not a new principle, and we do not present it as one.
+
+What is worth stating precisely is its consequence \emph{within} the
+division-algebra programme.  The programme's appeal is that representation
+content and charge structure emerge from the algebra with little external input,
+and it is natural to ask how far that reach extends.  Theorem~\ref{thm:deriv}
+marks the boundary exactly: the reach extends to the symmetry, the
+representations, and the charges, and stops at the dynamics that fix the scale of
+breaking.  The value of the theorem is as a boundary marker, made precise in
+this setting and engaged against a specific prior claim in the next subsection.
+It is not a central discovery of the paper, and a reader who takes it for one has
+misread our intent.
+
+\subsection{Relation to Stoica: Clarification, Not Refutation}
+\label{sec:deriv-stoica}
+
+Stoica~\cite{Stoica2018}, in the same journal this series targets, constructs
+the electroweak sector in the $\cl(6)$ language and states that the electroweak
+symmetry is ``already broken by the geometry of the algebra,'' reading off a bare
+Weinberg angle $\sin^2\theta_W=0.25$.  Theorem~\ref{thm:deriv} says the algebra
+does not fix the Higgs potential.  These two statements are sometimes read as
+being in tension.  They are not, and the distinction is instructive.
+
+Stoica's $\sin^2\theta_W=0.25$ is a tree-level generator-normalization ratio.
+It reflects how the $\UU(1)_Y$ generator is normalized relative to the
+$\su(2)_L$ generators within the algebraic embedding---a ratio of Cartan
+normalizations, fixed by the representation content.  It is \emph{not} a
+prediction of the potential parameters $\mu^2$ and $\lambda$, and it is not
+derived from any dynamics of symmetry breaking.  Theorem~\ref{thm:deriv}
+therefore does not refute it: the two statements concern different objects.  The
+Weinberg-angle ratio is exactly the kind of quantity the algebra \emph{does} fix
+(a normalization built into the embedding); the potential is exactly the kind it
+does \emph{not}.
+
+What Theorem~\ref{thm:deriv} does is clarify the phrase ``broken by geometry.''
+The geometry of the algebra fixes the symmetry group, the representation
+content, and the embedding ratios that yield a tree-level Weinberg angle.  It
+does not fix the electroweak \emph{breaking} itself: the sign of $\mu^2$ that
+selects the broken vacuum, and the scale $v$ at which breaking occurs, are not
+determined by the geometry.  ``Broken by geometry'' is apt for the pattern of
+symmetry breaking---which fields can acquire vacuum expectation values, and into
+which unbroken subgroup the group descends---but it overstates the reach if read
+as fixing the breaking dynamics.  The precise division is: geometry fixes the
+pattern and the representation-theoretic ratios; the potential that triggers and
+scales the breaking is separate input.  We offer this as a refinement of
+Stoica's framing, not a contradiction of his result.
+
+\subsection{What the Algebra Does Fix: Operator Forms}
+\label{sec:deriv-yukawa}
+
+The Derivability Limit is precise, not total.  It is worth recording the
+complementary positive statement, because it shows the boundary is sharp rather
+than a blanket disclaimer.
+
+After symmetry breaking, fermion masses arise from Yukawa couplings of the form
+\begin{equation}
+	\mathcal{L}_{\mathrm{Yukawa}}
+	= -\,y_f\,\bar\psi_L\,\phi\,\psi_R + \text{h.c.}
+	\label{eq:yuk}
+\end{equation}
+The \emph{form} of this coupling is algebraically forced:
+$\bar\psi_L\phi\psi_R$ is the unique renormalizable gauge-invariant bilinear
+contracting a left-handed doublet, the Higgs doublet, and a right-handed
+singlet, with all charges summing to zero.  Gauge invariance, which the algebra
+supplies, permits no other renormalizable Yukawa structure.  What the algebra
+does not fix is the \emph{magnitude} $y_f$.  The Standard Model carries thirteen
+independent Yukawa couplings, spanning six orders of magnitude from the electron
+to the top quark, and all thirteen are free parameters from the algebraic point
+of view.
+
+This is the same form-versus-coefficient distinction as
+Theorem~\ref{thm:deriv}, now on the Yukawa sector: the algebra determines which
+couplings may appear and forbids the rest, but assigns none of their values.
+The limit is a clean line, not an absence of content.
+
+\subsection{Remark: The One Speculative Handle}
+\label{sec:deriv-bankscasher}
+
+\begin{remark}
+	\label{rem:bankscasher}
+	There is exactly one route by which a dynamical mechanism, rather than pure
+	representation theory, might constrain $\mu^2$ within the programme.  If the
+	Higgs were a composite object---a fermion condensate, as in technicolor,
+	rather than an elementary scalar---then a Banks--Casher-type
+	relation~\cite{BanksCasher1980} connecting a non-zero condensate to the
+	spectral density of a fundamental operator at zero eigenvalue could in
+	principle constrain the breaking, and the programme's spectral-projector
+	methods would be well suited to posing the question.  This is the right
+	question if the Higgs is composite and the wrong one if it is elementary;
+	the discovery of a Higgs boson with properties consistent with an
+	elementary scalar disfavors it.  We flag this as the sole caveat that could
+	alter the verdict of Theorem~\ref{thm:deriv} and do not pursue it.
+\end{remark}
+
+% ============================================================
+\section{Discussion and Outlook}
+\label{sec:discussion}
+% ============================================================
+
+\subsection{What the Algebraic Machinery Determines}
+\label{sec:can-do}
+
+Taken together, the results of this paper draw a sharp line around the algebraic
+programme.  On one side lie the quantities the algebra fixes.  It fixes the
+representation content: which irreducible representations of the Standard Model
+gauge group appear, recovered for the color sector from the $\cl(6)$ ideal of
+Papers~1 and~2 and for one full generation from the $\cl(10)$ construction of
+Sec.~\ref{sec:cl10}.  It fixes the charge assignments, with the
+Gell-Mann--Nishijima relation $Q=T_3+Y$ satisfied by all sixteen states of a
+generation.  It fixes the pattern of symmetry breaking once a vacuum direction
+is chosen, and the embedding ratios that yield a tree-level Weinberg angle, in
+the precise sense clarified in Sec.~\ref{sec:deriv-stoica}.  It fixes the form of
+the allowed interactions: the unique gauge-invariant Yukawa bilinear and quartic
+scalar terms, as set out in Sec.~\ref{sec:deriv-yukawa}.  And it places the
+construction at a definite algebraic level: $\cl(6)$ is maximal for QCD
+(Corollary~\ref{cor:maximal}), and $\cl(10)=\cl(6)\grtensor\cl(4)$ is the minimal
+graded-tensor extension that restores the weak-doublet assignment
+Theorem~\ref{thm:schur} forbids within $\cl(6)$ alone.
+
+A separate, more modest positive should be recorded for what it is.  The
+per-configuration completeness identity $\sum_r C^{(r)}=C$, satisfied to order
+$10^{-16}$ on every gauge configuration, is a genuine consistency check on the
+propagator and projector code.  It is a diagnostic, not a physical result, and
+we claim nothing more for it.
+
+\subsection{What It Does Not Determine}
+\label{sec:cannot-do}
+
+On the other side lie the no-go results.  The algebra does not fix the Higgs
+potential---neither the sign of $\mu^2$ nor the magnitude of $\lambda$
+(Theorem~\ref{thm:deriv})---and therefore fixes neither the electroweak scale
+$v$ (Corollary~\ref{cor:vscale}) nor the Higgs mass $m_H$
+(Corollary~\ref{cor:mhmass}).  It does not fix the thirteen Yukawa magnitudes or
+the fermion mass hierarchy they encode (Sec.~\ref{sec:deriv-yukawa}).  The
+diagonal electroweak grade channel carries no dynamics at all: its grade
+fractions are pinned to one-half by construction, at every coupling
+(Proposition~\ref{prop:rigidity}).  The algebra does not select left over right:
+both $\su(2)_L$ and $\su(2)_R$ are present in the Pati--Salam structure of
+Sec.~\ref{sec:patisalam}, and gauging only the left copy---the parity violation
+of the physical world---is an external input the algebra accommodates but does
+not supply.  And, as Theorem~\ref{thm:schur} establishes, no color-commuting
+weak isospin lives inside $\cl(6)$ in the first place.
+
+\subsection{The Bridge Between Three Programmes}
+\label{sec:bridge}
+
+Beyond delimiting the machinery, the construction of Sec.~\ref{sec:cl10} serves a
+connective purpose.  The explicit graded-tensor realization
+$\cl(10)=\cl(6)\grtensor\cl(4)$ takes the lattice-ready $\cl(6)$ framework of
+this series as a literal tensor factor, and in doing so links three otherwise
+separate lines of work: the lattice $\cl(6)$ construction developed here, the
+algebraic Standard-Model programme of Furey~\cite{Furey2018a,Furey2018b} and
+Gresnigt~\cite{Gresnigt2020}, and Catterall's K\"ahler--Dirac route to
+Pati--Salam on the lattice~\cite{Catterall2023,Catterall2024}.  This bridge is the paper's
+positive role alongside its two no-go results, and it locates the lattice
+programme within the broader algebraic landscape rather than apart from it.
+
+\subsection{Outlook}
+\label{sec:outlook}
+
+The line drawn here is not the end of the programme but its honest boundary.  The
+diagonal grade channel is inert, but the off-diagonal cross-channel
+$\Delta_{\mathrm{cross}}$ introduced in Sec.~\ref{sec:rigidity} is
+coupling-sensitive and is the natural carrier of gauge dynamics in this
+decomposition; its analysis, including the gauge-fixing systematics it entails,
+is taken up elsewhere.  That channel, and the composite-Higgs question flagged in
+Remark~\ref{rem:bankscasher}, are the two directions in which the boundaries
+established in this paper might eventually be pushed.
+
+% ============================================================
+\section{Conclusions}
+\label{sec:conclusions}
+% ============================================================
+
+This paper has drawn a precise boundary around what the $\cl(6)$-based algebraic
+programme determines, through three results.
+
+First, a Schur obstruction (Theorem~\ref{thm:schur}): no weak isospin commuting
+with color can act on the eight-dimensional $\cl(6)$ ideal except on the color
+singlets, so quarks cannot be weak doublets within $\cl(6)$.  The obstruction is
+exact and embedding-independent, and it establishes that $\cl(6)$ is
+algebraically maximal for QCD (Corollary~\ref{cor:maximal}).
+
+Second, the minimal resolution (Sec.~\ref{sec:cl10}): the graded tensor product
+$\cl(10)=\cl(6)\grtensor\cl(4)$ adjoins a $\cl(4)$ factor on which weak isospin
+acts, restoring the doublet assignment via the Pati--Salam embedding and
+reproducing all sixteen charges of one generation.  This construction is a
+structural re-expression of known Pati--Salam content, and its value is as an
+explicit bridge among the lattice $\cl(6)$, Furey--Gresnigt, and Catterall
+programmes.
+
+Third, two no-go statements bounding the dynamics: the diagonal electroweak
+grade decomposition is inert, equal to one-half at all couplings
+(Proposition~\ref{prop:rigidity}); and the algebra fixes no parameter of the
+Higgs potential, hence neither the electroweak scale nor the Higgs mass
+(Theorem~\ref{thm:deriv}).  Together they mark, precisely, where algebraic
+structure ends and dynamics begins.
+
+% ============================================================
+\begin{thebibliography}{99}
+% ============================================================
+
+	%% Ordered by first citation.  Plain \bibitem{key} numbers sequentially.
+
+	%% Papers in this series
+	% NOTE: Replace journal name, arXiv ID, and year for P1/P2 before submission.
+	\bibitem{FirestoneP1}
+	T.~M. Firestone,
+	``Clifford algebra $\cl(6)$ formulation of lattice QCD: algebraic
+	structure, Dirac operator construction, and verification against standard
+	benchmarks,''
+	[arXiv:XXXX.XXXXX] ([year]).
+
+	\bibitem{FirestoneP2}
+	T.~M. Firestone,
+	``Grade decomposition of the lattice QCD pion correlator in the $\cl(6)$
+	framework,''
+	\textit{Adv.\ Appl.\ Clifford Algebras} (submitted, [year]).
+
+	%% Furey programme (cited as a block in §1)
+	\bibitem{Furey2012}
+	C.~Furey,
+	``Unified theory of ideals,''
+	\textit{Phys.\ Rev.}\ D~\textbf{86}, 025024 (2012).
+
+	\bibitem{Furey2014}
+	C.~Furey,
+	``Generations: three prints, in colour,''
+	\textit{JHEP}~\textbf{2014}, 046 (2014).
+
+	\bibitem{Furey2015}
+	C.~Furey,
+	``Standard model physics from an algebra?''
+	Ph.D. thesis, University of Waterloo (2015); arXiv:1611.09182.
+
+	\bibitem{Furey2018a}
+	C.~Furey,
+	``Three generations, two unbroken gauge symmetries, and one
+	eight-dimensional algebra,''
+	\textit{Phys.\ Lett.}\ B~\textbf{785}, 84 (2018).
+
+	\bibitem{Furey2018b}
+	C.~Furey,
+	``$\su(3)_C\times\su(2)_L\times\UU(1)_Y\,(\times\,\UU(1)_X)$ as a symmetry
+	of division algebraic ladder operators,''
+	\textit{Eur.\ Phys.\ J.}\ C~\textbf{78}, 375 (2018).
+
+	\bibitem{Stoica2018}
+	O.~C. Stoica,
+	``Leptons, quarks, and gauge from $C\ell_6$,''
+	\textit{Adv.\ Appl.\ Clifford Algebras}~\textbf{28}, 52 (2018).
+
+	%% Schur's lemma (§2)
+	\bibitem{FultonHarris}
+	W.~Fulton and J.~Harris,
+	\textit{Representation Theory: A First Course},
+	Graduate Texts in Mathematics~\textbf{129} (Springer, New York, 1991).
+
+	%% Cl(6)(x)Cl(4)=Cl(10) factorization (§3)
+	\bibitem{Gresnigt2020}
+	N.~G. Gresnigt,
+	``The Standard Model particle content with complete gauge symmetries from
+	the minimal ideals of two Clifford algebras,''
+	\textit{Eur.\ Phys.\ J.}\ C~\textbf{80}, 583 (2020);
+	arXiv:2003.08814.
+	\href{https://doi.org/10.1140/epjc/s10052-020-8141-1}{doi:10.1140/epjc/s10052-020-8141-1}.
+
+	%% Pati-Salam embedding and branching (§3) --- co-cited, kept adjacent
+	\bibitem{PatiSalam1974}
+	J.~C. Pati and A.~Salam,
+	``Lepton number as the fourth color,''
+	\textit{Phys.\ Rev.}\ D~\textbf{10}, 275 (1974).
+
+	\bibitem{BaezHuerta2010}
+	J.~C. Baez and J.~Huerta,
+	``The algebra of grand unified theories,''
+	\textit{Bull.\ Amer.\ Math.\ Soc.}~\textbf{47}, 483 (2010);
+	arXiv:0904.1556.
+	\href{https://doi.org/10.1090/S0273-0979-10-01294-2}{doi:10.1090/S0273-0979-10-01294-2}.
+
+	%% Catterall bridge (§3) --- co-cited, kept adjacent.
+	% PRD 107, 014501 (2023) Sec. VII: Pati-Salam from reduced Kahler-Dirac.
+	% SciPost Phys. 16, 108 (2024): chiral-fermion connection.
+	\bibitem{Catterall2023}
+	S.~Catterall,
+	``'t~Hooft anomalies for staggered fermions,''
+	\textit{Phys.\ Rev.}\ D~\textbf{107}, 014501 (2023).
+	\href{https://doi.org/10.1103/PhysRevD.107.014501}{doi:10.1103/PhysRevD.107.014501}.
+
+	\bibitem{Catterall2024}
+	S.~Catterall,
+	``Lattice regularization of reduced K\"ahler--Dirac fermions and connections
+	to chiral fermions,''
+	\textit{SciPost Phys.}~\textbf{16}, 108 (2024).
+	\href{https://doi.org/10.21468/SciPostPhys.16.4.108}{doi:10.21468/SciPostPhys.16.4.108}.
+
+	%% EFT form-vs-coefficient lore (§5.2)
+	\bibitem{Weinberg1995}
+	S.~Weinberg,
+	\textit{The Quantum Theory of Fields, Vol.~1: Foundations}
+	(Cambridge University Press, 1995).
+
+	%% Banks-Casher remark (§5.5)
+	\bibitem{BanksCasher1980}
+	T.~Banks and A.~Casher,
+	``Chiral symmetry breaking in confining theories,''
+	\textit{Nucl.\ Phys.}\ B~\textbf{169}, 103 (1980).
+
+\end{thebibliography}
+
+\end{document}
