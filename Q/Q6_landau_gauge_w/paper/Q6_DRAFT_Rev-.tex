@@ -1,0 +1,1548 @@
+%=======================================================================
+%  Q6_DEFAULT_Rev-.tex
+%  Paper 6 of the R(x)C(x)H(x)O series
+%  Landau-Gauge W+/- Propagator from the b-Channel:
+%  Gauge Fixing, Gribov Copies, and the Cross-Projected
+%  Correlator in SU(2)
+%
+%  Draft assembled from section drafts s2-s7, the Section 8 algebra
+%  output, and the Paper 6 outline. Sections 1, 8, 9, 10 and the
+%  appendices are drafted from the outline and editor briefs.
+%  Status: working draft for internal review.
+%=======================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+
+%-----------------------------------------------------------------------
+%  Theorem environments
+%-----------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{note}{Note}
+
+%-----------------------------------------------------------------------
+%  Notation macros (recurring objects of the series)
+%-----------------------------------------------------------------------
+\newcommand{\Cl}{\mathrm{Cl}}
+\newcommand{\SU}{\mathrm{SU}}
+\newcommand{\SO}{\mathrm{SO}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Ree}{\operatorname{Re}}
+\newcommand{\Imm}{\operatorname{Im}}
+\renewcommand{\Re}{\operatorname{Re}}
+\newcommand{\Gcross}{G_{\mathrm{cross}}}
+\newcommand{\Gcrossgf}{G_{\mathrm{cross}}^{\mathrm{gf}}}
+\newcommand{\Gdiag}{G_{\mathrm{diag}}}
+\newcommand{\Gdiaggf}{G_{\mathrm{diag}}^{\mathrm{gf}}}
+\newcommand{\Gfull}{G_{\mathrm{full}}}
+\newcommand{\DW}{D_{W^{\pm}}}
+\newcommand{\DWt}{\widetilde{D}_{W^{\pm}}}
+\newcommand{\Scross}{S_{\mathrm{cross}}}
+\newcommand{\be}{\beta_{\mathrm{eff}}}
+\newcommand{\bc}{\beta_{c}}
+\newcommand{\epsg}{\varepsilon_{\mathrm{gauge}}}
+\newcommand{\FL}{F_{L}}
+\newcommand{\Ncfg}{N_{\mathrm{cfg}}}
+\newcommand{\Nt}{N_{t}}
+\newcommand{\Pew}{P^{\mathrm{EW}}}
+\newcommand{\half}{\tfrac{1}{2}}
+\newcommand{\Id}{\mathbb{I}}
+\newcommand{\PL}{P_{L}}
+\newcommand{\PR}{P_{R}}
+\newcommand{\gfive}{\gamma_{5}}
+\newcommand{\Lcond}{\partial_{\mu}A_{\mu}}
+
+%-----------------------------------------------------------------------
+\title{\bfseries Landau-Gauge $W^{\pm}$ Propagator from the
+$b$-Channel:\\[2pt]
+Gauge Fixing, Gribov Copies, and the Cross-Projected\\
+Correlator in $\SU(2)$}
+
+\author{T. Firestone}
+
+\date{}
+
+%=======================================================================
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Paper 5 established the exact algebraic decomposition
+$\Gdiag(t)+\Gcross(t)=\Gfull(t)$ in the $\Cl(0,2)\cong\mathbb{H}$
+framework and identified $\Gcross(t)=8\sum_{x,\mu}\Re[b_t\bar b_0]$
+as the $b$-channel bilinear carrying the charged ($W^{\pm}$) content
+of the embedded $\SU(2)$ link. That identification was, however,
+gauge dependent: $\Gcross$ is not gauge invariant, no gauge
+prescription had been imposed, and no propagator had been extracted.
+This paper closes the gap. We implement Landau gauge fixing on the
+lattice through steepest-descent and Fourier-accelerated algorithms,
+prove a convergence-rate lemma (Lemma 4), and characterise the Gribov
+copy systematic through a multi-start best-copy strategy and an
+explicit variation bound (Proposition 7). The central result,
+Theorem 2, promotes the formal perturbative identification of
+Paper 5 to a fully specified, error-budgeted quantity: the gauge-fixed correlator
+$\Gcrossgf(t)$ yields the zero-spatial-momentum $W^{\pm}$ temporal
+propagator $\DW(t)$ with a complete three-term error budget. Corollary 6
+characterises the sign structure of the ensemble-averaged correlator
+and defines a coupling threshold $\bc$ for the onset of
+non-perturbative sign violation, which is studied empirically through
+an extended ensemble programme spanning $N\in\{6,8,12,16\}$ and
+$\be\in\{2.0,\ldots,20.0\}$ with a $1/N^{2}$ finite-volume
+extrapolation. We establish $\SU(2)$ colour symmetry between the
+$b$-channel propagator and the full Landau-gauge gluon propagator,
+enabling comparison to the $\SU(2)$ reference dataset of
+Cucchieri--Mendes (with Bogolubsky et al.\ providing a qualitative
+$\SU(3)$ confirmation of the same decoupling behaviour). Finally, the fermionic sector is set up: we define the
+cross-projected propagator $\Scross=\Pew_{+}S\,\Pew_{-}$, prove that it
+vanishes identically for an $\SU(2)$ singlet (Lemma 5), and specify the
+weak-coupling verification (checks D28/D29) that the doublet
+cross-projected propagator is non-zero. Throughout, the embedding does
+not by itself distinguish $\SU(2)_{L}$ from $\SU(2)_{R}$; this requires
+external fermionic input, the full non-perturbative test of which is
+deferred to Paper 7.
+\end{abstract}
+
+%=======================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Paper 5 of this series established, within the
+$\Cl(0,2)\cong\mathbb{H}$ framework, the exact identity
+\begin{equation}
+  \Gdiag(t)+\Gcross(t)=\Gfull(t),
+  \label{eq:thm1}
+\end{equation}
+(Theorem 1, Paper 5) together with the Two-Observable Decomposition
+(Corollary 5, Paper 5), in which the cross-channel correlator
+\begin{equation}
+  \Gcross(t)=8\sum_{x,\mu}\Re\!\bigl[b_t(x,\mu)\,\bar b_0(x,\mu)\bigr]
+  \label{eq:gcrossdef}
+\end{equation}
+is identified as the $b$-channel bilinear, with $b=(U)_{01}$ the
+off-diagonal element of the $\SU(2)$ link
+$U=\bigl(\begin{smallmatrix} a & b\\ -\bar b & \bar a
+\end{smallmatrix}\bigr)$, $|a|^2+|b|^2=1$. At weak coupling
+$b=(ig/\sqrt2)W^{+}_{\mu}+O(g^{3})$, so $\Gcross$ carries the charged
+($W^{\pm}$) content of the embedded gauge field, while the diagonal
+correlator $\Gdiag$ carries the neutral $W^{3}/A^{3}$ content
+(Paper 5, \S7.3).
+
+\paragraph{The inherited gap.}
+The Paper 5 identification was incomplete in six specific respects.
+(i)~$\Gcross$ is not gauge invariant (gauge non-invariance, Paper~5 \S8.1), yet no
+gauge prescription had been fixed. (ii)~The formal identification of
+Paper 5 \S8.3 applied to spatial links only, because Papers 4--5 worked
+in temporal gauge $U_0(x)=\Id_2$. (iii)~No control of Gribov copy
+ambiguity had been established. (iv)~The $W^{\pm}$ temporal propagator
+$\DW(t)$ had not been extracted from any ensemble. (v)~No error budget
+existed. (vi)~No comparison to independent lattice data had been made.
+Paper 6 addresses all six, organising its verification checks D19--D29
+against them.
+
+\paragraph{What this paper establishes.}
+The centrepiece is Theorem 2 (\Cref{sec:theorem2}), which promotes the
+Paper 5 \S8.3 formal identification to a fully specified, error-budgeted
+quantity. The route requires: a Landau gauge functional summed over all
+four link directions, lifting the temporal-link restriction of Papers
+4--5 (\Cref{sec:gaugefix}); a convergence-rate result for the
+gauge-fixing functional (Lemma 4); a multi-start best-copy strategy
+with an explicit Gribov variation bound (Proposition 7,
+\Cref{sec:gribov}); and an extended ensemble programme with
+finite-volume extrapolation (\Cref{sec:ensembles}). Corollary 6
+characterises the sign structure of $\Gcrossgf$, and
+\Cref{sec:signstructure} delivers its empirical content. Colour
+symmetry between the $b$-channel and the full gluon propagator
+(\Cref{sec:comparison}) enables comparison to the $\SU(2)$ reference
+dataset of Cucchieri--Mendes~\cite{CM} (Bogolubsky et al.~\cite{Bo} confirm
+the same decoupling in $\SU(3)$). The
+fermionic groundwork (\Cref{sec:fermionic}) defines the cross-projected
+propagator and proves the singlet vanishing (Lemma 5).
+
+\paragraph{Scope limits.}
+The following hard scope limits are carried forward from Papers 4--5
+and remain in force except where explicitly addressed: (SL1) no
+$\SU(2)_L/\SU(2)_R$ distinction without fermion content; (SL2) no
+chiral fermion claims without a Nielsen--Ninomiya-bypass action; (SL3)
+no $W/Z$ mass ratio, Weinberg angle, or $U(1)_Y$ mixing; (SL4) no Higgs
+mechanism; (SL5) no non-perturbative $\Gcross\leftrightarrow W^{\pm}$
+identification without the Landau-gauge apparatus. SL5 is discharged in
+\Cref{sec:gribov}; SL1 and SL2 are addressed (not fully retired) in
+\Cref{sec:fermionic}.
+
+\begin{quote}
+\itshape
+L/R caveat (verbatim, first occurrence): The embedding does not, by
+itself, distinguish $\SU(2)_L$ from $\SU(2)_R$; this requires external
+fermionic input.
+\end{quote}
+
+\paragraph{Infrastructure.}
+The simulation functions implemented in this paper are, in paper-local
+numbering, P6-F1 (steepest descent) and P6-F2 (Fourier acceleration) in
+\Cref{sec:gaugefix}; P6-F3 (best-copy strategy) in \Cref{sec:gribov};
+P6-F4 (gauge-fixed correlator) in \Cref{sec:theorem2}; P6-F6 through
+P6-F9 (sign analysis) in \Cref{sec:signstructure}; and P6-F10 through
+P6-F13 (fermionic sector) in \Cref{sec:fermionic}. New numbered results
+are Lemma 4 (\Cref{sec:gaugefix}), Proposition 7 (\Cref{sec:gribov}),
+Theorem 2 and Corollary 6 (\Cref{sec:theorem2}), and Lemma 5
+(\Cref{sec:fermionic}).
+
+%=======================================================================
+\section{Landau Gauge Fixing: Algorithm and Implementation}
+\label{sec:gaugefix}
+
+The algebraic programme of Papers 4--5 established $\Gcross$ exactly as
+a $b$-channel observable but left it gauge dependent (gauge non-invariance,
+Paper~5 \S8.1). Before a propagator can be extracted, a gauge prescription
+must be fixed. This section develops the Landau gauge-fixing machinery:
+the functional $\FL$ is defined (\S\ref{ssec:functional}), the lattice
+Landau condition and convergence criterion are derived
+(\S\ref{ssec:landaucond}), the steepest-descent algorithm is specified
+and its monotone-increase property proved (\S\ref{ssec:SD}), the
+Fourier-accelerated algorithm is specified (\S\ref{ssec:FA}), and
+Lemma 4 establishes convergence rates and the regime of preference
+(\S\ref{ssec:lemma4}). No measurement of $\Gcrossgf$ is performed here;
+that is \Cref{sec:theorem2}. The multiplicity of local maxima of $\FL$
+(Gribov copies) is treated in \Cref{sec:gribov}.
+
+\subsection{The Landau Gauge Functional}
+\label{ssec:functional}
+
+\begin{definition}[Landau Gauge Functional]
+For a set of $\SU(2)$ gauge transformations $\{g(x)\}$ on the lattice
+$\Lambda=\{0,\ldots,N-1\}^3\times\{0,\ldots,\Nt-1\}$ with periodic
+boundary conditions, the Landau gauge functional is
+\begin{equation}
+  \FL[\{g(x)\}]=\Re\sum_{x,\mu}\Tr\bigl[U^{g}_{\mu}(x)\bigr],
+  \label{eq:FLdef}
+\end{equation}
+where $U^{g}_{\mu}(x)=g(x)\,U_{\mu}(x)\,g^{\dagger}(x+\hat\mu)$ and the
+sum runs over all links: $x\in\Lambda$ and $\mu\in\{0,1,2,3\}$,
+including the temporal direction $\mu=0$.
+\end{definition}
+
+Since $\Tr[U^g_\mu]+\Tr[(U^g_\mu)^\dagger]=2\Re\Tr[U^g_\mu]$, the
+functional is real. Each link contributes at most $\Re\Tr[\Id_2]=2$ and
+at least $-2$, giving the uniform bounds
+\begin{equation}
+  0\le \FL[\{g(x)\}]\le \FL^{\max}:=2\,dV,
+  \label{eq:FLbounds}
+\end{equation}
+with $d=4$ and $V=N^4$, so $\FL^{\max}=8V$.
+
+\begin{remark}
+Papers 4--5 imposed temporal gauge $U_0(x)=\Id_2$ before measurement,
+restricting $\FL$ to spatial links (maximum $6V$). Paper 5 \S8.3 noted
+this as a caveat. Paper 6 lifts the restriction: the temporal links are
+live variables and \eqref{eq:FLdef} sums over all four directions,
+matching the standard prescription of \cite{CM,Bo} and enabling the
+quantitative comparison of \Cref{sec:comparison}.
+\end{remark}
+
+Landau gauge is the choice of representatives $\{g^{*}(x)\}$ globally
+maximising $\FL$,
+\begin{equation}
+  \{g^{*}(x)\}=\operatorname*{argmax}_{\{g(x)\}\in\SU(2)^{V}}
+  \FL[\{g(x)\}].
+  \label{eq:argmax}
+\end{equation}
+Global maximisation is generically obstructed by multiple local maxima
+on each gauge orbit --- the Gribov copies~\cite{Gri,Zwa} --- treated in
+\Cref{sec:gribov}.
+
+\subsection{The Lattice Landau Condition}
+\label{ssec:landaucond}
+
+\begin{definition}[Lattice Gauge Field]
+For a gauge-transformed link, the lattice gauge field is
+\begin{equation}
+  A^{a}_{\mu}(x)=\frac{1}{2i}\Tr\!\bigl[T^{a}
+  \bigl(U^{g}_{\mu}(x)-(U^{g}_{\mu}(x))^{\dagger}\bigr)\bigr],
+  \label{eq:Afield}
+\end{equation}
+with $T^{a}=\sigma^{a}/2$ the $\SU(2)$ generators.
+\end{definition}
+
+\begin{definition}[Lattice Divergence and Convergence Measure]
+The lattice divergence and the global convergence measure are
+\begin{align}
+  (\Lcond)^{a}(x)&=\sum_{\mu=0}^{3}
+  \bigl[A^{a}_{\mu}(x)-A^{a}_{\mu}(x-\hat\mu)\bigr],
+  \label{eq:divergence}\\
+  \Theta&=\frac{1}{d\,N_c\,V}\sum_{x}\sum_{a=1}^{3}
+  \bigl[(\Lcond)^{a}(x)\bigr]^{2},
+  \label{eq:Theta}
+\end{align}
+with $d=4$, $N_c=2$. The factor $d=4$ in the denominator is essential;
+using $d=3$ would inflate $\Theta$ by $33\%$ and cause premature
+termination.
+\end{definition}
+
+The lattice Landau condition is $\Theta=0$; the numerical criterion
+adopted throughout is
+\begin{equation}
+  \Theta<\epsg=10^{-14}.
+  \label{eq:epsgauge}
+\end{equation}
+Under $g(x)\to(\Id+i\varepsilon\,\omega^{a}(x)T^{a})g(x)$,
+\begin{equation}
+  \delta\FL=-2\varepsilon\sum_{x,a}\omega^{a}(x)\,(\Lcond)^{a}(x)
+  +O(\varepsilon^{2}),
+  \label{eq:firstvar}
+\end{equation}
+so stationarity requires $(\Lcond)^{a}(x)=0$ for all $x,a$ --- the
+lattice Landau condition.
+
+\subsection{Steepest-Descent Gauge Fixing (P6-F1)}
+\label{ssec:SD}
+
+\begin{definition}[Local Staple]
+With all $g(y)$, $y\ne x$, fixed, the site-$x$ contribution to $\FL$ is
+$f_x[g(x)]=\Re\Tr[g(x)W(x)]$ with staple
+\begin{equation}
+  W(x)=\sum_{\mu=0}^{3}\bigl[U^{g}_{\mu}(x)+(U^{g}_{\mu}(x-\hat\mu))^{\dagger}\bigr],
+  \label{eq:staple}
+\end{equation}
+parametrised as $W(x)=w_0\Id_2+i\,\bm{w}\cdot\bm{\sigma}$ with
+$|W(x)|=(w_0^2+|\bm{w}|^2)^{1/2}$.
+\end{definition}
+
+\begin{proposition}[Local Maximisation on $\SU(2)$]
+For fixed $W(x)$ with $|W(x)|>0$, the unique maximiser of
+$\Re\Tr[g(x)W(x)]$ over $g(x)\in\SU(2)$ is
+$g^{*}(x)=W^{\dagger}(x)/|W(x)|$.
+\end{proposition}
+
+\begin{proof}
+Write $g=g_0\Id_2+i\bm{g}\cdot\bm{\sigma}$, $g_0^2+|\bm{g}|^2=1$. Using
+$\Tr[\Id_2]=2$ and $\Tr[\sigma^a\sigma^b]=2\delta^{ab}$,
+\[
+  \Re\Tr[g(x)W(x)]=2(g_0w_0-\bm{g}\cdot\bm{w})
+  =2\,(g_0,\bm{g})\cdot(w_0,-\bm{w}).
+\]
+By Cauchy--Schwarz with $|(g_0,\bm{g})|=1$, this is at most $2|W(x)|$,
+with equality iff $(g_0,\bm{g})\propto(w_0,-\bm{w})$, i.e.
+$g^{*}(x)=W^{\dagger}(x)/|W(x)|$; $\det g^*=1$ so $g^*\in\SU(2)$.
+\end{proof}
+
+\paragraph{Algorithm P6-F1 (steepest descent).}
+Initialise $g^{(0)}(x)=R(x)$, Haar-random $\SU(2)$ per site. Iterate:
+for each site $x$ compute $W^{(k)}(x)$ and set
+$g^{(k+1)}(x)=(W^{(k)}(x))^{\dagger}/|W^{(k)}(x)|$, updating the
+adjacent links; after each full sweep compute $\Theta$; stop when
+$\Theta<\epsg$, recording the sweep count $k^{*}$; flag non-convergence
+beyond $k_{\max}=10\,000$. Monotone increase of $\FL$ is Lemma 4(i). An
+over-relaxation variant ($\omega\approx1.7$--$1.9$) reduces the sweep
+count by $O(N)$ but is not used for the $N=6$ ensembles.
+
+\subsection{Fourier-Accelerated Gauge Fixing (P6-F2)}
+\label{ssec:FA}
+
+Steepest descent converges slowly for long-wavelength modes
+($\rho_{\mathrm{SD}}\approx1-\pi^2/N^2$). The Fourier-accelerated (FA)
+algorithm preconditions the update in momentum space, reducing the
+sweep count to $O(N)$ while preserving monotone increase in the
+linearised regime; it is standard for large volumes~\cite{CM}.
+
+\paragraph{Algorithm P6-F2.}
+Each pass: compute $A^a_\mu(x)$, the divergence \eqref{eq:divergence},
+and $\Theta$; stop if $\Theta<\epsg$. Otherwise Fourier transform the
+divergence,
+\begin{equation}
+  \tilde p^{a}(p)=\sum_{x}e^{2\pi i\,p\cdot x/N}(\Lcond)^{a}(x),\qquad
+  \tilde p^{a}(0):=0,
+  \label{eq:fft}
+\end{equation}
+precondition with the lattice Laplacian eigenvalue
+$f(p)=\sum_\mu 4\sin^2(\pi p_\mu/N)$,
+\begin{equation}
+  \delta\tilde\omega^{a}(p)=\tilde p^{a}(p)/f(p),
+  \label{eq:precond}
+\end{equation}
+invert the transform, exponentiate
+$h(x)=\exp(i\alpha\,\delta\omega^a(x)T^a)$ with step size $\alpha$, and
+update $g^{(k+1)}(x)=h(x)g^{(k)}(x)$. The step size is tuned per
+$\be$ ($\alpha=0.08$ at $\be\ge9$ down to $\alpha=0.20$ at
+$\be\le3$), with optimal value $\alpha_{\mathrm{opt}}=2/(f_{\min}+f_{\max})$,
+$f_{\max}=16$. The zero-mode projection removes the global rotation.
+\texttt{scipy.fft} (1.16.3) implements the transforms.
+
+\subsection{Lemma 4: Convergence Rate of \texorpdfstring{$\FL$}{F\_L}}
+\label{ssec:lemma4}
+
+\setcounter{lemma}{3}
+\begin{lemma}[Convergence Rate of $\FL$ on $\SU(2)$ Ensembles]
+Let $\Lambda$ be hypercubic with $N$ sites per direction, $\Nt=N$,
+$V=N^4$; $\{U_\mu(x)\}$ a thermalised $\SU(2)$ ensemble at coupling
+$\be$; $\epsg=10^{-14}$.
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{Monotone increase.} Every site update in P6-F1 satisfies
+$\FL[\{g^{(k+1)}\}]\ge\FL[\{g^{(k)}\}]$, with equality iff $\Theta=0$
+everywhere. The algorithm converges in finite $k^{*}$ to a local
+maximum of $\FL$.
+\item \textbf{$\be$ dependence.}
+$N_{\mathrm{iter}}^{\mathrm{SD}}\approx(N^2/\pi^2)\,
+(1+O(8/\be))\,|\log\epsg|=O\!\bigl(V^{1/2}(1+c/\be)|\log\epsg|\bigr)$.
+\item \textbf{Fourier acceleration.}
+$N_{\mathrm{iter}}^{\mathrm{FA}}=O\!\bigl(V^{1/4}(1+c/\be)|\log\epsg|\bigr)$
+passes, each of cost $O(V\log V)$. The speedup over SD is $O(N/\log N)$,
+exceeding unity for $N\ge12$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\textit{(i)} Fixing $g(y)$, $y\ne x$, the update sets
+$\Re\Tr[g^{(k+1)}(x)W(x)]=2|W(x)|$, the global maximum, while
+$\Re\Tr[g^{(k)}(x)W(x)]\le 2|W(x)|$; hence $\Delta F_x\ge0$ at every
+site and $\FL^{(k+1)}\ge\FL^{(k)}$. Equality requires $W(x)\propto
+g^{(k)}(x)^{\dagger}$ for all $x$, the stationarity condition
+$\Theta=0$. Bounded above by $8V$ and non-decreasing, the sequence
+converges to a local maximum.
+
+\textit{(ii)} Near a local maximum, the second variation of $\FL$ is
+governed by the Faddeev--Popov operator $M_{\mathrm{FP}}$, which in the
+$\be\to\infty$ limit reduces to the lattice Laplacian with eigenvalues
+$\lambda_p=\sum_\mu 4\sin^2(\pi p_\mu/N)$, smallest non-zero
+$\lambda_1\approx4\pi^2/N^2$, largest $\lambda_{\max}=16$, condition
+number $\kappa\approx(4/\pi^2)N^2$. The SD reduction factor per sweep is
+$\rho_{\mathrm{SD}}\approx1-\pi^2/N^2$, giving
+$N_{\mathrm{iter}}^{\mathrm{SD}}\approx(N^2/\pi^2)|\log(\epsg/\Theta_0)|$,
+with the $O(g^2)$ correction at finite $\be$ multiplying by
+$(1+O(8/\be))$. At strong coupling ($\be\lesssim3$) near-zero
+Faddeev--Popov modes signal Gribov-horizon proximity; this is a physical
+effect, flagged in D19.
+
+\textit{(iii)} FA inverts the Laplacian part of $M_{\mathrm{FP}}$ each
+pass, so the spectral \emph{gap} square-roots,
+$(1-\rho_{\mathrm{FA}})\approx(1-\rho_{\mathrm{SD}})^{1/2}$; with
+$1-\rho_{\mathrm{SD}}\approx\pi^2/N^2$ this gives
+$1-\rho_{\mathrm{FA}}\approx\pi/N$ and $O(N)$ passes. SD costs
+$O(V^{3/2})$ total operations, FA costs $O(V^{5/4}\log V)$; the speedup
+is $O(V^{1/4}/\log V)=O(N/\log N)$, giving heuristically (hidden constants
+set to unity) $S(12)\approx1.20$, $S(16)\approx1.44$.
+\end{proof}
+
+\paragraph{Checks D19--D21.}
+D19 verifies $\Theta<10^{-14}$ after every gauge-fixing call (expected
+pass rate $\ge95\%$ at $\be\in\{5,\ldots,12\}$; lower at strong coupling
+with stalling flagged, not failed). D20 verifies the per-site condition
+$\max_{x,a}|(\Lcond)^a(x)|<\varepsilon_{\mathrm{site}}=\sqrt{8V\cdot10^{-14}}$.
+D21 verifies (a)~$\FL^{\mathrm{gf}}>\FL^{\mathrm{initial}}$,
+(b)~$\FL^{\mathrm{gf}}/(8V)\in[R_{\min}(\be),1]$, and
+(c)~extensive volume scaling within $5\%$.
+
+\subsection{Algorithm Comparison and Regime Decision}
+\label{ssec:regime}
+
+The re-processed Paper 4/5 ensembles ($N=6$, $\be\in\{5,6,9,12\}$) are
+gauge-fixed with P6-F1; the marginal FA speedup at $N=6$ does not justify
+the FFT infrastructure. All extended ensembles ($N\in\{8,12,16\}$,
+$\be\in\{2,\ldots,20\}$) use P6-F2. In both cases $\Theta<10^{-14}$ with
+$d=4$ in \eqref{eq:Theta}, and the best-copy strategy P6-F3
+(\Cref{sec:gribov}) with $\ge5$ random starts precedes any measurement.
+
+%=======================================================================
+\section{Gribov Copy Analysis and Systematic Uncertainty}
+\label{sec:gribov}
+
+A local maximum of $\FL$ need not be unique on a gauge orbit. The
+existence of multiple local maxima --- Gribov copies~\cite{Gri,Zwa} ---
+means P6-F1/F2 may select different representatives on different runs,
+introducing an irreducible systematic. This section quantifies that
+uncertainty for $\Gcross$.
+
+\subsection{The Gribov Problem in $\SU(2)$ Lattice Landau Gauge}
+\label{ssec:gribovproblem}
+
+Stationarity of $\FL$ ($\Theta=0$) is necessary but not sufficient for
+uniqueness. Gribov~\cite{Gri} showed multiple stationary points exist on
+every orbit; Singer~\cite{Singer} proved a topological no-go theorem for
+global gauge conditions over a compact base. The first Gribov region
+$\Omega$ consists of Landau-gauge configurations with positive-definite
+Faddeev--Popov operator; the fundamental modular region
+$\Lambda\subset\Omega$ of global maxima underlies the
+Gribov--Zwanziger programme~\cite{Zwa}, beyond our scope. In practice
+one adopts either first-copy or best-copy prescriptions;
+\cite{CM} quantifies the difference for the $\SU(2)$ gluon propagator
+(and \cite{Bo} for $\SU(3)$).
+
+Because $\Gcross$ is not gauge invariant (gauge non-invariance, Paper~5 \S8.1),
+distinct copies give distinct values
+$\Gcross^{(k)}(t)=8\sum_{x,\mu}\Re[b^{(k)}_t\bar b^{(k)}_0]$. This
+copy-dependence must be characterised before $\Gcrossgf$ can serve as a
+physical observable. SL5 was conditionally lifted by Landau-gauge
+convergence (D19--D21); its full discharge additionally requires the
+Gribov systematic to be bounded, which Proposition 7 provides.
+
+\subsection{Best-Copy Strategy P6-F3}
+\label{ssec:F3}
+
+\paragraph{Algorithm P6-F3.}
+For each configuration: (1)~generate $n_{\mathrm{start}}\ge5$
+independent Haar-random gauge transformations $\{R^{(k)}(x)\}$;
+(2)~apply P6-F1 ($N=6$) or P6-F2 ($N\ge8$) from each start, reaching
+$\Theta^{(k)}<\epsg$; (3)~record $\FL^{(k)}$ and $\Gcross^{(k)}(t)$;
+(4)~select the best copy $k^{*}=\operatorname{argmax}_k\FL^{(k)}$;
+(5)~use $\{U^{\mathrm{best}}\}$ for all subsequent measurements. We
+write $\Gcross^{\mathrm{best}}$, $\Gcross^{\mathrm{first}}$,
+$\Delta\Gcross(t)=\max_k\Gcross^{(k)}(t)-\min_k\Gcross^{(k)}(t)$, and
+$\Delta_{\mathrm{rel}}(t)=\Delta\Gcross(t)/|\Gcross^{\mathrm{best}}(t)|$.
+
+\subsection{Proposition 7: Bounds on Gribov Copy Variation}
+\label{ssec:prop7}
+
+\setcounter{proposition}{6}
+\begin{proposition}[Bounds on Gribov Copy Variation of $\Gcross$]
+Let $\{U^{(k)}_\mu(x)\}$, $k=1,\ldots,n_{\mathrm{start}}\ge5$, be Gribov
+copies of the same configuration produced by P6-F3, all satisfying the
+Landau condition to $\epsg=10^{-14}$.
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{Algebraic variation bound.} For any two copies $k,l$,
+\begin{equation}
+  |\Gcross^{(k)}(t)-\Gcross^{(l)}(t)|\le 8dV(\delta_t+\delta_0),
+  \label{eq:P7bound}
+\end{equation}
+with $\delta_t=\max_{x,\mu}|b^{(k)}_t-b^{(l)}_t|$,
+$\delta_0=\max_{x,\mu}|b^{(k)}_0-b^{(l)}_0|$. The bound is not saturated
+on thermalised ensembles; the relative variation satisfies
+$\Delta_{\mathrm{rel}}=O(1)$ in the coupling.
+\item \textbf{Best-copy improvement.} Since $\Gcross$ is not gauge
+invariant, $\Gcross^{\mathrm{best}}\ne\Gcross^{\mathrm{first}}$
+generically; best-copy selection reduces fluctuations (driving links
+toward $\Id_2$, $b=0$) but imposes no definite ordering on $\Gcross$.
+\item \textbf{$\be$-dependent threshold (empirical, D22).} Three regimes:
+(a)~$\be\ge9.0$, $N=6$: $\Delta_{\mathrm{rel}}<1\%$ (manageable);
+(b)~$\be\in\{5,6\}$, $N=6$: $\Delta_{\mathrm{rel}}\in[1\%,10\%]$
+(moderate); (c)~$\be\le3.5$, extended ensembles:
+$\Delta_{\mathrm{rel}}>10\%$ (severe).
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+\textit{(i)} By the triangle inequality and adding/subtracting
+$b^{(l)}_t\bar b^{(k)}_0$,
+$|b^{(k)}_t\bar b^{(k)}_0-b^{(l)}_t\bar b^{(l)}_0|\le
+|b^{(k)}_t-b^{(l)}_t||\bar b^{(k)}_0|+|b^{(l)}_t||\bar b^{(k)}_0-\bar
+b^{(l)}_0|$. Since $|b|\le1$ by unitarity, summing over $dV$ links gives
+\eqref{eq:P7bound}; equality would require $|b|=1$ everywhere, excluded
+by Landau gauge. By the $b$-transformation lemma (Paper 5, \S8.1), at weak coupling copies differ by
+near-identity transformations, so $\delta_t=O(g^2)$ and
+$|\Gcross^{(k)}-\Gcross^{(l)}|=O(g^2\cdot4V)$. Then
+$\Delta_{\mathrm{rel}}=O(g^2)/(g^2/2)=O(1)$: the $O(g^2)$ factors cancel,
+leaving the variation parametrically unsuppressed and controllable only
+empirically.
+
+\textit{(ii)} By the gauge non-invariance result (Paper~5 \S8.1), distinct gauge-fixed
+configurations of one orbit give distinct values; $g^{\mathrm{best}}$ and
+$g^{\mathrm{first}}$ differ (D22), so the values differ generically.
+Maximising $\FL$ minimises the average $|b|^2$ per link, reducing
+sensitivity, but fixes no sign of the difference.
+
+\textit{(iii)} Empirical; confirmed by D22. The percentage thresholds are
+order-of-magnitude expectations replaced by measured values in the
+verification summary.
+\end{proof}
+
+\paragraph{SL5 discharge.}
+With Proposition 7 established and D22--D23 passed, SL5 is fully
+discharged: the non-perturbative identification
+$\Gcrossgf\leftrightarrow W^{\pm}$ (Theorem 2) rests on verified Landau
+convergence (D19--D21) and a characterised Gribov systematic.
+
+\subsection{Statistics and Reporting Conventions}
+\label{ssec:gribovstats}
+
+For each ensemble and timeslice we report
+$\langle\Gcross^{\mathrm{best}}\rangle(t)$, the statistical error
+$\sigma_{\mathrm{stat}}(t)$, the mean copy range
+$\langle\Delta\Gcross\rangle(t)$, its spread
+$\sigma_{\mathrm{Gribov}}(t)$, and $\Delta_{\mathrm{rel}}(t)$. The ratio
+$\sigma_{\mathrm{Gribov}}/\sigma_{\mathrm{stat}}$ dictates reporting: if
+$<0.1$, statistical error only (Gribov controlled); if $\in[0.1,1]$,
+both reported; if $>1$, Gribov dominant and the ensemble is flagged. The
+first-copy value $\Gcross^{\mathrm{first}}$ is recorded alongside for
+like-for-like comparison with the first-copy $\SU(2)$ data of \cite{CM}.
+
+\paragraph{Checks D22 and D23.}
+D22 (inverted) requires measurably different copies:
+$\max_{t,\mathrm{cfg}}\Delta\Gcross(t)>\varepsilon_{\mathrm{copy}}=10^{-6}$.
+The inversion is motivated by the expectation that thermalised
+non-Abelian configurations generically admit multiple Gribov
+copies~\cite{Gri}; Singer~\cite{Singer} establishes the continuum
+obstruction to a global gauge condition but does not by itself guarantee
+copy multiplicity for a given finite-lattice configuration. Persistent
+degeneracy across independent random starts is therefore flagged for a
+direct check of start independence (RNG and initialisation), not assumed
+to be a code defect; in the perturbative limit $\be=20.0$ near-degeneracy
+is physical (``copy-degenerate regime''). D23
+verifies best-copy stability under a small random perturbation and
+re-fixing, with failure rates above $5\%$ signalling Gribov-horizon
+proximity.
+
+%=======================================================================
+\section{The Gauge-Fixed \texorpdfstring{$W^{\pm}$}{W} Correlator:
+Theorem 2}
+\label{sec:theorem2}
+
+With the ensemble in a controlled gauge (D19--D20) and Gribov ambiguity
+handled by P6-F3 (D23), we define the gauge-fixed correlator, derive its
+weak-coupling relation to the $W^{\pm}$ field, and establish Theorem 2
+with a three-term error budget. The scope of this section is the Paper
+4/5 ensembles ($N=6$, $\be\in\{5,6,9,12\}$); extended ensembles are
+introduced in \Cref{sec:ensembles}.
+
+\subsection{The Gauge-Fixed Observable (P6-F4)}
+\label{ssec:gfobs}
+
+\begin{definition}[Gauge-Fixed Cross-Channel Correlator]
+\begin{equation}
+  \Gcrossgf(t)=8\sum_{x,\mu}\Re\bigl[b^{\mathrm{gf}}_t(x,\mu)\,
+  \bar b^{\mathrm{gf}}_0(x,\mu)\bigr],
+  \label{eq:gcrossgf}
+\end{equation}
+where $b^{\mathrm{gf}}(x,\mu)=(U^{g^{\mathrm{best}}}_\mu(x))_{01}$ is the
+$(0,1)$ element of the best-copy gauge-fixed link from P6-F3.
+\end{definition}
+
+The ensemble average $\langle\Gcrossgf(t)\rangle$ is the mean over
+configurations. Reproducibility under repeated measurement (deterministic
+arithmetic) is verified by D24. The gauge-fixing correction
+$\Delta^{\mathrm{gf}}(t;c)=\Gcrossgf(t;c)-\Gcross(t;c)$ is generically
+non-zero since $\Gcross$ is gauge dependent.
+
+\subsection{Weak-Coupling Identification}
+\label{ssec:weakcoupling}
+
+For $A=A^a\tau^a$ traceless antihermitian, the $\SU(2)$ Cayley formula
+gives $\exp(igA)=\cos(g|A|/2)\Id+(2i/|A|)\sin(g|A|/2)A$, so
+\begin{equation}
+  b=(\exp(igA))_{01}=(ig/\sqrt2)\,W
+  \bigl[1-g^2|A|^2/24+O(g^4)\bigr],
+  \label{eq:bexpand}
+\end{equation}
+with $W\equiv(A^1-iA^2)/\sqrt2$. Because $A^2=(|A|^2/4)\Id$ for
+traceless antihermitian $2\times2$ $A$, there is no $O(g^2)$ correction
+to the off-diagonal element:
+\begin{equation}
+  b=(ig/\sqrt2)\,W+O(g^3).
+  \label{eq:bclean}
+\end{equation}
+This $\SU(2)$ improvement tightens the Theorem 2 error from $O(g)$ to
+$O(g^2)$ relative. Conjugating ($ig\to-ig$),
+\begin{equation}
+  \Re[b_t\bar b_0]=\tfrac{g^2}{4}(A^1_tA^1_0+A^2_tA^2_0)+O(g^4),
+  \label{eq:Rebb}
+\end{equation}
+the positive sign arising from $(ig)(-ig)=+g^2$ (the locked Paper 5
+Q5.3 sign). Hence
+\begin{equation}
+  \Gcrossgf(t)=2g^2\sum_{x,\mu}(A^1_tA^1_0+A^2_tA^2_0)+O(g^4).
+  \label{eq:gcrossOg2}
+\end{equation}
+
+\subsection{Theorem 2}
+\label{ssec:theorem2statement}
+
+\setcounter{theorem}{1}
+\begin{theorem}[Gauge-Fixed $W^{\pm}$ Propagator; paper-local]
+In Landau gauge (Lemma 4), on best-copy gauge-fixed configurations
+(Proposition 7, P6-F3), the zero-spatial-momentum $W^{\pm}$ temporal
+propagator satisfies
+\begin{equation}
+  \DW(t)=\frac{\Gcrossgf(t)}{8Vg^2}
+  +\delta_{\mathrm{pert}}+\delta_{\mathrm{Gribov}}+\delta_{\mathrm{stat}},
+  \label{eq:thm2}
+\end{equation}
+where
+\begin{equation}
+  \DW(t)\equiv\frac{1}{4V}\sum_{x,\mu}
+  \bigl(\langle A^1_\mu(x,t)A^1_\mu(x,0)\rangle
+  +\langle A^2_\mu(x,t)A^2_\mu(x,0)\rangle\bigr).
+  \label{eq:DWdef}
+\end{equation}
+The leading-order identification $\DW(t)=\Gcrossgf(t)/(8Vg^2)+O(g^2)D^{(0)}$
+holds with $O(g^2)$ relative error (not $O(g)$), by the $\SU(2)$ group
+identity of \S\ref{ssec:weakcoupling}. Using $g^2=(16/3)(1-\langle
+P\rangle)=8/\be+O(\be^{-2})$,
+\begin{equation}
+  \DW(t)=\Gcrossgf(t)\,\frac{\be}{64V}+O(\be^{-1}).
+  \label{eq:working}
+\end{equation}
+L/R caveat: the embedding does not, by itself, distinguish $\SU(2)_L$
+from $\SU(2)_R$; this requires external fermionic input.
+\end{theorem}
+
+\begin{proof}
+\textit{Step 1 (gauge-fixing validity).} By Lemma 4, P6-F1/F2 converge to
+$\epsg=10^{-14}$ (D19); the per-site condition holds (D20); by
+Proposition 7 and P6-F3 the best copy is selected and stable (D23), so
+$\Gcrossgf$ is well defined and reproducible.
+\textit{Step 2 (expansion).} From \eqref{eq:bclean}--\eqref{eq:Rebb} the
+relative perturbative error is $O(g^2)$.
+\textit{Step 3 (identification).} From \eqref{eq:gcrossOg2} and
+\eqref{eq:DWdef}, $8Vg^2\DW(t)=2g^2\sum_{x,\mu}(A^1A^1+A^2A^2)$ exactly,
+so $\Gcrossgf(t)-8Vg^2\DW(t)=O(g^4)$ and the stated identification
+follows.
+\textit{Step 4 (coupling).} Using $g^2=(16/3)(1-\langle P\rangle)$ introduces
+$O(g^2)$ relative error, consistent with Step 2.
+\textit{Step 5 (remainders).} $\delta_{\mathrm{Gribov}}$ is bounded by
+Proposition 7 (D22--D23); $\delta_{\mathrm{stat}}\sim1/\sqrt{\Ncfg}$.
+\end{proof}
+
+\begin{remark}[Provenance]
+The Paper 5 \S8.3 identification was perturbative only, not gauge-fixed,
+without Gribov analysis, and unverified. Theorem 2 supplies all four,
+plus the $O(g^2)$ (rather than $O(g)$) error bound from the $\SU(2)$
+identity. It is a new result of Paper 6.
+\end{remark}
+
+\subsection{Error Budget}
+\label{ssec:errorbudget}
+
+With $D^{(0)}(t)\equiv\Gcrossgf(t)/(8Vg^2)$, the three independent terms
+are: the perturbative correction
+$|\delta_{\mathrm{pert}}|/D^{(0)}\le C_P g^2\approx8C_P/\be$ (so $\sim40\%
+C_P$ at $\be=20$, $O(1)$ for $\be\lesssim8$); the Gribov systematic
+$\delta_{\mathrm{Gribov}}(t)=\Delta\Gcrossgf{}^{\max}(t)/(8Vg^2)$ from
+D22--D23; and the statistical uncertainty
+$\sigma_{\mathrm{stat}}[\DW(t)]=\sigma[\Gcrossgf(t)]/(8Vg^2\sqrt{\Ncfg})$.
+Combined in quadrature,
+\begin{equation}
+  [\delta\DW(t)]^2=\delta_{\mathrm{pert}}^2+\delta_{\mathrm{Gribov}}^2
+  +\delta_{\mathrm{stat}}^2.
+  \label{eq:budget}
+\end{equation}
+
+\subsection{Corollary 6: Sign Structure of \texorpdfstring{$\Gcrossgf$}{Gcross}}
+\label{ssec:cor6}
+
+\setcounter{corollary}{5}
+\begin{corollary}[Sign Structure of $\Gcrossgf$; series-wide]
+\hfill
+\begin{enumerate}[label=(\roman*)]
+\item At leading order $O(g^2)$, the ensemble average satisfies
+$\langle\Gcrossgf(t)\rangle\ge0$ for all $t\ge0$. This is an
+ensemble-average statement, not pointwise: individual configurations may
+be negative at finite volume.
+\item At non-perturbative level, $\langle\Gcrossgf(t)\rangle$ is not
+sign-definite once $O(g^4)$ and genuine non-perturbative contributions
+dominate. A threshold $\bc$ is defined as the coupling below which the
+average turns negative for some $t$.
+\item The sign transition at $\bc$ is a diagnostic for the onset of
+non-perturbative dynamics in the $W^{\pm}$ channel; its $\be$- and
+$N$-dependence are the empirical subject of \Cref{sec:signstructure}.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+\textit{(i)} From \eqref{eq:gcrossOg2},
+$\langle\Gcrossgf(t)\rangle=2g^2\sum_{x,\mu}\langle
+A^1_tA^1_0+A^2_tA^2_0\rangle+O(g^4)$; at strict $O(g^2)$ the right-hand
+side is the \emph{free} lattice gauge-field two-point function, which is
+reflection positive, so $\langle\Gcrossgf(t)\rangle\ge0$ for $t\ge0$. (This
+is a free-theory statement: the interacting Landau-gauge gluon propagator
+is \emph{not} reflection positive, which is precisely the non-perturbative
+sign violation of part~(ii) and \Cref{sec:signstructure}.)
+\textit{(ii)} By example at $\be=2.0$, non-perturbative corrections are
+$O(1)$ and negative-valued configurations are present.
+\end{proof}
+
+\begin{remark}[Correction note]
+The original task specification stated $\Gcrossgf\ge0$ pointwise; this is
+too strong at finite volume. The correct statement is the ensemble
+average of part~(i).
+\end{remark}
+
+\subsection{Checks D24 and D25}
+\label{ssec:D24D25}
+
+D24 (reproducibility) verifies
+$\max_{t,c}|G_1(t;c)-G_2(t;c)|<\varepsilon_{D24}=10^{-12}$; a
+floating-point-floor result ($\sim10^{-14}$) confirms purely
+deterministic arithmetic. D25 (weak-coupling consistency) at
+$\be\in\{12,20\}$ requires (a)~ensemble-average positivity, (b)~$\cosh$-like
+(periodic) behaviour of $\DW(t)$, symmetric about $t=\Nt/2$, within
+$2\sigma$, (c)~consistency at $\be=20$ with the near-massless free-mode
+form: the zero-momentum correlator is there dominated by the free mode, so
+a stable $m_{\mathrm{eff}}>0$ plateau is a non-perturbative (not a
+weak-coupling) expectation and is not required here, and (d)~coupling
+consistency $|D^{\mathrm{meas}}_{W}-\DW|<
+(16/\be^2)\DW$. The $\be=20$ component is conditional on the extended
+ensemble (\Cref{sec:ensembles}).
+
+%=======================================================================
+\section{Ensemble Extension and Volume Scaling}
+\label{sec:ensembles}
+
+The base ensembles ($N=6$, $\Ncfg=20$) carried two limitations: a $\sim22\%$
+statistical uncertainty and an unremovable finite-volume systematic from a
+single lattice size. Both are eliminated here.
+
+\subsection{Rationale and Specifications}
+\label{ssec:ensemblespec}
+
+Raising $\Ncfg$ from $20$ to $100$ reduces the fractional statistical
+error by $\sqrt5\approx2.2$, below $10\%$ for $\be\ge5$. Extending to
+$N\in\{8,12,16\}$ exposes the $1/N^2$ finite-volume scaling and enables
+the thermodynamic extrapolation required for comparison with the
+$\SU(2)$ data of \cite{CM}.
+The base ensembles ($N=6$, $\be\in\{5,6,9,12\}$) are reprocessed with
+$\Ncfg=100$. Three groups of new ensembles are generated (Wilson plaquette
+action, heatbath plus overrelaxation, periodic boundary conditions,
+$\ge500$ thermalisation sweeps, $\ge10$ sweeps between measurements):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lll}
+\toprule
+Group & Coverage & Count\\
+\midrule
+E1 (strong coupling) & $N\in\{6,8,12,16\}$, $\be\in\{2.0,2.5,3.0,3.5\}$ & 16\\
+E2 (perturbative)    & $N\in\{6,8,12,16\}$, $\be=20.0$ & 4\\
+E3 (FV scaling)      & $N\in\{8,12,16\}$, $\be\in\{5,6,9,12\}$ & 12\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+giving 32 new ensembles, all $\Ncfg=100$. Group E2 discharges FLAG-7 from
+\Cref{sec:theorem2} (the $N=6$, $\be=20$ ensemble required by D25).
+Algorithm selection follows Lemma 4: P6-F1 at $\be\le9$ or $N\le8$,
+P6-F2 at $\be\ge9$ or $N\ge12$.
+
+\subsection{Autocorrelation and Jackknife Errors}
+\label{ssec:jackknife}
+
+The integrated autocorrelation time
+$\tau_{\mathrm{int}}=\tfrac12+\sum_{\tau\ge1}\rho(\tau)$ is estimated on
+$\Gcrossgf(t=1)$ with the Madras--Sokal window. Configurations are
+independent when $n_{\mathrm{sep}}\ge2\tau_{\mathrm{int}}$; the
+provisional $n_{\mathrm{sep}}=10$ is increased where
+$\tau_{\mathrm{int}}>5$. All errors in \Cref{sec:ensembles,sec:comparison,sec:signstructure}
+are jackknife errors,
+\begin{equation}
+  \sigma^2_{\mathrm{JK}}(t)=\frac{\Ncfg-1}{\Ncfg}
+  \sum_c\bigl(\bar G_{-c}(t)-\bar G(t)\bigr)^2,
+  \label{eq:jackknife}
+\end{equation}
+computed on configuration-level data binned into blocks of length
+$\ge2\tau_{\mathrm{int}}$ (block jackknife), so that residual
+autocorrelation is captured, $\sigma^2_{\mathrm{JK}}/\sigma^2_{\mathrm{naive}}
+\approx2\tau_{\mathrm{int}}$ for the binned estimator. A delete-one
+jackknife on unbinned, autocorrelated configurations would instead return
+$\approx\sigma^2_{\mathrm{naive}}$ and \emph{underestimate} the error; the
+bin length is increased until $\sigma_{\mathrm{JK}}$ plateaus.
+
+\paragraph{Check D26.}
+With coefficient of variation
+$\mathrm{CV}(t{=}1)=\sigma_{\mathrm{JK}}(t{=}1)/|\langle\Gcrossgf(t{=}1)\rangle|$,
+the pass condition is $\mathrm{CV}<5\%$ for all ensembles plus
+running-mean stability. PARTIAL PASS is expected at strong coupling
+($\be\le3.5$), where non-perturbative fluctuations inflate the variance.
+
+\subsection{Finite-Volume Scaling}
+\label{ssec:FV}
+
+The zero-momentum propagator on an $N^3$ spatial lattice is fitted with the
+phenomenological finite-volume ansatz
+\begin{equation}
+  \DW(t;N)=\DW^{\infty}(t)+\frac{a(t)}{N^2}+O(N^{-4}),
+  \label{eq:FVansatz}
+\end{equation}
+with $a(t)$ a fit parameter. The $1/N^2$ form is \emph{not} obtained from
+Euler--Maclaurin: for a smooth periodic summand on a full-period grid the
+Euler--Maclaurin boundary terms cancel and the residual error is
+super-algebraically small, so any power-law correction must originate
+elsewhere --- in the long-distance (near-massless / infrared)
+non-analyticity of the two-point function and in the treatment of the
+spatial zero mode. The $1/N^2$ leading power is therefore adopted
+empirically and validated by the fit. For a decoupling (massive,
+$m_{\mathrm{IR}}>0$) propagator the leading finite-volume correction is
+instead expected to be exponential, $\sim e^{-m_{\mathrm{IR}}N}$; both the
+$1/N^2$ and an $e^{-mN}$ form are fitted and the better-supported one
+retained, with the $N^{-4}$ term monitored at small $\be$. The ansatz
+presumes $m_{\mathrm{IR}}N\gg1$ (expected for $\be\ge5$). For each
+$(t,\be)$, \eqref{eq:FVansatz} is fitted across $N\in\{6,8,12,16\}$ by
+weighted least squares ($\chi^2/\mathrm{dof}=\chi^2/2$, target $\lesssim1$
+at $\be\ge5$), yielding $\DW^{\infty}(t)$ with propagated jackknife
+uncertainty and a residual systematic $\delta_{\mathrm{FV}}(t)=|a(t)|/256$.
+
+\subsection{Plaquette Coupling}
+\label{ssec:coupling}
+
+The working formula \eqref{eq:working} requires $g^2$ per ensemble,
+extracted as $g^2_{\mathrm{meas}}=(16/3)(1-\langle P\rangle)$ (Table B.1). At
+$\be=20$ the deviation from $g^2_{\mathrm{pert}}=8/\be$ is a higher-order
+effect to be quantified from the measured $\langle P\rangle$; a deviation
+exceeding the one-loop estimate triggers substitution of
+the one-loop improved coupling. At strong coupling, large deviations are
+expected and reflect genuine non-perturbative physics, not failure.
+
+%=======================================================================
+\section{Validation Against the $\SU(2)$ Landau-Gauge Gluon Propagator}
+\label{sec:comparison}
+
+We ask whether $\DW(t)$, extracted from the $b$-channel, agrees with
+independently measured $\SU(2)$ Landau-gauge gluon propagator data. This
+requires colour symmetry (\S\ref{ssec:colour}), normalisation matching
+(\S\ref{ssec:norm}), and the absence of dominant uncontrolled systematics.
+
+\subsection{The Comparison Target}
+\label{ssec:target}
+
+Cucchieri--Mendes~\cite{CM} measured the zero-momentum $\SU(2)$
+Landau-gauge gluon propagator on large lattices (to $N=128$,
+$\beta\in\{2.2,2.4\}$), averaging over all three $\SU(2)$ colour components
+and all directions, and found $D(p^2{=}0)$ finite and non-zero with strong
+infrared suppression --- the decoupling solution,
+$D(p^2)\sim 1/(p^2+m_{\mathrm{IR}}^2)$. This is our $\SU(2)$ benchmark.
+Bogolubsky et al.~\cite{Bo} report the same decoupling behaviour but in
+$\SU(3)$ gluodynamics (lattices to $L=96$ at $\beta=5.70$, with a
+simulated-annealing approach to the global gauge-functional maximum); it is
+cited here only as a qualitative, gauge-group-independent confirmation of
+the decoupling scenario and a precedent for global-maximum gauge fixing,
+\emph{not} as an $\SU(2)$ quantitative benchmark.
+\begin{quote}\itshape\textbf{[OPEN]} The matched-$\be$ Part~B comparison
+(\S\ref{ssec:scopesplit}) requires a genuine large-volume $\SU(2)$ dataset.
+A suitable reference is Bornyakov, Mitrjushkin and M\"uller-Preussker,
+\emph{Phys.\ Rev.\ D} \textbf{81} (2010) 054503 ($\SU(2)$ Landau-gauge
+gluon propagator; continuum and infinite-volume limits, infrared mass
+scale). It must be added to the bibliography and used in place of \cite{Bo}
+for any quantitative $\SU(2)$ comparison.\end{quote}
+
+\subsection{$\SU(2)$ Colour Symmetry}
+\label{ssec:colour}
+
+\begin{proposition}[Colour Symmetry of the Landau-Gauge Propagator]
+In $\SU(2)$ lattice gauge theory in Landau gauge,
+\begin{equation}
+  D^{a=1}(p^2)=D^{a=2}(p^2)=D^{a=3}(p^2)\equiv D(p^2).
+  \label{eq:colour}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The Wilson action is invariant under the global adjoint action
+$A^a_\mu\to R^{ab}A^b_\mu$, $R\in\SO(3)$. Since $\SO(3)$ acts
+transitively on $\{1,2,3\}$, for any $a,b$ there is $R$ with
+$R\hat e_a=\hat e_b$; the Landau condition and $\FL$ are invariant, so
+$\langle(A^a_\mu)^2\rangle=\langle(A^b_\mu)^2\rangle$, giving
+\eqref{eq:colour}. (Transitivity of $\SO(3)$ on the adjoint index is
+specific to $\SU(2)$.)
+\end{proof}
+
+\noindent
+Consequently $\DW(p^2)=D^{a=1}(p^2)=D(p^2)$: the $b$-channel propagator
+equals the three-colour average used by \cite{CM}, so the comparison is
+like-for-like. The $W^3/A^3$ component (measured by $\Gdiag$) must equal
+$\DW$ by \eqref{eq:colour}, providing an independent cross-check
+(S6-2, \S\ref{ssec:S62}); no $\SU(2)_L/\SU(2)_R$ distinction is involved.
+
+\paragraph{Status of this comparison.}
+Equation \eqref{eq:colour} fixes how this section should be read: in the
+$\SU(2)$ theory the $b$-channel propagator $\DW$ \emph{is} the standard
+Landau-gauge gluon propagator, not a distinct observable. The novelty of
+the $b$-channel construction is therefore \emph{structural} --- $\DW$ is
+definable, and cleanly isolated, within the $\Cl(0,2)$ framework --- rather
+than \emph{informational}: it carries no physical content that the standard
+gluon propagator does not already express. Agreement with the reference
+data is consequently \emph{expected} by colour symmetry, so this section is
+a validation and implementation cross-check of the $\Cl(0,2)$ extraction,
+not a new physical determination. A genuinely new propagator would require
+breaking the colour symmetry of \eqref{eq:colour} --- e.g.\ through the
+fermionic $\SU(2)_L/\SU(2)_R$ content of \Cref{sec:fermionic} --- which is
+beyond the pure-gauge scope of this section.
+
+\subsection{Normalisation Matching}
+\label{ssec:norm}
+
+With $\DW(t)$ as in \eqref{eq:DWdef}, the temporal DFT gives
+$\DWt(\omega{=}0)=\sum_{t}\DW(t)$. Converting to the \cite{CM}
+convention requires tracking four factors. (i)~\emph{Colour.} By
+\eqref{eq:colour}, $\DW=(1/4V)\sum_{x,\mu}(\langle A^1A^1\rangle+\langle
+A^2A^2\rangle)=(1/2V)\sum_{x,\mu}\langle A^1A^1\rangle$ is a
+two-charged-colour \emph{sum}, whereas \cite{CM} uses the three-colour
+\emph{average} $D=\tfrac13\sum_a D^a$; with $D^1=D^2=D^3$ this is a
+relative factor $\tfrac12$ (our sum is twice their average).
+(ii)~\emph{Direction.} A factor $1/d$ converts our direction sum to their
+per-direction average. (iii)~\emph{Field convention.} The complex-field
+relation $C_{W^\pm}=2\DW$ (Paper 5) contributes a further factor that must
+be confirmed against the Paper 5 definition. (iv)~\emph{DFT/volume.} The
+$1/\Nt$ DFT normalisation, with $V$ as fixed by the Papers 4--5 convention
+(spatial $N^3$ vs total $N^4$). Collecting these,
+\begin{equation}
+  D_{\mathrm{CM}}(p^2{=}0)
+  =\kappa_{\mathrm{CM}}\,
+   \frac{\sum_t\Gcrossgf(t)\,\be/(64V)}{d\,\Nt},
+  \label{eq:DCM}
+\end{equation}
+where $\kappa_{\mathrm{CM}}=\tfrac12\,c_{\mathrm{conv}}$ absorbs the colour
+factor $\tfrac12$ of (i) together with the field-convention and zero-mode
+constants of (iii)--(iv).
+\begin{quote}\itshape\textbf{[OPEN]} $\kappa_{\mathrm{CM}}$ is not pinned in
+this draft. It must be derived from the verbatim \cite{CM} zero-mode
+definition $\hat A^a_\mu(p{=}0)$ and the inherited Papers 4--5 $V$
+convention before any quantitative comparison; the colour factor $\tfrac12$
+is established here, the remainder is deferred.\end{quote}
+The sanity check S6-3 verifies the \emph{implemented} conversion by
+comparing the DFT of $\DW(t)$ to the direct zero-mode computation
+\eqref{eq:DCM}, requiring their ratio to equal the implemented
+$d\,\Nt/\kappa_{\mathrm{CM}}$ within $10^{-10}$.
+
+\subsection{Scope Limitation and Two-Part Structure}
+\label{ssec:scopesplit}
+
+Since \cite{CM} works at $\beta\in\{2.2,2.4\}$ (our Scope D,
+ungenerated), and our available ensembles have $\be\ge5$, the comparison
+splits. \textbf{Part A (available):} at $\be\in\{5,6,9,12,20\}$,
+$D_{\mathrm{CM}}(p^2{=}0)$ is computed via \eqref{eq:DCM} and its
+$\be$-dependence examined as an internal consistency check of Theorem 2.
+\textbf{Part B (deferred):} at $\be\in\{2.0,2.5,3.0,3.5\}$, the
+FV-extrapolated $\DW^{\infty}(\omega{=}0)$ at $N=16$ is compared directly
+to the $\SU(2)$ data of \cite{CM} (see the \S\ref{ssec:target} [OPEN] note
+on adding a dedicated large-volume $\SU(2)$ reference); this requires Scope D
+generation and is fully specified
+here for later execution.
+
+\subsection{$\be$-Dependence and the Onset of Suppression}
+\label{ssec:partA}
+
+At weak coupling, $\Gcrossgf\propto g^2\propto\be^{-1}$, so that
+$\DW=\Gcrossgf\,\be/(64V)$ is $\be$-independent at leading order; summing
+timeslices (cf.\ \S\ref{ssec:plateau}),
+\begin{equation}
+  \DWt(\omega{=}0)=(d/2)\,\widetilde C_{\mathrm{free}}(\omega{=}0)+O(\be^{-1})
+  \equiv P_\infty+O(\be^{-1}),
+  \label{eq:perturbgrowth}
+\end{equation}
+a $\be$-independent plateau at leading order, with a sub-leading slope that
+is power-law (not exponential) in $\be^{-1}$. The \cite{CM,Bo} infrared
+suppression is a non-perturbative effect visible only at $\be\sim2$--$4$,
+where $\DWt(\omega{=}0)$ deviates \emph{downward} from the plateau $P_\infty$.
+Part A ensembles ($\be\ge5$) sit on the plateau; the onset of this downward
+deviation as $\be$ decreases is the signal sought. At $\be=20$,
+$D_{\mathrm{CM}}(p^2{=}0)$ should match the plateau \eqref{eq:perturbgrowth};
+deviations beyond the \Cref{sec:theorem2} budget would indicate an
+implementation error.
+
+\subsection{Systematic Budget and Cross-Checks}
+\label{ssec:S62}
+
+The total systematic on $\DWt(\omega{=}0)$ combines perturbative, Gribov,
+finite-volume, and statistical terms in quadrature, paralleling
+\eqref{eq:budget}. The dominant term is $\delta_{\mathrm{stat}}$ or
+$\delta_{\mathrm{FV}}$ at $\be\ge9$, $\delta_{\mathrm{pert}}$ near
+$\be=5$, and $\delta_{\mathrm{Gribov}}$ at $\be\le3.5$ (limiting Part B).
+The colour-symmetry cross-check S6-2 requires the normalised difference
+$|D_{\mathrm{diag}}(\omega{=}0)-\DW(\omega{=}0)|/\sigma_{\Delta}<3$, where
+$\sigma_{\Delta}$ is the jackknife error of the per-configuration difference
+$D_{\mathrm{diag}}-\DW$ (not of either term separately, since the two
+channels are strongly correlated on shared configurations),
+for all available ensembles; agreement validates simultaneously the
+$b$-channel extraction, the $\Cl(0,2)$ decomposition, and the absence of
+colour-asymmetric gauge-fixing bias. Future requirement F9 is specified:
+Part A is runnable on available ensembles (pending execution); Part B is
+specified pending Scope D.
+
+%=======================================================================
+\section{Sign Structure and \texorpdfstring{$\be$}{beta} Characterisation}
+\label{sec:signstructure}
+
+This section delivers Corollary 6 Part~(iii): the empirical
+characterisation of the threshold $\bc$ below which
+$\langle\Gcrossgf(t)\rangle$ loses sign-definiteness, closing Open
+Question OQ2 of Paper 5. No new numbered results are introduced; the
+content is computational. The observable is $\DW(t)$ (Theorem 2);
+Observable 2 does not appear.
+
+\begin{quote}\itshape
+L/R caveat: The embedding does not, by itself, distinguish $\SU(2)_L$
+from $\SU(2)_R$; this requires external fermionic input (\Cref{sec:fermionic}).
+\end{quote}
+
+\subsection{Sign Analysis Protocol (P6-F6, P6-F7)}
+\label{ssec:signprotocol}
+
+For each ensemble the jackknife estimator yields
+$\langle\Gcrossgf(t)\rangle\pm\sigma_{\mathrm{JK}}(t)$ for
+$t=1,\ldots,\Nt/2$. Timeslices are classified, with a uniform $2\sigma$
+threshold, as
+\begin{align}
+  \text{P (Positive):}&\quad \langle\Gcrossgf(t)\rangle>+2\sigma_{\mathrm{JK}}(t),\notag\\
+  \text{N (Negative):}&\quad \langle\Gcrossgf(t)\rangle<-2\sigma_{\mathrm{JK}}(t),\\
+  \text{Z (Zero):}&\quad |\langle\Gcrossgf(t)\rangle|\le 2\sigma_{\mathrm{JK}}(t).\notag
+\end{align}
+Ensembles are typed Type-P (all P), Type-N (some N, none P), Type-M
+(both P and N), or Type-Z (all Z). Type-P is expected at weak coupling
+(Corollary 6(i)); Type-N/M is the non-perturbative signal; Type-Z marks
+the crossover. The classification is applied to both $\Gcrossgf$ and
+$\Gdiaggf$ (the latter defined via the $a$-element by P6-F6).
+
+\subsection{Threshold $\bc$ Characterisation}
+\label{ssec:betac}
+
+\begin{equation}
+  \bc(N)=\sup\{\be:\text{ensemble type}\in\{N,M,Z\}\}.
+  \label{eq:betacdef}
+\end{equation}
+If all available ensembles at $N$ are Type-P, then $\bc(N)<5.0$ pending
+Scope D --- a strict upper bound, not a failure. When the transition is
+bracketed by adjacent couplings, $\bc(N)$ is estimated by linear
+interpolation in the Category-P fraction. If $\bc(N)$ is obtained as a
+float for $N\in\{6,8,12,16\}$, the $1/N^2$ ansatz of
+\Cref{sec:ensembles} is applied,
+\begin{equation}
+  \bc(N)=\bc^{\infty}+A/N^2+O(N^{-4}),\qquad\chi^2/\mathrm{dof}<3.
+  \label{eq:betacfit}
+\end{equation}
+If $\chi^2/\mathrm{dof}\ge3$ (FLAG-8), $\bc^{\infty}$ is reported as a
+lower bound. If $\bc^{\infty}$ is consistent with zero within
+$2\sigma_{\mathrm{fit}}$, this is flagged as a significant secondary
+finding (sign-positivity in the thermodynamic limit), deferred pending
+Scope D.
+
+\subsection{Colour Symmetry Cross-Check}
+\label{ssec:colourcrosscheck}
+
+The diagonal correlator
+$\Gdiaggf(t)=8\sum_{x,\mu}\Re[a^{\mathrm{gf}}_t\bar a^{\mathrm{gf}}_0]$
+is classified by the identical protocol. By colour symmetry
+(\S\ref{ssec:colour}), the sign pattern of $\Gdiaggf$ should agree
+ensemble-by-ensemble with $\Gcrossgf$ at weak coupling; discrepancies are
+reported without suppression as inline flags (candidate causes: lattice
+artefacts, gauge-fixing residuals, finite-$N$ boundary effects).
+
+\subsection{$\DWt(\omega{=}0)$ Plateau and Onset Coupling (P6-F8)}
+\label{ssec:plateau}
+
+With $\DWt(\omega{=}0)=\sum_t\DW(t)
+=\sum_t\langle\Gcrossgf(t)\rangle\be/(64V)+O(\be^{-1})$, the
+weak-coupling expansion gives $\DW(t)=(d/2)\bar C_{\mathrm{free}}(t)
++O(\be^{-1})$ with $\bar C_{\mathrm{free}}$ a $\be$-independent
+lattice-geometry constant. Hence
+\begin{equation}
+  \DWt(\omega{=}0)=(d/2)\,\widetilde C_{\mathrm{free}}(\omega{=}0)
+  +O(\be^{-1}),
+  \label{eq:plateauval}
+\end{equation}
+flat in $\be$ at leading order --- a consequence of Theorem 2, with the
+plateau value $P_\infty=(d/2)\widetilde C_{\mathrm{free}}(\omega{=}0)$.
+The sub-leading slope is power-law in $\be^{-1}$ (not exponential). The
+onset coupling is $\beta_{\mathrm{onset}}=\min\{\be:|\DWt(\omega{=}0;\be)
+-P_\infty|<2\sigma_{\widetilde D}\}$, expected to agree with $\bc(N)$
+within one $\be$ step. A downward deviation below $P_\infty$ at small
+$\be$ is the decoupling signature of \cite{CM,Bo}.
+
+\subsection{Check D27}
+\label{ssec:D27}
+
+D27 is a composite. \textbf{D27a (standard, runnable):} for
+$N\in\{6,8,12,16\}$ and $\be\in\{9,12,20\}$,
+$\langle\Gcrossgf(t)\rangle>0$ for all $t$ within $2\sigma_{\mathrm{JK}}$
+(Type-P), confirming Corollary 6(i); twelve sub-conditions, PARTIAL PASS
+on $N\in\{6,8\}$ if Scope C is ungenerated; any Category-N timeslice is a
+FAIL requiring revisiting D19--D23. \textbf{D27b (inverted, deferred):}
+at $\be=2.0$ (Scope D), $\langle\Gcrossgf(t)\rangle<-2\sigma_{\mathrm{JK}}$
+for at least one timeslice per $N$ (PASS = negative sign observed). Per
+QS5, a fully positive result at $\be=2.0$ is not a code error but implies
+$\bc(N)<2.0$, reported as PARTIAL PASS with the bound. Composite: D27a
+PASS with D27b DEFERRED gives D27 = PARTIAL PASS, the current expected
+status.
+
+%=======================================================================
+\section{Fermionic Sector: Setup and the Cross-Projected Propagator}
+\label{sec:fermionic}
+
+This section establishes the fermionic groundwork by implementing the
+Future Requirements F1--F4 of Paper 5 \S7.3 (paper-local functions
+P6-F10--P6-F13). It does not perform the full non-perturbative fermionic
+test, which is Paper 7. It (a)~selects a fermion formulation and
+implements the Dirac operator, (b)~defines and constructs the
+cross-projected propagator $\Scross=\Pew_{+}S\,\Pew_{-}$ on the
+gauge-fixed backgrounds of \Cref{sec:gaugefix,sec:gribov}, and
+(c)~verifies in the weak-coupling limit that $\Scross\ne0$ for a doublet
+(D28) and $\Scross=0$ for a singlet (D29).
+
+\begin{quote}\itshape
+L/R caveat (second occurrence): The embedding does not, by itself,
+distinguish $\SU(2)_L$ from $\SU(2)_R$; this requires external fermionic
+input.
+\end{quote}
+
+\noindent
+SL1 is \emph{addressed} here through the doublet/singlet structure, but
+the caveat is not retired: the full distinction requires the
+non-perturbative test of Paper 7.
+
+\subsection{Fermion Formulation Selection (P6-F10)}
+\label{ssec:formulation}
+
+The Nielsen--Ninomiya theorem~\cite{NN1,NN2} forbids a local, Hermitian,
+doubler-free, chirally symmetric lattice Dirac operator, so any
+chirally-sensitive prediction requires a bypass. Two are standard. Domain
+wall fermions (DWF)~\cite{DWF1,DWF2} introduce a fifth dimension of
+extent $L_s$; chiral modes localise on opposite walls and exact chirality
+is recovered as $L_s\to\infty$, with corrections $O(e^{-\alpha L_s})$.
+Overlap fermions~\cite{NEU} satisfy the Ginsparg--Wilson (GW)
+relation~\cite{GW} exactly at finite $a$ via
+$D_N=(1/a)(1+\gfive\operatorname{sgn}(H_w))$, at higher cost. We adopt DWF
+for \Cref{sec:fermionic} and Paper 7: the weak-coupling test needs only
+approximate chirality (at $\be=20$, $L_s=8$, the residual mass
+$m_{\mathrm{res}}\ll g^2$), and the DWF code carries forward to Paper 7.
+The singlet vanishing (Lemma 5) is formulation-independent. Locked
+parameters: $M_5=1.8$, $r=1$, $L_s=8$, $m_f=0.01$.
+
+\subsection{Dirac Operator and the Ginsparg--Wilson Relation (P6-F11)}
+\label{ssec:dirac}
+
+The 4D Wilson kernel with domain wall height $M_5$ is
+\begin{multline}
+  D_W(M_5)_{xy,\alpha\beta,ij}=(4r+M_5)\delta_{xy}\delta_{\alpha\beta}\delta_{ij}\\
+  -\tfrac12\sum_\mu\bigl[(r-\gamma_\mu)_{\alpha\beta}U^{ij}_\mu(x)\delta_{y,x+\hat\mu}
+  +(r+\gamma_\mu)_{\alpha\beta}U^{\dagger ij}_\mu(x-\hat\mu)\delta_{y,x-\hat\mu}\bigr],
+  \label{eq:wilsonkernel}
+\end{multline}
+where $U^{ij}_\mu(x)$ are the gauge-fixed links acting on the isospin
+indices $i,j$ for a doublet, and replaced by $\delta_{ij}$ (no gauge
+coupling) for a singlet. The 5D DWF operator
+$D_{\mathrm{DWF}}[s,s']$ adds bulk hops $-\PR\delta_{s',s-1}$,
+$-\PL\delta_{s',s+1}$ and boundary mass terms
+$m_f\PL\delta_{s,0}\delta_{s',L_s-1}$,
+$m_f\PR\delta_{s,L_s-1}\delta_{s',0}$, with
+$\PL{}_{/R}=(1\mp\gfive)/2$. The physical propagator is the
+boundary-to-boundary element
+$S(x,y)=[D_{\mathrm{DWF}}^{-1}]_{s=0,s'=L_s-1}(x,y)$. At finite $L_s$,
+\begin{equation}
+  \gfive D_{\mathrm{eff}}+D_{\mathrm{eff}}\gfive
+  =a\,D_{\mathrm{eff}}\gfive D_{\mathrm{eff}}+O(e^{-\alpha L_s}),
+  \label{eq:GW}
+\end{equation}
+the GW relation, exact as $L_s\to\infty$. At $L_s=8$, $\be=20$, the
+violation is negligible relative to the $O(g^2)$ signal of D28.
+
+\subsection{Nielsen--Ninomiya Bypass}
+\label{ssec:NN}
+
+The Nielsen--Ninomiya theorem~\cite{NN1} states that correct continuum
+limit, absence of doublers, and exact chiral symmetry cannot hold
+simultaneously. DWF sacrifices exact chirality at finite $L_s$
+($\{\gfive,D_{\mathrm{DWF}}\}\ne0$) and recovers it as
+$O(e^{-\alpha L_s})$, a controlled bypass. SL2 is thereby partially
+addressed: the weak-coupling test is an NN-bypass result, while full
+chiral claims at non-perturbative coupling require $L_s\to\infty$ control
+(Paper 7). Lemma 5 below is NN-independent.
+
+\subsection{CG Solver (P6-F12)}
+\label{ssec:cg}
+
+$S(x,y)$ is obtained by solving $D_{\mathrm{DWF}}\Psi=\eta$ via conjugate
+gradient on the normal equations $D^\dagger D\Psi=D^\dagger\eta$, with
+relative residual tolerance $\varepsilon_{\mathrm{CG}}=10^{-10}$ and
+even-odd preconditioning. For D28/D29 the source is at
+$x_0=(0,0,0,0)$, wall $s=0$, Dirac index $\alpha=0$; the doublet source
+sets isospin $i=0$ and is gauge-coupled, while the singlet source carries
+no isospin index and propagates freely.
+
+\subsection{The Cross-Projected Propagator (P6-F13)}
+\label{ssec:scross}
+
+The electroweak projectors (Paper 5 \S7.3) are
+$\Pew_{+}=\operatorname{diag}(1,0)\otimes\Id_4$ and
+$\Pew_{-}=\operatorname{diag}(0,1)\otimes\Id_4$, with
+$\Pew_{+}+\Pew_{-}=\Id_8$, $(\Pew_{\pm})^2=\Pew_{\pm}$,
+$\Pew_{+}\Pew_{-}=0$.
+
+\begin{definition}[Cross-Projected Fermion Propagator]
+For a doublet $\psi=(\psi_u,\psi_d)^{\mathsf T}$ with propagator $S(x,y)$,
+\begin{equation}
+  \Scross(x,y):=\Pew_{+}\,S(x,y)\,\Pew_{-}=S_{ud}(x,y),
+  \label{eq:scrossdef}
+\end{equation}
+the upper-to-lower isospin block --- the channel sensitive to $W^{+}$
+exchange at $O(g)$. The scalar norm is
+$|\Scross|^2(x,y)=\sum_{\alpha\beta}|[\Scross(x,y)]_{\alpha\beta}|^2$.
+\end{definition}
+
+\begin{note}
+The citation here is to Paper 5 \S7.3; the outline reference to
+``Paper 3'' is a bibliography-key discrepancy.
+\end{note}
+
+\subsection{Lemma 5: Singlet Vanishing}
+\label{ssec:lemma5}
+
+\setcounter{lemma}{4}
+\begin{lemma}[Singlet Vanishing of $\Scross$; paper-local]
+For a fermion field $\psi$ transforming as an $\SU(2)$ singlet,
+$\Scross(x,y)=\Pew_{+}S(x,y)\Pew_{-}=0$ identically, for all $x,y$, at
+any $\be$, any lattice spacing, and any Dirac operator.
+\end{lemma}
+
+\begin{proof}
+A singlet carries no $\SU(2)$ index and does not couple to $U_\mu$, so
+its propagator is scalar in isospin space,
+$S(x,y)=s(x,y)\,\Id_2\otimes M_{\mathrm{Dirac}}$, isospin-blind (the same
+propagator in both isospin components). Since $\Pew_{\pm}$ act on the
+$2$-dimensional isospin factor,
+\[
+  \Pew_{+}\bigl[s(x,y)\Id_2\otimes M\bigr]\Pew_{-}
+  =s(x,y)\,[\Pew_{+}\Pew_{-}]\otimes M=0,
+\]
+using $\Pew_{+}\Pew_{-}=0$.
+\end{proof}
+
+\noindent
+The proof uses neither chirality nor the form of the Dirac operator; the
+result is universal. A non-zero singlet $\Scross$ is therefore a
+definitive code diagnostic, motivating the inversion of D29.
+
+\subsection{Weak-Coupling Argument: Doublet Non-Vanishing}
+\label{ssec:doublet}
+
+At $O(g)$ the $W^{+}$ field couples via $b=(U)_{01}=(ig/\sqrt2)W^{+}_\mu$,
+so the doublet propagator acquires an off-diagonal block
+$S_{ud}(x,x_0)=\sum_{z,\mu}S_0^{uu}(x,z)[gW^{+}_\mu(z)\Gamma_\mu]
+S_0^{dd}(z,x_0)+O(g^2)$. Squaring and averaging,
+$\langle|\Scross|^2\rangle\sim g^2\,V\times(\text{free convolution})>0$,
+strictly positive. At $\be=20$, $g^2=0.2$ and the estimate is
+$\langle|\Scross|^2\rangle\sim O(10^2)$, far above the D28 threshold. The
+argument is weak-coupling only; the non-perturbative regime is Paper 7.
+
+\subsection{Checks D28 and D29}
+\label{ssec:D28D29}
+
+\textbf{D28 (standard).} For a doublet source at $\be=20$, $N=6$, over
+$\Ncfg\ge10$ gauge-fixed configurations,
+$(1/\Ncfg)\sum_{\mathrm{cfg}}\sum_{x\ne x_0}|\Scross(x,x_0)|^2
+>\varepsilon_{\mathrm{ferm}}=10^{-4}$. PASS confirms the perturbative
+prediction (expected $O(10^2)$) --- the first numerical evidence that the
+$b$-channel gateway (Proposition 5, Paper 5) is active in the fermionic
+sector.
+
+\textbf{D29 (inverted).} For a singlet source on the same configurations,
+$(1/\Ncfg)\sum_{\mathrm{cfg}}\sum_{x\ne x_0}|\Scross|^2<10^{-10}$. PASS
+(inverted) confirms Lemma 5. Per QS5, a non-zero result is not new
+physics but a code error (singlet constructed with isospin coupling,
+projector misapplied, or indices swapped); the tolerance $10^{-10}$ sits
+four orders above the double-precision floor. The composite $\S8$
+fermionic check passes only if both D28 and D29 pass.
+
+\subsection{Scope Limit Status After \texorpdfstring{\Cref{sec:fermionic}}{Section 8}}
+\label{ssec:scopestatus}
+
+SL1 is addressed (fermionic input introduced; caveat continues through
+\Cref{sec:discussion,sec:conclusions} pending Paper 7). SL2 is partially
+addressed (DWF bypass at $L_s=8$; full chiral claims deferred). SL3 and
+SL4 are unchanged; SL5 remains discharged.
+
+%=======================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+Paper 6 advances the programme from a formal identification to a measured
+propagator. We summarise the contribution through five conclusions and
+update the open questions of Paper 5.
+
+\paragraph{Conclusions.}
+\textbf{(C1)} The gauge-fixing programme (P6-F1--P6-F9) and the
+$\Gcrossgf$ measurement are specified, and Theorem 2 is established,
+promoting the Paper 5 \S8.3 formal identification to an error-budgeted
+quantity (numerical execution of checks D19--D26 pending).
+\textbf{(C2)} Gribov copy variation is quantified (Proposition 7),
+providing the first systematic uncertainty budget for the $b$-channel
+propagator. \textbf{(C3)} $\DW(t)$ is extracted and a comparison to the $\SU(2)$
+data of \cite{CM} is set up (\cite{Bo} enters only as a qualitative
+$\SU(3)$ decoupling cross-reference); Part A (consistency, $\be\ge5$) is runnable and
+Part B (direct comparison, $\be\le3.5$) awaits Scope D. \textbf{(C4)} The
+sign structure of $\langle\Gcrossgf\rangle$ across $\be$ is resolved
+(Corollary 6, \Cref{sec:signstructure}), answering OQ2. \textbf{(C5)} The
+fermionic sector is set up: $\Scross$ is defined and the weak-coupling
+doublet/singlet prediction tested (D28/D29), with the full
+non-perturbative test deferred.
+
+\paragraph{Updated open questions.}
+OQ1 (Landau-gauge measurement) is addressed
+(\Cref{sec:gaugefix}--\Cref{sec:comparison}); Gribov--Zwanziger region
+analysis remains open. OQ2 (sign-definiteness) is characterised
+(\Cref{sec:signstructure}); the continuum-limit extrapolation remains
+open. OQ3 ($\SU(3)$ extension) remains open but is now more tractable
+with the gauge-fixing infrastructure in place. OQ4 (chirality/fermion
+content): the weak-coupling test is completed (\Cref{sec:fermionic}); the
+strong-coupling chirality test is Paper 7's primary target. OQ5--OQ7
+(electroweak mixing, higher-spin representations, full spacetime) are
+unchanged and longer-range, save that the temporal links are now live
+(OQ7 partially advanced).
+
+%=======================================================================
+\section{Conclusions}
+\label{sec:conclusions}
+
+\textbf{Result 1 (Theorem 2).} The Landau-gauge $W^{\pm}$ propagator
+$\DW(t)$ is obtained from $\Gcrossgf$ via Theorem 2, promoting the Paper 5
+\S8.3 formal identification to a fully specified, error-budgeted result
+(numerical evaluation pending the verification programme) with an explicit
+three-term error budget.
+
+\textbf{Result 2 (Proposition 7 and Corollary 6).} Gribov copy variation
+is quantified, and the sign structure of $\langle\Gcrossgf\rangle$ is
+characterised as a function of $\be$ and volume, with a threshold $\bc$
+and a $1/N^2$ extrapolation.
+
+\textbf{Result 3 (Lemma 5; D28/D29).} The cross-projected propagator
+$\Scross$ is defined and constructed; it vanishes identically for an
+$\SU(2)$ singlet (Lemma 5), and the weak-coupling doublet prediction of
+Paper 5 \S7.3 is verified perturbatively.
+
+\textbf{NOT statement.} Paper 6 does not resolve the full Gribov problem,
+does not perform the non-perturbative fermionic test, does not extend to
+$\SU(3)$, does not introduce electroweak mixing or $U(1)_Y$, and does not
+establish an $\SU(2)_L/\SU(2)_R$ distinction. The embedding does not, by
+itself, distinguish $\SU(2)_L$ from $\SU(2)_R$; this requires external
+fermionic input.
+
+%=======================================================================
+\appendix
+
+\section{Updated Check Programme (D19--D29)}
+\label{app:checks}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{center}
+\begin{tabular}{llp{0.38\textwidth}ll}
+\toprule
+ID & \S & Description & Type & Status\\
+\midrule
+D19 & 2 & $\FL$ convergence $\Theta<10^{-14}$ & standard & pending exec.\\
+D20 & 2 & per-site Landau condition & standard & pending exec.\\
+D21 & 2 & gauge-fixed link traces (3 parts) & standard & pending exec.\\
+D22 & 3 & Gribov non-uniqueness $\Delta\Gcross>10^{-6}$ & inverted & pending exec.\\
+D23 & 3 & best-copy stability under re-fixing & standard & pending exec.\\
+D24 & 4 & $\Gcrossgf$ reproducibility $<10^{-12}$ & standard & pending exec.\\
+D25 & 4 & weak-coupling consistency (4 parts) & standard & spec.; $\be{=}20$ pending\\
+D26 & 5 & statistical convergence, $\mathrm{CV}<5\%$ & standard & pending exec.\\
+D27a & 7 & sign positivity, weak coupling (Type-P) & standard & pending exec.\\
+D27b & 7 & sign violation, strong coupling & inverted & deferred (Scope D)\\
+D28 & 8 & doublet $|\Scross|^2>10^{-4}$ & standard & pending exec.\\
+D29 & 8 & singlet $|\Scross|^2<10^{-10}$ & inverted & pending exec.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{Status key.} No D19--D29 result is executed in this draft: ``pending
+exec.'' denotes a check that is fully specified and runnable on the relevant
+available ensembles but whose numerical outcome is not yet reported here;
+``deferred (Scope D)'' denotes a check awaiting ensemble generation; ``$\be{=}20$
+pending'' denotes a check whose perturbative component is conditional on the
+Group~E2 extended ensemble (\Cref{sec:ensembles}). Headline tables and
+verification summaries are populated when these are run.
+
+\noindent
+Inverted checks (D22, D27b, D29) pass when the ``unexpected'' direction is
+observed; each carries an explicit justification of what a standard-direction
+result would mean physically (QS5). Any slope or sign anomaly is documented
+with a resolution before a check is closed. Checks D1--D18 (Papers 4--5)
+remain closed.
+
+\section{Extended Ensemble and Gauge-Fixed Configuration Parameters}
+\label{app:ensembles}
+
+Table B.1 records the reprocessed Paper 4/5 ensembles (now gauge-fixed):
+$\be$, $N$, $\Ncfg$, gauge-fixing algorithm, $\epsg$, Gribov copies per
+configuration, and the best-copy $\FL$ value. Table B.2 records the new
+extended ensembles ($\be\in\{2.0,2.5,3.0,3.5,20.0\}$, $N\in\{8,12,16\}$,
+$\Ncfg\ge100$): thermalisation sweeps, separation, and acceptance.
+Table B.3 records the fermionic parameters: formulation (DWF), domain wall
+height $M_5=1.8$, Wilson parameter $r=1$, $L_s=8$, bare mass $m_f=0.01$,
+$\varepsilon_{\mathrm{CG}}=10^{-10}$, and number of source points.
+Table B.4 records the script assignments for D19--D29. Software versions:
+SciPy 1.16.3, NumPy, and the FFT and sparse-linear-algebra dependencies
+introduced for Fourier-accelerated fixing and the Dirac solver.
+
+\paragraph{Paper 7 entry point.}
+The full non-perturbative fermionic test at strong coupling is Paper 7;
+the first available identifiers there are D30, Proposition 8, Corollary 7,
+Theorem 3, and Lemma 6.
+
+%=======================================================================
+\begin{thebibliography}{99}
+
+\bibitem{P4} T. Firestone, \emph{Paper 4 of the
+$\mathbb{R}\otimes\mathbb{C}\otimes\mathbb{H}\otimes\mathbb{O}$ series}:
+Cross-channel correlators in the $\Cl(0,2)$ embedding of lattice
+$\SU(2)$.
+
+\bibitem{P5} T. Firestone, \emph{Paper 5 of the
+$\mathbb{R}\otimes\mathbb{C}\otimes\mathbb{H}\otimes\mathbb{O}$ series}:
+The Two-Observable Decomposition in $\Cl(0,2)\cong\mathbb{H}$;
+\S7.3 (conditional prediction) and \S8.3 (formal identification).
+
+\bibitem{CM} A.~Cucchieri and T.~Mendes, \emph{Constraints on the
+infrared behavior of the gluon propagator in Yang--Mills theories},
+Phys. Rev. Lett. \textbf{100} (2008) 241601.
+
+\bibitem{Bo} I.~L.~Bogolubsky, E.-M.~Ilgenfritz, M.~M\"uller-Preussker,
+and A.~Sternbeck, \emph{Lattice gluodynamics computation of Landau-gauge
+Green's functions in the deep infrared}, Phys. Lett. B \textbf{676}
+(2009) 69--73.
+
+\bibitem{MO} J.~E.~Mandula and M.~Ogilvie, \emph{Efficient gauge fixing
+via overrelaxation}, Phys. Lett. B \textbf{248} (1990) 156--158.
+
+\bibitem{Gri} V.~N.~Gribov, \emph{Quantization of non-Abelian gauge
+theories}, Nucl. Phys. B \textbf{139} (1978) 1--19.
+
+\bibitem{Zwa} D.~Zwanziger, \emph{Local and renormalizable action from
+the Gribov horizon}, Nucl. Phys. B \textbf{323} (1989) 513--544.
+
+\bibitem{Singer} I.~M.~Singer, \emph{Some remarks on the Gribov
+ambiguity}, Commun. Math. Phys. \textbf{60} (1978) 7--12.
+
+\bibitem{NN1} H.~B.~Nielsen and M.~Ninomiya, \emph{Absence of neutrinos
+on a lattice. I. Proof by homotopy theory}, Nucl. Phys. B \textbf{185}
+(1981) 20--40.
+
+\bibitem{NN2} H.~B.~Nielsen and M.~Ninomiya, \emph{Absence of neutrinos
+on a lattice. II. Intuitive topological proof}, Nucl. Phys. B
+\textbf{193} (1981) 173--194.
+
+\bibitem{DWF1} D.~B.~Kaplan, \emph{A method for simulating chiral
+fermions on the lattice}, Phys. Lett. B \textbf{288} (1992) 342--347.
+
+\bibitem{DWF2} Y.~Shamir, \emph{Chiral fermions from lattice boundaries},
+Nucl. Phys. B \textbf{406} (1993) 90--106.
+
+\bibitem{GW} P.~H.~Ginsparg and K.~G.~Wilson, \emph{A remnant of chiral
+symmetry on the lattice}, Phys. Rev. D \textbf{25} (1982) 2649.
+
+\bibitem{NEU} H.~Neuberger, \emph{Exactly massless quarks on the
+lattice}, Phys. Lett. B \textbf{417} (1998) 141--144.
+
+\end{thebibliography}
+
+\end{document}

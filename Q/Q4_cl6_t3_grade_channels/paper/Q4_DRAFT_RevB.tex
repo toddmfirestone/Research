@@ -1,0 +1,906 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathrsfs}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{caption}
+
+\geometry{margin=1in}
+\onehalfspacing
+
+% ── Theorem environments ───────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}{Remark}[section]
+\newtheorem{definition}{Definition}[section]
+
+% ── Custom commands ────────────────────────────────────────────────────────────
+\newcommand{\Cl}{\mathrm{Cl}}
+\newcommand{\SU}{\mathrm{SU}}
+\renewcommand{\Re}{\operatorname{Re}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\embed}{\operatorname{embed}}
+\newcommand{\HH}{\mathbb{H}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\OO}{\mathbb{O}}
+\newcommand{\Id}[1]{I_{#1}}
+\newcommand{\Pew}[1]{P^{#1}_{\mathrm{EW}}}
+\newcommand{\GW}[1]{G_W^{(#1)}}
+\newcommand{\fEW}[1]{f_{#1}^{\mathrm{EW}}}
+\newcommand{\sigx}{\sigma_x}
+\newcommand{\sigy}{\sigma_y}
+\newcommand{\sigz}{\sigma_z}
+\newcommand{\brac}[2]{\left[#1,\,#2\right]}
+
+% ── Hyperref setup ─────────────────────────────────────────────────────────────
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue!70!black,
+	citecolor=green!50!black,
+	urlcolor=blue!60!black
+}
+% Suppress math-in-PDF-bookmark warnings from hyperref
+\pdfstringdefDisableCommands{%
+	\def\Cl#1{Cl(#1)}%
+	\def\SU#1{SU(#1)}%
+	\def\HH{H}%
+	\def\RR{R}%
+	\def\CC{C}%
+	\def\OO{O}%
+	\def\mathbb#1{#1}%
+	\def\mathrm#1{#1}%
+	\def\textsubscript#1{_#1}%
+}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+	
+	\title{\textbf{Per-Configuration Equality of the T\textsubscript{3} Grade\\ 
+			Channels of the SU(2) Link Correlator\\
+			in the $\Cl(6)/\HH$ Framework}\\[6pt]}
+	
+	\author{Todd M. Firestone}
+	
+	\date{Keywords: Clifford algebras, SU(2) gauge theory, lattice field theory,
+		grade decomposition, pseudoreality, T\textsubscript{3} link correlator}
+	
+	\maketitle
+
+	
+	% ── Abstract ──────────────────────────────────────────────────────────────────
+	\begin{abstract}
+		We decompose the SU(2) pure-gauge link correlator into two $T_3$ grade
+		channels within the $\Cl(2)\cong\HH$ algebraic framework of this series.
+		The channel projectors $\Pew{\pm}$, defined as the Lagrange spectral
+		projectors of the SU(2) Cartan generator
+		$T_3 = \tfrac{1}{2}(I_2\otimes\sigma_z\otimes I_2)$ acting on the
+		eight-dimensional representation space, split the correlator into two pieces
+		of equal dimension ($4+4$).  Our central result is an exact, per-configuration
+		identity: for every SU(2) gauge configuration the two channel correlators are
+		equal, $G_W^{(+)}(t)=G_W^{(-)}(t)$.  This is an algebraic consequence of SU(2)
+		pseudoreality --- the diagonal elements of any $U\in\SU(2)$ satisfy
+		$U_{11}=\overline{U_{00}}$ --- and holds configuration by configuration, not
+		merely on ensemble average.  We prove the identity and verify it to machine
+		precision on thermalized SU(2) ensembles at $\beta\in\{4.5,6.0\}$.  We delimit
+		the result carefully.  The channel grade fractions
+		$\fEW{\pm}(t)=G_W^{(\pm)}(t)/G_W(t)$ equal $1/2$ only in the free field
+		(all links $U_\mu=I_2$); in the interacting theory the cross term
+		$\Delta=G_W-G_W^{(+)}-G_W^{(-)}$ is nonzero, so the fractions are not pinned
+		to $1/2$.  Moreover, the channel correlators and their cross term are
+		gauge-variant: by Elitzur's theorem their ensemble averages vanish in the
+		absence of gauge fixing and are not physical observables.  The surviving
+		content is therefore the per-configuration channel equality --- a structural
+		feature of the framework rooted in pseudoreality, with no analogue in the
+		SU(3) color sector.  This paper does not address the Higgs sector (excluded by
+		the Derivability Limit, stated in \S2.4), chiral fermions (excluded by
+		Nielsen--Ninomiya), or the L/R handedness of the SU(2) gauge group (the L/R
+		selection requires external physical input not provided by the algebra).
+	\end{abstract}
+	
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+	\section{Introduction}
+	
+\subsection{Context and Question}
+
+This series develops an algebraic framework for embedding the Standard Model gauge
+groups within a tensor product of division algebras
+$\RR\otimes\CC\otimes\HH\otimes\OO$~\cite{P1,P2}.  Paper~2~\cite{P2} studied the
+grade-decomposed QCD pion correlator: the color-grade projectors of the $\Cl(6)$
+representation space split the correlator into channels of dimension
+$3,3,1,1$, and in the free Wilson--Dirac theory the corresponding fractions take
+the kinematic values $\dim(r)/8$.
+
+The present paper asks the analogous structural question in the electroweak sector.
+Embedding SU(2) in the eight-dimensional representation space, the Cartan generator
+$T_3$ has the two-valued spectrum $\{\pm\tfrac12\}$ and its spectral projectors
+$\Pew{\pm}$ split the SU(2) link correlator into two channels of equal dimension
+($4+4$).  We ask: \emph{what, if anything, is exact about this $T_3$ grade
+	decomposition?}
+
+The answer is a single, sharp identity.  For every SU(2) gauge configuration the
+two channel correlators are equal,
+\[
+G_W^{(+)}(t) = G_W^{(-)}(t),
+\]
+a per-configuration consequence of SU(2) pseudoreality.  This is the central result
+of the paper.  We also show, and emphasize as a corrective to a natural but false
+expectation, that the channel \emph{fractions} $\fEW{\pm}(t)$ equal $1/2$ only in
+the free field; in the interacting theory a nonzero cross term spoils the equality
+of the fractions even though the channel correlators themselves remain equal.
+
+The computation lies entirely in the bosonic sector, sidestepping the
+Nielsen--Ninomiya obstruction~\cite{NN1,NN2} that prevents the inclusion of chiral
+fermions.
+	
+	\begin{remark}[L/R ambiguity]
+		The generators $T_1,T_2,T_3$ embed SU(2) in the second tensor factor of the
+		8-dimensional space via $\Id{2}\otimes\sigma_{x,y,z}/2\otimes\Id{2}$.  This
+		embedding does not, by itself, select $\SU(2)_L$ over $\SU(2)_R$; distinguishing
+		the two requires external physical input (such as coupling to left-handed matter
+		fields) not provided by the algebra.  Throughout this paper, ``SU(2)'' means the
+		abstract gauge group, with no claim about chirality.
+	\end{remark}
+	
+\subsection{Prior Work and Context}
+
+SU(2) pure gauge lattice theory has a long history~\cite{K1979,BC1980,L1998}.
+In the action normalization used here (\S\ref{sec:lattice}), the SU(2)
+deconfinement transition lies near $\beta\approx 4.6$; the two couplings studied,
+$\beta\in\{4.5,6.0\}$, straddle this value, so the ensembles are not uniformly in
+the weak-coupling phase.  The novelty of the present work lies not in the SU(2)
+gauge dynamics themselves, but in the $T_3$ grade decomposition of the link
+correlator and the exact channel identity it exposes.
+
+The $\Cl(2)\cong\HH$ isomorphism identifies the quaternion algebra $\HH$ with the
+two-dimensional Clifford algebra, which provides the natural algebraic language for
+SU(2) gauge theory.  The channel projectors $\Pew{\pm}$ arise as spectral projectors
+of $T_3$, a generator with eigenspectrum $\{\pm1/2\}$ only, reflecting the symmetric
+doublet structure of SU(2).  This is distinct from the SU(3) color sector of
+Paper~2, whose projectors have unequal dimensions ($3+3+1+1$): the equal-dimension
+$T_3$ split, combined with the pseudoreality of SU(2), is what yields the exact
+per-configuration channel equality $G_W^{(+)}=G_W^{(-)}$ that constitutes the main
+result.
+	
+\subsection{Scope}
+
+The following are \textbf{explicitly out of scope}:
+
+\begin{enumerate}[leftmargin=*,label=\arabic*.]
+	\item \textbf{No Higgs sector.}  The Derivability Limit (stated in \S2.4)
+	establishes that the division-algebra structure cannot constrain the Higgs
+	potential $V(\phi)$.  The Higgs sector is the subject of a separate programme.
+	\item \textbf{No chiral fermions.}  The Nielsen--Ninomiya theorem~\cite{NN1,NN2}
+	prohibits exact chiral symmetry on the lattice with a local, hermitian, gapless
+	Dirac operator.
+	\item \textbf{No L/R distinction.}  The embedding does not select a chirality.
+	The results apply to the abstract SU(2) gauge group, with the explicit caveat
+	that L/R assignment requires external input.
+	\item \textbf{No ensemble-averaged channel observables.}  The channel
+	correlators $G_W^{(\pm)}$ and their cross term are gauge-variant; their ensemble
+	averages vanish by Elitzur's theorem in the absence of gauge fixing (\S\ref{sec:gauge}).
+	The paper's result is the \emph{per-configuration} channel identity, not a
+	statement about expectation values.
+	\item \textbf{No dynamical symmetry-breaking signal.}  No claim about
+	confinement or electroweak symmetry breaking is made.
+\end{enumerate}
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+	\section{Algebraic Framework}
+	
+	\subsection{SU(2) Generators in the 8-Dimensional Space}
+	
+	We embed SU(2) in the 8-dimensional $\Cl(6)$ representation space through the
+	generators
+	\begin{equation}
+		T_1 = \tfrac{1}{2}(\Id{2}\otimes\sigx\otimes\Id{2}),\quad
+		T_2 = \tfrac{1}{2}(\Id{2}\otimes\sigy\otimes\Id{2}),\quad
+		T_3 = \tfrac{1}{2}(\Id{2}\otimes\sigz\otimes\Id{2}),
+	\end{equation}
+	where $\sigma_{x,y,z}$ are the Pauli matrices and all generators act on the
+	\emph{second} tensor factor of the decomposition $\CC^2\otimes\CC^2\otimes\CC^2$.
+	These satisfy the SU(2) Lie algebra $\brac{T_i}{T_j}=i\varepsilon_{ijk}T_k$, and
+	the quadratic Casimir $T^2=T_1^2+T_2^2+T_3^2=\tfrac{3}{4}\Id{8}$, consistent
+	with the spin-$\tfrac{1}{2}$ representation on each of the two $\CC^2$ factors.
+	Both identities are verified at machine precision (checks A1 and A2 in
+	Table~\ref{tab:algebra}).
+	
+	The generator $T_3$ has eigenvalues
+	$\{+\tfrac{1}{2},+\tfrac{1}{2},+\tfrac{1}{2},+\tfrac{1}{2},
+	-\tfrac{1}{2},-\tfrac{1}{2},-\tfrac{1}{2},-\tfrac{1}{2}\}$,
+	each with multiplicity~4 (check~A3).  This equal-multiplicity structure is a
+	direct consequence of the SU(2) algebra: the outer
+	$\CC^2\otimes\CC^2$ factor carries no SU(2) quantum number, contributing a factor
+	of~4 to each eigenspace.
+	
+	The \textbf{link embedding} that places a $2\times2$ SU(2) link matrix into the
+	8-dimensional space is
+	\begin{equation}
+		U_\mu^{(8)}(x) = \Id{2}\otimes U_\mu(x)\otimes\Id{2},
+	\end{equation}
+	consistent with the second-tensor-factor placement of the generators.  Embedding
+	unitarity,
+	$\|\,(\Id{2}\otimes U\otimes\Id{2})(\Id{2}\otimes U\otimes\Id{2})^\dagger
+	-\Id{8}\,\|_F < 1.3\times10^{-15}$,
+	is confirmed for 20 random SU(2) matrices (check~B7).
+	
+	\subsection{Electroweak Projectors}
+	
+	The $T_3$ eigenspaces define the electroweak projectors via Lagrange interpolation:
+	\begin{equation}
+		\Pew{+} = \frac{\Id{8}+2T_3}{2}\quad(T_3=+{\tfrac{1}{2}}\ \text{eigenspace, dim}=4),
+	\end{equation}
+	\begin{equation}
+		\Pew{-} = \frac{\Id{8}-2T_3}{2}\quad(T_3=-{\tfrac{1}{2}}\ \text{eigenspace, dim}=4).
+	\end{equation}
+	Eight checks pass at machine precision (checks B1--B6, B8,
+	Table~\ref{tab:algebra}): completeness ($\Pew{+}+\Pew{-}=\Id{8}$), orthogonality
+	($\Pew{+}\Pew{-}=0$), idempotence ($(\Pew{\pm})^2=\Pew{\pm}$), hermiticity, and
+	equal trace ($\Tr\Pew{\pm}=4$).  The key structural fact ---
+	$\Tr\Pew{+}=\Tr\Pew{-}=4$ --- reflects the equal-dimension decomposition $8=4+4$.
+	This differs from the color sector of Paper~2, where the four projectors have
+	dimensions $3,3,1,1$ (an asymmetric decomposition, $8=3+3+1+1$).
+	
+	Check~B8 verifies that the EW projectors commute with the color Cartan projectors
+	of Paper~2: $[P_{\mathrm{color}}^{(r)},\Pew{s}]=0$ to machine precision,
+	confirming that the color and EW gradings are compatible decompositions of the
+	same 8-dimensional space.
+	
+	\subsection{Constraint from the \texorpdfstring{$T_3$}{T3} Eigenspectrum}
+	
+	The $T_3$ eigenspectrum $\{\pm1/2\}$ (with no zero eigenvalue) has a direct
+	physical implication: the 8-dimensional representation space contains no singlet
+	under $\SU(2)_L$.  Every state is assigned to the doublet representation.
+	Right-handed fermions (which carry $T_3=0$ in the Standard Model) cannot be
+	accommodated within this representation.  This confirms the bosonic and
+	doublet-sector restriction of the present calculation.  The projector algebra used
+	below is established by the machine-precision checks of Table~\ref{tab:algebra}.
+	
+
+	\subsection{The Derivability Limit}
+	
+	For completeness we record the proposition, established earlier in this series,
+	that bounds what the algebra can determine.
+	
+	\begin{proposition}[Derivability Limit]
+		The division-algebra structure $\RR\otimes\CC\otimes\HH\otimes\OO$ and its
+		$\Cl(6)$ representation fix the gauge group embeddings, the grade decompositions,
+		and the representation content, but do not fix the coefficients of any
+		gauge-invariant potential built from matter fields. In particular, the Higgs
+		potential $V(\phi)$ --- its mass term and self-coupling --- is not constrained by
+		the algebra and must be supplied as external physical input.
+	\end{proposition}
+	
+	\noindent
+	The Derivability Limit is the reason the Higgs sector is excluded from this paper
+	(\S1.3): the present results concern only the algebraically fixed grade structure of
+	the pure-gauge link correlator, not any quantity requiring a scalar potential.
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+	\section{Lattice Implementation}
+	\label{sec:lattice}
+	
+	\subsection{SU(2) Wilson Gauge Action}
+	
+	We simulate 4-dimensional SU(2) pure Yang--Mills theory on a hypercubic lattice
+	of linear extent $N=6$ and volume $V=N^4=1296$ with periodic boundary conditions.
+	The Wilson gauge action is
+	\begin{equation}
+		S_{\SU(2)} = \frac{\beta}{2}\sum_{x,\,\mu<\nu}
+		\left[1-\frac{1}{2}\Re\Tr P_{\mu\nu}(x)\right],
+	\end{equation}
+	where the plaquette
+	$P_{\mu\nu}(x)=U_\mu(x)\,U_\nu(x+\hat\mu)\,U_\mu^\dagger(x+\hat\nu)\,U_\nu^\dagger(x)$
+	and $U_\mu(x)\in\SU(2)$.  With the action normalization above
+	($S=\tfrac{\beta}{2}\sum_P[1-\tfrac12\Re\Tr P]$), the coupling $\beta$ is twice the
+	standard SU(2) Wilson coupling $\beta_{\mathrm{std}}=4/g^2$, so the deconfinement
+	transition at $\beta_{\mathrm{std}}\approx2.30$ corresponds to $\beta\approx4.6$ in
+	our convention.  We study $\beta\in\{4.5,6.0\}$ ($\beta_{\mathrm{std}}\in\{2.25,3.0\}$),
+	which straddle the transition: $\beta=4.5$ lies just below it (confined side) and
+	$\beta=6.0$ just above (deconfined side).  None of our results depend on the phase,
+	as will be made explicit.
+	
+	The plaquette observable is measured as
+	\begin{equation}
+		\langle P\rangle = \frac{1}{V}\cdot\frac{1}{6}\sum_{x,\mu<\nu}
+		\frac{\Re\Tr[P_{\mu\nu}(x)]}{2}
+	\end{equation}
+	and reported in Table~\ref{tab:plaquette}.
+	
+	\subsection{Even-Odd Metropolis Update}
+	
+	Link updates employ the even-odd checkerboard Metropolis algorithm established in
+	Paper~2~\S3.2.  Sites are partitioned by the parity of the coordinate sum,
+	$\mathfrak{p}(x)=(\sum_\mu x_\mu)\bmod 2\in\{0,1\}$.  Within each parity class
+	and each direction $\mu$, all links are proposed and accepted or rejected in
+	parallel.
+	
+	For each link, the Metropolis proposal is generated as
+	\begin{equation}
+		U_\mu^{\mathrm{new}}(x) = R\cdot U_\mu^{\mathrm{old}}(x),\qquad
+		R = \exp\!\bigl[i\varepsilon\,(r_1\sigx+r_2\sigy+r_3\sigz)\bigr],
+	\end{equation}
+	where $r_1,r_2,r_3\sim\mathcal{N}(0,1)$ are standard normal variates and
+	$\varepsilon$ is the step-size parameter.  The proposal is projected back to SU(2)
+	by dividing by $\sqrt{\det U_\mu^{\mathrm{new}}}$.  The action change is
+	\begin{equation}\label{eq:deltaS}
+		\Delta S = -\frac{\beta}{4}\,\Re\Tr\!\bigl[(U^{\mathrm{new}}-U^{\mathrm{old}})
+		\cdot A^\dagger_\mu(x)\bigr],
+	\end{equation}
+	where $A_\mu(x)=\sum_{\nu\neq\mu}[A^{\mathrm{upper}}_{\mu\nu}(x)
+	+A^{\mathrm{lower}}_{\mu\nu}(x)]$ is the sum of all six staples for link
+	$(x,\mu)$, with
+	\begin{align}
+		A^{\mathrm{upper}}_{\mu\nu} &= U_\nu(x+\hat\mu)\,U_\mu^\dagger(x+\hat\nu)\,
+		U_\nu^\dagger(x),\\
+		A^{\mathrm{lower}}_{\mu\nu} &= U_\nu^\dagger(x+\hat\mu-\hat\nu)\,
+		U_\mu^\dagger(x-\hat\nu)\,U_\nu(x-\hat\nu).
+	\end{align}
+	The proposal is accepted with probability $\min(1,e^{-\Delta S})$.  One full sweep
+	proceeds through both parity classes and all four directions.  Thermalization used
+	$N_{\mathrm{therm}}=500$ sweeps from a cold start (all links $=I_2$), followed by
+	production with $N_{\mathrm{decorr}}=10$ decorrelation sweeps between measurements
+	and $N_{\mathrm{cfg}}=50$ independent configurations per $\beta$.
+	
+	The step size $\varepsilon$ is auto-tuned before production to bring the
+	acceptance rate to ${\sim}50\%$; the tuned values are $\varepsilon=0.50$ at
+	$\beta=4.5$ (acceptance $0.485$) and $\varepsilon=0.35$ at $\beta=6.0$
+	(acceptance $0.527$).  The plaquette observables are stable across configurations
+	($\sigma_P\approx0.001$), indicating adequate equilibration.  The central result of
+	this paper --- the channel equality $G_W^{(+)}=G_W^{(-)}$ --- is a per-configuration
+	algebraic identity and is therefore independent of the acceptance rate or the degree
+	of thermalization.
+
+	
+	\subsection{The SU(2) Link Embedding}
+	
+	The core methodological element is the embedding of $2\times2$ SU(2) link matrices
+	into the 8-dimensional $\Cl(6)$ space.  The embedding is implemented as a
+	vectorised NumPy operation using the Kronecker product identity:
+	\begin{equation}
+		\embed_{\SU(2)}(U) = \Id{2}\otimes U\otimes\Id{2},
+	\end{equation}
+	producing an $8\times8$ unitary matrix.  The analytical reduction
+	\begin{equation}\label{eq:reduction}
+		\Tr\!\bigl[P_r\,\embed(U_t)\,P_r\,\embed(U_0)^\dagger\bigr]
+		= 4\cdot(U_t)_{rr}\cdot\overline{(U_0)_{rr}}
+	\end{equation}
+	is confirmed to machine precision for 50 random SU(2) pairs, where $r=0$ for
+	$\Pew{+}$ and $r=1$ for $\Pew{-}$.
+	
+	\subsection{Numerical Environment}
+	
+	All computations are performed in Python~3.11 with NumPy~2.2, using IEEE~754
+	double-precision arithmetic (machine epsilon
+	$\varepsilon_{\mathrm{mach}}\approx2.2\times10^{-16}$).  Vectorised Kronecker
+	products, \texttt{einsum}, and batched matrix multiplication via
+	\texttt{einsum('nij,njk->nik')} are used throughout.
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+	\section{The Grade-Decomposed Link Correlator}
+	
+	\subsection{Definition}
+	
+	The grade-decomposed link correlator is defined by analogy with the
+	grade-projected pion correlator of Paper~2~\cite{P2}, replacing the quark
+	propagator (fermion bilinear) with the gauge link as the elementary correlating
+	object.  For each gauge configuration and temporal separation~$t$, the projected
+	correlator in the $r$-th EW grade is
+	\begin{equation}
+		\GW{r}(t) = \sum_{x_{\mathrm{sp}},\,\mu}
+		\Re\Tr\!\bigl[\Pew{r}\,E_\mu(x,t)\,\Pew{r}\,E_\mu(x,0)^\dagger\bigr],
+	\end{equation}
+	where the sum runs over all spatial sites $x_{\mathrm{sp}}=(x_1,x_2,x_3)$ at
+	fixed~$t$, over all four directions~$\mu$, and
+	$E_\mu(x,t)=\Id{2}\otimes U_\mu(x,t)\otimes\Id{2}$ is the embedded link.  The
+	total (unprojected) correlator is
+	\begin{equation}
+		G_W(t) = \sum_{x_{\mathrm{sp}},\,\mu}
+		\Re\Tr\!\bigl[E_\mu(x,t)\,E_\mu(x,0)^\dagger\bigr].
+	\end{equation}
+	The grade fractions are
+	\begin{equation}
+		\fEW{r}(t) = \GW{r}(t)\,/\,G_W(t),\qquad r\in\{+,-\}.
+	\end{equation}
+	
+	\subsection{Analytical Reduction}
+	
+	A key simplification follows from the structure of the embedding and the projectors.
+	Using Eq.~(\ref{eq:reduction}), the correlators reduce to
+	\begin{align}
+		\GW{+}(t) &= 4\sum_{x_{\mathrm{sp}},\mu}
+		\Re\!\bigl[(U_\mu(x,t))_{00}\,\overline{(U_\mu(x,0))_{00}}\bigr],\\
+		\GW{-}(t) &= 4\sum_{x_{\mathrm{sp}},\mu}
+		\Re\!\bigl[(U_\mu(x,t))_{11}\,\overline{(U_\mu(x,0))_{11}}\bigr].
+	\end{align}
+	Only the $(r,r)$ diagonal element of each $2\times2$ SU(2) matrix enters; the
+	factor of~4 arises from the trace over the outer $\CC^2\otimes\CC^2$ factor.
+	
+	\subsection{The Channel Decomposition and Its Cross Term}
+	
+	The completeness relation $\Pew{+}+\Pew{-}=\Id{8}$ (check~B1) gives the exact
+	per-configuration partition
+	\begin{equation}\label{eq:partition}
+		G_W(t) = \GW{+}(t)+\GW{-}(t)+\Delta(t),
+	\end{equation}
+	where the cross term collects the off-diagonal link contributions retained in the
+	unprojected total but removed by the channel projectors,
+	\begin{equation}\label{eq:crossdef}
+		\Delta(t) = 8\sum_{x_{\mathrm{sp}},\mu}\Re\!\bigl[(U_\mu(x,t))_{01}\,
+		\overline{(U_\mu(x,0))_{01}}\bigr].
+	\end{equation}
+	In the free field every link is $I_2$, so the off-diagonal element vanishes and
+	$\Delta(t)=0$ identically; this is the special case underlying the free-field
+	theorem below.  In the interacting theory $\Delta(t)$ is generically nonzero and
+	$O(G_W)$: on our thermalized ensembles $|\Delta(t)|/G_W(t)$ reaches order unity.
+	The partition~(\ref{eq:partition}) is an algebraic identity, verified per
+	configuration (check~C6).
+	
+	\subsection{The Central Identity and the Free-Field Fractions}
+	
+	We first record the free-field value of the fractions, then state the exact
+	identity that survives in the interacting theory.
+	
+	\begin{theorem}[Free-field fractions]\label{thm:freefield}
+		In the free $\SU(2)$ gauge theory (all links $U_\mu=I_2$), the channel fractions
+		$\fEW{\pm}(t)=\GW{\pm}(t)/G_W(t)$ equal $1/2$ for both $r\in\{+,-\}$ and all
+		timeslices.
+	\end{theorem}
+	
+	\begin{proof}
+		With all links $=I_2$, $\embed(I_2)=\Id{8}$, so
+		\[
+		\GW{r}(t)
+		= \sum_{x_{\mathrm{sp}},\mu}\Tr\!\bigl[(\Pew{r})^2\bigr]
+		= \sum_{x_{\mathrm{sp}},\mu}\Tr[\Pew{r}]
+		= 4\cdot N^3\cdot 4 = 16N^3,
+		\]
+		\[
+		G_W(t) = \sum_{x_{\mathrm{sp}},\mu}\Tr[\Id{8}] = 8\cdot N^3\cdot 4 = 32N^3,
+		\]
+		giving $\fEW{r}(t)=16N^3/32N^3=1/2$ for both $r$.  This rests on $\Delta=0$ in
+		the free field; it does \emph{not} extend to the interacting theory, where
+		$\Delta\neq0$ (Theorem~\ref{thm:channel} and \S\ref{sec:gauge}).\qed
+	\end{proof}
+	
+	The central result of the paper is a different statement, which holds at all
+	couplings.
+	
+	\begin{theorem}[Per-configuration channel equality]\label{thm:channel}
+		For every $\SU(2)$ gauge configuration and every timeslice,
+		$\GW{+}(t)=\GW{-}(t)$.
+	\end{theorem}
+	
+	\begin{proof}
+		Any $U\in\SU(2)$ has diagonal elements satisfying $U_{11}=\overline{U_{00}}$;
+		writing $U_{00}=a$, we have $U_{11}=\bar a$, with $|a|^2+|U_{01}|^2=1$.  By the
+		reduction~(\ref{eq:reduction}), $\GW{+}\propto\sum\Re[a_t\bar a_0]$ and
+		$\GW{-}\propto\sum\Re[\bar a_t a_0]$.  Since $\bar a_t a_0=\overline{a_t\bar a_0}$
+		and $\Re z=\Re\bar z$, the two sums are identical term by term.  Hence
+		$\GW{+}(t)=\GW{-}(t)$ for every configuration.\qed
+	\end{proof}
+	
+	\begin{remark}[Origin: pseudoreality]
+		Theorem~\ref{thm:channel} is the lattice-correlator expression of the
+		pseudoreality of SU(2): the reality structure $\varepsilon\,\overline{U}\,
+		\varepsilon^{-1}=U$ with $\varepsilon=i\sigma_y$ exchanges the two $T_3$
+		eigen-channels, forcing their diagonal correlators to coincide.  The result is
+		therefore structural --- a property of the group, made manifest by the $T_3$
+		grading --- rather than a dynamical feature of any particular ensemble.
+	\end{remark}
+	
+	\begin{remark}[Why this does not give $\fEW{\pm}=1/2$]
+		A natural but incorrect extrapolation from Theorem~\ref{thm:freefield} would be
+		that $\fEW{\pm}=1/2$ at all couplings.  Theorem~\ref{thm:channel} gives only
+		$\GW{+}=\GW{-}$, hence $\fEW{+}=\fEW{-}$ --- the two fractions are equal to each
+		other, not to $1/2$.  Equality with $1/2$ additionally requires
+		$\GW{+}+\GW{-}=G_W$, i.e.\ $\Delta=0$, which holds only in the free field.  Since
+		$\Delta\neq0$ in the interacting theory~(\ref{eq:crossdef}), the fractions are not
+		pinned to $1/2$; this is confirmed in \S\ref{sec:results}.
+	\end{remark}
+	
+	\subsection{Gauge Dependence of the Channel Correlators}
+	\label{sec:gauge}
+	
+	The link correlator of this paper is built from two links at the same spatial point
+	and direction but different times, $E_\mu(x,t)$ and $E_\mu(x,0)$, with no connecting
+	Wilson line. Such a product is not gauge invariant: under a gauge transformation
+	$U_\mu(x)\to g(x)\,U_\mu(x)\,g(x+\hat\mu)^\dagger$, the open product
+	$U_\mu(x,t)U_\mu(x,0)^\dagger$ transforms with uncancelled factors at the endpoints.
+	Consequently $G_W(t)$, $\GW{\pm}(t)$, and $\Delta(t)$ are all gauge-variant for
+	$t\neq0$.
+	
+	By Elitzur's theorem~\cite{Elitzur1975}, the ensemble average of a gauge-non-invariant
+	local operator vanishes in the absence of gauge fixing. The expectation values
+	$\langle G_W(t)\rangle$ and $\langle\GW{\pm}(t)\rangle$ are therefore zero (up to
+	finite-ensemble noise) for $t\neq0$, and the \emph{averaged} fractions
+	$\langle\GW{\pm}\rangle/\langle G_W\rangle$ are ratios of quantities consistent with
+	zero --- numerically ill-defined, with errors that do not shrink in any controlled
+	way. We do not present ensemble-averaged channel correlators or fractions as physical
+	observables.
+	
+	This is the reason the result of this paper is stated as a \emph{per-configuration}
+	identity. Theorem~\ref{thm:channel} holds for each gauge configuration separately ---
+	it is a statement about the integrand, not the integral --- and is therefore
+	unaffected by Elitzur's theorem, gauge fixing, or thermalization. The equality
+	$\GW{+}(t)=\GW{-}(t)$ is well-posed configuration by configuration regardless of
+	whether the individual correlators have a nonzero average. A gauge-invariant
+	formulation (for example, connecting the two links by a Wilson line, or fixing to a
+	smooth gauge) would be required before any ensemble-averaged channel quantity could
+	be interpreted physically; we leave this to future work.
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+	\section{Results}
+	
+\subsection{Free-Field Verification}
+	\label{sec:results}
+	
+	Setting all links to $I_2$ gives $\GW{\pm}(t)=\Tr[\Pew{\pm}]\cdot N^3\cdot4=16N^3$
+	and $G_W(t)=32N^3$, so $\fEW{\pm}(t)=1/2$ exactly (Theorem~\ref{thm:freefield}).
+	The simulation reproduces this with maximum deviation $0.00\times10^0$ for all $t$
+	and the free-field gate checks (C1--C6) pass identically (Appendix~A).
+	
+	\subsection{Plaquette Equilibration}
+	
+	The ensembles equilibrate to stable plaquette values consistent with the standard
+	SU(2) Wilson benchmarks at the corresponding $\beta_{\mathrm{std}}=\beta/2$
+	(Table~\ref{tab:plaquette}).
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{SU(2) plaquette equilibration. $\beta$ is in the action normalization of
+			\S\ref{sec:lattice}; $\beta_{\mathrm{std}}=\beta/2$ is the standard Wilson
+			coupling.}
+		\label{tab:plaquette}
+		\begin{tabular}{cccccc}
+			\toprule
+			$\beta$ & $\beta_{\mathrm{std}}$ & $\langle P\rangle$ & $\sigma_P$ &
+			$\varepsilon$ & Mean acc.\\
+			\midrule
+			4.5 & 2.25 & 0.576243 & 0.000744 & 0.50 & 0.485\\
+			6.0 & 3.00 & 0.718868 & 0.000535 & 0.35 & 0.527\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\noindent These values match standard SU(2) results: $\langle P\rangle\approx0.576$
+	at $\beta_{\mathrm{std}}=2.25$ (just below deconfinement) and $\approx0.719$ at
+	$\beta_{\mathrm{std}}=3.0$ (deconfined), confirming correct sampling.
+	
+	\subsection{The Partition Identity and the Size of the Cross Term}
+	
+	The per-configuration partition $G_W=\GW{+}+\GW{-}+\Delta$~(\ref{eq:partition})
+	holds to machine precision on every configuration (Table~\ref{tab:completeness}).
+	In contrast to the free field, the cross term $\Delta$ is \emph{not} negligible on
+	thermalized ensembles: $|\Delta(t)|/G_W(t)$ reaches order unity, which is precisely
+	why the channel fractions are not pinned to $1/2$ (\S\ref{sec:nofraction}).
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{Per-configuration partition identity and cross-term size.}
+		\label{tab:completeness}
+		\begin{tabular}{ccc}
+			\toprule
+			$\beta$ &
+			$\max_t\bigl|G_W-\GW{+}-\GW{-}-\Delta\bigr|/|G_W|$ &
+			$\max_t|\Delta(t)|/|G_W(t)|$\\
+			\midrule
+			4.5 & $<10^{-15}$ (PASS) & 1.27\\
+			6.0 & $<10^{-15}$ (PASS) & 2.21\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\subsection{The Channel Equality --- Primary Result}
+	
+	The central result, Theorem~\ref{thm:channel}, is the per-configuration equality
+	$\GW{+}(t)=\GW{-}(t)$. On the thermalized ensembles this holds to machine precision
+	on every configuration and every timeslice (Table~\ref{tab:channel}); the maximum
+	relative difference is $0.00\times10^0$ (an exact equality of floating-point sums,
+	since the two channels are identical term by term). This confirms that the identity
+	is not an artifact of special configurations: it holds across both sampled phases.
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{Per-configuration channel equality, verified over $N_{\mathrm{cfg}}=50$
+			configurations at each coupling.}
+		\label{tab:channel}
+		\begin{tabular}{ccc}
+			\toprule
+			$\beta$ &
+			$\max_{t,\,\mathrm{cfg}}\bigl|\GW{+}(t)-\GW{-}(t)\bigr|/|\GW{+}(t)|$ & Status\\
+			\midrule
+			4.5 & 0.00e+00 & PASS\\
+			6.0 & 0.00e+00 & PASS\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\noindent We deliberately do \emph{not} tabulate ensemble-averaged fractions
+	$\langle\GW{\pm}\rangle/\langle G_W\rangle$: as established in \S\ref{sec:gauge},
+	these are gauge-variant ratios whose averages are consistent with zero and carry no
+	physical meaning.
+	
+	\subsection{Comparison with the Color Sector}
+	
+	Both the color sector (Paper~2) and the present electroweak sector admit a grade
+	decomposition of a lattice correlator into projector channels. The structural
+	distinction is in what the decomposition makes exact. The SU(3) color projectors of
+	Paper~2 have unequal dimensions ($3,3,1,1$) and there is no group-reality relation
+	forcing distinct channels to coincide; the color-grade fractions take their
+	free-field values only approximately on interacting ensembles.
+	
+	The SU(2) $T_3$ decomposition is different in kind. The two channels have equal
+	dimension ($4+4$), and SU(2) pseudoreality forces them to be \emph{exactly equal
+	per configuration}, $\GW{+}=\GW{-}$ (Theorem~\ref{thm:channel}), at all couplings.
+	This per-configuration channel equality has no SU(3) analogue --- it is a
+	consequence of the pseudoreality of the $2$ of SU(2), a property the $3$ of SU(3)
+	does not share. We stress that this is a structural identity of the decomposition,
+	not a statement about ensemble-averaged observables (\S\ref{sec:gauge}), and in
+	particular not a ``kinematic theorem'' for the channel fractions, which are pinned
+	to $1/2$ only in the free field.
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+\section{Discussion}
+	
+	\subsection{What the Identity Is, and What It Is Not}
+	\label{sec:nofraction}
+	
+	The result of this paper is the per-configuration channel equality
+	$\GW{+}(t)=\GW{-}(t)$ (Theorem~\ref{thm:channel}), an exact consequence of SU(2)
+	pseudoreality. It is worth being precise about its status, because a weaker and a
+	stronger reading are easy to confuse.
+	
+	The identity is \emph{structural}: it states that the $T_3$ grade decomposition of
+	the SU(2) link correlator splits it into two channels that the group's reality
+	structure forces to coincide. It holds for every configuration, at every coupling,
+	in either phase, with or without gauge fixing. What it does \emph{not} provide is
+	new dynamical information. The equality of the two channels is equivalent to the
+	textbook fact that the $2$ of SU(2) is pseudoreal; the Clifford-algebra framework
+	makes the split natural and the equality manifest, but does not extract a quantity
+	inaccessible to the standard formulation.
+	
+	In particular, the identity must not be read as the statement that the channel
+	fractions are pinned to $1/2$. That would require the cross term $\Delta$ to vanish,
+	which happens only in the free field (Theorem~\ref{thm:freefield}). On interacting
+	ensembles $\Delta$ is $O(G_W)$ (Table~\ref{tab:completeness}), so the fractions are
+	not $1/2$; and in any case the fractions, being built from gauge-variant correlators,
+	are not physical observables (\S\ref{sec:gauge}). The surviving, well-posed content
+	is the channel equality alone.
+	
+	\subsection{Relation to a Natural Prior Expectation}
+	
+	It is instructive to record the expectation this calculation corrects. The free-field
+	result $\fEW{\pm}=1/2$ (Theorem~\ref{thm:freefield}), together with the exact
+	per-configuration equality $\GW{+}=\GW{-}$, invites the conclusion that
+	$\fEW{\pm}=1/2$ holds at all couplings. This is false. Equality of the two channels
+	does not pin either fraction to $1/2$; only the additional condition $\Delta=0$,
+	special to the free field, does. The interacting cross term is not a small
+	correction --- it is order unity --- so the free-field fraction does not survive the
+	introduction of dynamics. The robust statement is the channel equality, not the
+	fraction value.
+	
+	\subsection{The \texorpdfstring{$\beta$}{beta} Regime}
+	
+	In the action normalization of \S\ref{sec:lattice}, the SU(2) deconfinement
+	transition ($\beta_{\mathrm{std}}\approx2.30$) sits at $\beta\approx4.6$. The two
+	couplings studied, $\beta=4.5$ and $\beta=6.0$, lie just below and just above the
+	transition respectively, and the plaquette values (Table~\ref{tab:plaquette})
+	confirm the corresponding confined and deconfined behavior. The channel equality
+	holds identically in both, as it must: being a per-configuration identity, it is
+	insensitive to the phase. No claim about confinement or symmetry breaking is made
+	or implied.
+	
+	\subsection{What Cannot Be Concluded}
+	
+	This computation does not address, and should not be interpreted as evidence for or
+	against:
+	
+	\begin{enumerate}[leftmargin=*,label=\arabic*.]
+		\item \textbf{The Higgs mechanism.}  Pure gauge theory without scalars; the
+		Derivability Limit (\S2.4) applies.
+		\item \textbf{W and Z boson masses.}  Mass extraction requires a gauge-invariant
+		correlator and a state interpretation not available here.
+		\item \textbf{Chiral structure.}  Nielsen--Ninomiya~\cite{NN1,NN2} prohibits exact
+		chiral symmetry on the lattice.
+		\item \textbf{L/R handedness.}  SU(2) pure gauge theory is vector-like; L/R
+		assignment requires coupling to left-handed matter.
+		\item \textbf{Any ensemble-averaged channel quantity.}  The averaged correlators
+		and fractions are gauge-variant and vanish by Elitzur's theorem (\S\ref{sec:gauge}).
+	\end{enumerate}
+	
+	\subsection{Outlook}
+	
+	The most natural way to give the channel decomposition dynamical content is to make
+	it gauge invariant. Two routes are available: connecting the two links by a Wilson
+	line so that $\GW{\pm}$ become gauge-invariant correlators, or fixing to a smooth
+	gauge (Landau or Coulomb) and studying the residual-gauge-invariant content. In
+	either case one could ask whether any structure beyond the pseudoreality equality
+	survives. A second direction is to embed the decomposition in the matter sector,
+	where the channels would act on fermion bilinears rather than bare links; there the
+	analogue of $\Delta$ may carry information that the pure-gauge, gauge-variant version
+	cannot. Both are left to future work.
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+	\section{Conclusions}
+	
+	This paper has studied the $T_3$ grade decomposition of the SU(2) link correlator in
+	the $\Cl(2)\cong\HH$ framework of this series, establishing the following.
+	
+	\textbf{(i) Framework definition and algebraic verification.}  The grade-decomposed
+	link correlator is defined by embedding SU(2) links into the 8-dimensional
+	representation space via $U_\mu^{(8)}=\Id{2}\otimes U_\mu\otimes\Id{2}$.  The
+	generator algebra, the $T_3$ spectrum, and the channel projectors (idempotence,
+	completeness, orthogonality, hermiticity, equal trace, embedding unitarity, and the
+	analytical reduction of the projected correlator) all pass at machine precision
+	(Table~\ref{tab:algebra}).
+	
+	\textbf{(ii) The central result: per-configuration channel equality.}  For every
+	SU(2) gauge configuration the two $T_3$ channel correlators are exactly equal,
+	$\GW{+}(t)=\GW{-}(t)$ (Theorem~\ref{thm:channel}), verified to $0.00\times10^0$ on
+	thermalized ensembles at $\beta\in\{4.5,6.0\}$ in both the confined and deconfined
+	phases.  The identity follows from the SU(2) diagonal relation
+	$U_{11}=\overline{U_{00}}$ --- the pseudoreality of the group --- and holds per
+	configuration, independent of coupling, phase, gauge fixing, or thermalization.
+	
+	\textbf{(iii) Honest scope of the result.}  The equality is a structural feature of
+	the decomposition, not new dynamical information: it is the lattice expression of
+	SU(2) pseudoreality.  The channel fractions equal $1/2$ only in the free field
+	(Theorem~\ref{thm:freefield}); in the interacting theory the cross term is order
+	unity and the fractions are not pinned to $1/2$.  Moreover the channel correlators
+	are gauge-variant, so their ensemble averages are not physical observables
+	(Elitzur's theorem, \S\ref{sec:gauge}).  The well-posed content is the
+	per-configuration channel equality alone.
+	
+	\textbf{What is not established.}  This paper does not test the Higgs mechanism,
+	W- and Z-boson masses, chiral structure, or SU(2)$_L$ vs.\ SU(2)$_R$ handedness, and
+	makes no claim about any ensemble-averaged channel quantity.  A gauge-invariant
+	formulation of the decomposition is the natural next step.
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+	\appendix
+	
+	\section{SU(2) Algebraic Verification Table}
+	
+	All checks are computed at the start of the simulation from the exact matrix
+	definitions of this paper.  Checks marked \emph{analytic} are verified by
+	algebraic argument; all others are code-verified.  Tolerances $<10^{-12}$ are
+	considered machine precision.
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{Algebraic verification checks}
+		\label{tab:algebra}
+		\begin{tabular}{clccc}
+			\toprule
+			Check & Description & Value & Method & Status\\
+			\midrule
+			A1 & $[T_i,T_j]=i\varepsilon_{ijk}T_k$ (all three) & 0.000e+00 & code & PASS\\
+			A2 & $T^2=(3/4)\Id{8}$                              & 0.000e+00 & code & PASS\\
+			A3 & $T_3$ eigenvalues $\in\{\pm1/2\}\times4$       & 0.000e+00 & code & PASS\\
+			B1 & $\Pew{+}+\Pew{-}=\Id{8}$                       & 0.000e+00 & code & PASS\\
+			B2 & $\Pew{+}\Pew{-}=0$                              & 0.000e+00 & code & PASS\\
+			B3 & $(\Pew{\pm})^2=\Pew{\pm}$                       & 0.000e+00 & code & PASS\\
+			B4 & $\Pew{\pm}$ Hermitian                           & ---       & analytic & PASS\\
+			B5 & $\dim(\Pew{\pm})=4$ each                        & 0.000e+00 & code & PASS\\
+			B6 & $\embed(I_2)=\Id{8}$                            & 0.000e+00 & code & PASS\\
+			B7 & $\|\embed(U)\embed(U)^\dagger-\Id{8}\|_F$
+			(20 random $U$)                                  & 1.26e-15  & code & PASS\\
+			B8 & $[P_{\mathrm{color}},\Pew{}]=0$                 & ---       & analytic & PASS\\
+			V9  & $\GW{+}-\GW{-}=0$ per config (max)             & 6.30e-16  & code & PASS\\
+			V10 & Eq.~(\ref{eq:reduction}) analytical reduction & 4.44e-16  & code & PASS\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\section{Simulation Parameters}
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{Simulation parameters}
+		\label{tab:simparams}
+		\begin{tabular}{lll}
+			\toprule
+			Parameter & $\beta=4.5$ & $\beta=6.0$\\
+			\midrule
+			Gauge group                                    & \multicolumn{2}{l}{SU(2)}\\
+			Spacetime dimension                            & \multicolumn{2}{l}{4}\\
+			Lattice size $N$                               & \multicolumn{2}{l}{6}\\
+			Volume $V=N^4$                                 & \multicolumn{2}{l}{1296}\\
+			$\beta_{\mathrm{std}}=\beta/2$                 & 2.25 & 3.00\\
+			Action prefactor $\Delta S$                    & \multicolumn{2}{l}{$\beta/4$ per link}\\
+			$\varepsilon$ (auto-tuned Metropolis step)     & 0.50 & 0.35\\
+			Sweep algorithm                                & \multicolumn{2}{l}{Even-odd checkerboard}\\
+			Start configuration                            & \multicolumn{2}{l}{Cold (all links $=I_2$)}\\
+			Thermalization sweeps $N_{\mathrm{therm}}$     & \multicolumn{2}{l}{500}\\
+			Decorrelation sweeps $N_{\mathrm{decorr}}$     & \multicolumn{2}{l}{10}\\
+			Configurations per $\beta$                     & \multicolumn{2}{l}{50}\\
+			Acceptance rate                                & 48.5\% & 52.7\%\\
+			$\langle P\rangle$                             & $0.5762\pm0.0007$ & $0.7189\pm0.0005$\\
+			Statistical errors                             & \multicolumn{2}{l}{Jackknife ($N=50$)}\\
+			Language / library                             & \multicolumn{2}{l}{Python~3.11 / NumPy~2.2.5}\\
+			Arithmetic                                     & \multicolumn{2}{l}{IEEE~754 double precision}\\
+			$\varepsilon_{\mathrm{mach}}$                  & \multicolumn{2}{l}{$\approx2.2\times10^{-16}$}\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	% ══════════════════════════════════════════════════════════════════════════════
+	\begin{thebibliography}{99}
+		
+		\bibitem{P1}
+		[Author~et~al.], ``The Division Algebra Framework for the Standard Model:
+		$\RR\otimes\CC\otimes\HH\otimes\OO$ and $\Cl(6)$,''
+		\textit{Adv.\ Appl.\ Clifford Algebras}, [year].
+		(Paper~1 of this series)
+		
+		\bibitem{P2}
+		[Author~et~al.], ``Grade Decomposition of the Lattice QCD Pion Correlator
+		in the $\Cl(6)$ Framework,''
+		\textit{Adv.\ Appl.\ Clifford Algebras}, [year].
+		(Paper~2 of this series)
+		
+		\bibitem{P3}
+		[Author~et~al.], ``SU(2)$_L$, the Higgs Doublet, and Electroweak Symmetry
+		Breaking in $\RR\otimes\CC\otimes\HH\otimes\OO$,''
+		\textit{Adv.\ Appl.\ Clifford Algebras}, [year].
+		(Paper~3 of this series)
+		
+		\bibitem{PS1974}
+		J.\,C.~Pati and A.~Salam,
+		``Lepton Number as the Fourth Color,''
+		\textit{Phys.\ Rev.\ D} \textbf{10} (1974) 275--289.
+		
+		\bibitem{S1981}
+		R.~Slansky,
+		``Group Theory for Unified Model Building,''
+		\textit{Phys.\ Rep.} \textbf{79} (1981) 1--128.
+		
+		\bibitem{NN1}
+		H.\,B.~Nielsen and M.~Ninomiya,
+		``Absence of Neutrinos on a Lattice: (I).\ Proof by Homotopy Theory,''
+		\textit{Nucl.\ Phys.\ B} \textbf{185} (1981) 20--40.
+		
+		\bibitem{NN2}
+		H.\,B.~Nielsen and M.~Ninomiya,
+		``Absence of Neutrinos on a Lattice: (II).\ Intuitive Topological Proof,''
+		\textit{Nucl.\ Phys.\ B} \textbf{193} (1981) 173--194.
+		
+		\bibitem{L1998}
+		M.~L\"uscher,
+		``Advanced Lattice QCD,''
+		\textit{Les Houches Lectures}, 1998, hep-lat/9802029.
+		
+		\bibitem{K1979}
+		J.~Kogut, R.\,B.~Pearson, and J.~Shigemitsu,
+		``The Quark-Confining String and the World Sheet,''
+		\textit{Phys.\ Rev.\ Lett.} \textbf{43} (1979) 484--486.
+		
+		\bibitem{BC1980}
+		G.~Bhanot and M.~Creutz,
+		``Variant Actions and Phase Structure in Lattice Gauge Theory,''
+		\textit{Phys.\ Rev.\ D} \textbf{24} (1981) 3212--3217.
+		
+		\bibitem{Elitzur1975}
+		S.~Elitzur,
+		``Impossibility of spontaneously breaking local symmetries,''
+		\textit{Phys.\ Rev.\ D} \textbf{12} (1975) 3978--3982.
+		
+	\end{thebibliography}
+	
+\end{document}

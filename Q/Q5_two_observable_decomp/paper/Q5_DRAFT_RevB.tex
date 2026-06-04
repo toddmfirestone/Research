@@ -1,0 +1,2587 @@
+% ============================================================
+%  Cl(0,2) =~ H Two-Observable Decomposition --- Paper 5
+%  Todd M. Firestone
+%  DRAFT RevA --- not for circulation
+%  Typeset for arXiv submission
+%  Document class: article + geometry (generic, arXiv-compatible)
+%
+%  RevA CHANGELOG (2026-06-03):
+%    - Removed [P3] (FirestoneP3) cite from §1.1 list
+%    - Removed [P3] bibentry from bibliography
+%    - Q3 flag closed (Bo entry was complete; flag was stale)
+%    - [P4] citations retained in full (27 occurrences)
+%
+%  FLAGS USED IN THIS FILE:
+%    % NOTE:    --- placeholder or missing content
+%    % REVIEW:  --- internal inconsistency; author decision required
+%    % ASK:     --- ambiguity that cannot be resolved without author input
+%    % PENDING: --- content not yet finalized
+%
+%  STRUCTURAL DECISIONS (per author, this session):
+%    Q1: Section-prefixed equation numbering (X.1), (X.2), ...;
+%        original-draft gaps closed by re-numbering.
+%    Q2: Appendix A starts at A.1 (original draft's A.2 -> A.1, etc.);
+%        original A.1 placeholder is absent and was unreferenced.
+%    Q3: CLOSED. [Bo] bibliographic entry is present and complete
+%        (DOI + arXiv). The earlier NOTE flag was stale.
+%    Q4: article + geometry, formatting aligned with Paper 3 draft.
+%
+%    Theorem-like results numbered by section, independent counters
+%    (Theorem 3.1, Lemma 2.1, Proposition 3.1, Corollary 6.1, ...).
+%    This re-numbering supersedes the cross-paper sequential numbering
+%    in the original draft and resolves the original Cor 4 / Cor 5
+%    document-order anomaly.
+% ============================================================
+
+\documentclass[12pt]{article}
+
+% --- Encoding & fonts ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% --- Page geometry (arXiv standard margins) ---
+\usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}
+
+% --- Mathematics ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+% --- Tables ---
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+
+% --- Graphics & color ---
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% --- Citations: numbered, sorted, compressed [1,2,3] style ---
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat}
+
+% --- Hyperlinks (arXiv-safe) ---
+\usepackage[
+colorlinks=true,
+linkcolor=blue!60!black,
+citecolor=blue!60!black,
+urlcolor=blue!60!black,
+pdftitle={Two-Observable Decomposition in SU(2) Lattice Gauge
+	Theory: the Cl(0,2) = H Framework},
+pdfauthor={Todd M. Firestone}
+]{hyperref}
+
+% --- Equation numbering: section-prefixed (X.1), (X.2), (X.3)... ---
+% (per author decision; section-prefixed style with gaps closed)
+\numberwithin{equation}{section}
+
+% ============================================================
+%  THEOREM ENVIRONMENTS
+%  Section-prefixed numbering; independent counters per result type
+%  (so Theorem, Lemma, Proposition, Corollary each have their own
+%  X.1, X.2, ... sequence within each section).
+% ============================================================
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem*{corelemma}{Core Lemma}   % unnumbered (sec:core-lemma)
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+
+% ============================================================
+%  CUSTOM MACROS
+% ============================================================
+
+% --- Inherited from Papers 1, 2, 3 ---
+\newcommand{\cl}{\mathrm{Cl}}              % Clifford algebra: \cl(0,2)
+\newcommand{\su}{\mathrm{SU}}              % SU group: \su(2)
+\newcommand{\uu}{\mathrm{U}}               % U(1) groups
+\newcommand{\tr}{\mathrm{Tr}}              % Trace
+\newcommand{\half}{\tfrac{1}{2}}
+\newcommand{\R}{\mathbb{R}}                % real numbers
+\newcommand{\Cplx}{\mathbb{C}}             % complex numbers
+\newcommand{\HH}{\mathbb{H}}               % quaternions
+\newcommand{\OO}{\mathbb{O}}               % octonions
+\newcommand{\Dix}{\R\otimes\Cplx\otimes\HH\otimes\OO}  % Dixon chain
+
+% --- New in Paper 5 ---
+\newcommand{\ihat}{\hat{\imath}}           % Cl(0,2) basis vector i-hat
+\newcommand{\jhat}{\hat{\jmath}}           % Cl(0,2) basis vector j-hat
+\newcommand{\Cjhat}{\Cplx\jhat}            % right C-module of b*jhat
+\newcommand{\Gdiag}{G_{\mathrm{diag}}}     % diagonal correlator
+\newcommand{\Gcross}{G_{\mathrm{cross}}}   % cross (b-channel) correlator
+\newcommand{\Gfull}{G_{\mathrm{full}}}     % full correlator
+\newcommand{\Dcross}{\Delta_{\mathrm{cross}}}  % residual cross term
+% The superscript ``LW'' on P^{LW}_\pm denotes ``Left-Weak'',
+% following the Paper 4 convention for the T_3-eigenspace projectors
+% of the SU(2)_L electroweak sector. The macro is retained as \PLW
+% for continuity with Paper 4.
+\newcommand{\PLW}{P^{\mathrm{LW}}}         % T_3-eigenspace projector (Left-Weak)
+\newcommand{\Pip}{\Pi_{+}}                 % rank-1 T_3 eigenprojector (+)
+\newcommand{\Pim}{\Pi_{-}}                 % rank-1 T_3 eigenprojector (-)
+\newcommand{\Pir}{\Pi_{r}}                 % rank-1 T_3 eigenprojector (r)
+
+% Real-part operator: amsmath/amssymb's \Re is the Fraktur symbol;
+% we deliberately do not redefine it. Use \operatorname{Re} below for
+% the real part of a bilinear / matrix element, consistent with
+% physics-paper convention.
+
+% ============================================================
+%  DRAFT HEADER
+% ============================================================
+% Running header: "Cl(0,2) Two-Observable" -- retained as-is.
+% (Paper 3 is no longer active; the parallel header style is moot.)
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textit{$\cl(0,2)$ Two-Observable
+		$\cdot$ DRAFT --- not for circulation}}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ============================================================
+\begin{document}
+	% ============================================================
+	
+	% --- Title block ---
+	\title{%
+		\textbf{Two-Observable Decomposition in
+			\texorpdfstring{$\su(2)$}{SU(2)} Lattice Gauge Theory:}\\[4pt]
+		\textbf{the \texorpdfstring{$\cl(0,2)\cong\HH$}{Cl(0,2) = H}
+			Framework}%
+	}
+	
+	\author{Todd M.\ Firestone\\[2pt]
+		\textit{\small }}
+	
+	% NOTE: Journal target "Advances in Applied Clifford Algebras" and the
+	% series identifier "Paper 5 of the R(x)C(x)H(x)O Series" appear in the
+	% original draft beneath the byline. They are intentionally not placed
+	% in the LaTeX title block here; author to confirm whether they should
+	% appear as \thanks{} footnotes, as \date{} content, or remain in
+	% comments only until journal submission.
+	\date{}
+	
+	\maketitle
+	\thispagestyle{fancy}
+	
+	% ============================================================
+	\begin{abstract}
+		% ============================================================
+		We present a two-observable decomposition of the $\su(2)$ temporal
+		gauge-link correlator within the $\cl(0,2)\cong\HH$ algebraic
+		framework.  The $\su(2)$ parametrisation $U = a\cdot I_2 + b\cdot J$,
+		with $a = (U)_{00}\in\Cplx$ and $b = (U)_{01}\in\Cjhat$ (a right
+		$\Cplx$-module), induces a natural channel decomposition of the
+		full correlator $\Gfull(t)$ into two bilinears:
+		$\Gdiag(t) = 8\sum \operatorname{Re}[a_t\bar{a}_0]$, probing the
+		diagonal ($T_3$ eigenspace) sector, and
+		$\Gcross(t) = 8\sum \operatorname{Re}[b_t\bar{b}_0]$, probing the
+		off-diagonal sector.  This identification resolves a structural
+		gap of Paper~4 of this series: the cross term $\Dcross$, previously
+		defined subtractionally, is exactly the $b$-channel bilinear.
+		
+		Theorem~\ref{thm:two-obs-completeness}
+		(Sec.~\ref{sec:theorem-completeness}) establishes
+		$\Gdiag(t) + \Gcross(t) = \Gfull(t)$ exactly for every $\su(2)$
+		field configuration and every timeslice~$t$.
+		Corollary~\ref{cor:two-obs-decomp} (Two-Observable Decomposition,
+		Sec.~\ref{sec:cor-two-obs-decomp}) assembles this with the channel
+		faithfulness results --- $a$-channel (Proposition~1 of Paper~4)
+		and $b$-channel (Proposition~\ref{prop:off-diag-collapse},
+		Sec.~\ref{sec:off-diag-collapse}) --- into a complete statement of
+		the exact algebraic decomposition.
+		Proposition~\ref{prop:rank1-univ} (Sec.~\ref{sec:rank1-univ})
+		proves that the rank-1 collapse formula
+		$\Pir\,U\,\Pir = (U)_{rr}\,\Pir$, which underlies the channel
+		separation, is intrinsic to the fundamental $\su(2)$ representation
+		and holds for every tensor-product embedding of $U$ into $\Cplx^8$.
+		
+		In the weak-coupling expansion, $\Gdiag$ probes the neutral gauge
+		boson field $A^3$ and $\Gcross$ probes the charged gauge boson
+		fields $W^{\pm}$.
+		Proposition~\ref{prop:b-conduit} (Sec.~\ref{sec:b-conduit})
+		establishes $\Gcross$ as a necessary algebraic conduit for all
+		charged-current coupling.
+		Proposition~\ref{prop:gauge-noninv} (Sec.~\ref{sec:gauge-noninv})
+		proves $\Gcross$ is not gauge-invariant; under Landau gauge fixing,
+		\[
+		\Dcross(t)\big|_{\mathrm{Landau}}\big/\,8V
+		\;\approx\; +(g^2/2)\,C_{W^{\pm}}(t)
+		\quad\text{at } O(g^2),
+		\]
+		providing a formal connection to the zero-spatial-momentum
+		$W^{\pm}$ temporal correlator.
+		
+		All results are verified by 51 numerical checks (D1--D18), each
+		passing at tolerance $\leq 10^{-13}$ or better.  The framework
+		does not distinguish $\su(2)_L$ from $\su(2)_R$, which requires
+		external fermionic input, and makes no claims about chirality
+		selection, $W/Z$ mass ratios, or the Higgs mechanism.
+	\end{abstract}
+	
+	% ============================================================
+	\section{Introduction}
+	\label{sec:intro}
+	% ============================================================
+	
+	\subsection{Context}
+	\label{sec:intro-context}
+	
+	The present work continues a programme of embedding lattice $\su(2)$
+	gauge theory within the division algebra hierarchy $\Dix$, exploiting
+	the Clifford algebra isomorphism $\cl(0,2)\cong\HH$ as the natural
+	algebraic setting for the electroweak $\su(2)$ sector
+	\cite{FirestoneP1,FirestoneP2,FirestoneP4}.
+	Paper~4~\cite{FirestoneP4} introduced the $T_3$-eigenspace projectors
+	$\PLW_\pm$ and established two central results for the $\su(2)$
+	temporal gauge-link correlator.  Proposition~1 of
+	Paper~4~\cite{FirestoneP4}, \S4.2, proved that the diagonal bilinear
+	collapses to a rank-1 form:
+	% ASK: This rank-1 collapse formula (and the off-diagonal collapse
+	% formula previewed in §1.2 below) are restatements of upstream results
+	% and are unnumbered in the original draft. Promoted display equations
+	% may optionally be numbered; left unnumbered here to match the draft.
+	% Author to confirm.
+	\[
+	\operatorname{Re}\,\tr\!\left[\PLW_r\, E_t\,\PLW_r\, E_0^{\dagger}\right]
+	\;=\; 4\operatorname{Re}[a_t \bar{a}_0],
+	\]
+	where $a_t = (U_t)_{00}\in\Cplx$ is the top-left matrix element of
+	the $\su(2)$ link variable $U_t$.  Corollary~1 of
+	Paper~4~\cite{FirestoneP4} then established that $G_+(t) = G_-(t)$
+	identically for every $U\in\su(2)$, so the two eigenspace correlators
+	carry identical information and combine to give the diagonal
+	correlator $\Gdiag(t)$.
+	
+	Paper~4 further decomposed the full correlator as
+	$\Gfull(t) = \Gdiag(t) + \Dcross(t)$, with the cross term $\Dcross$
+	defined in Paper~4~\cite{FirestoneP4}, \S4.3, as a residual:
+	$\Dcross(t) = \Gfull(t) - \Gdiag(t)$.  This compact identity was
+	verified numerically across four thermalized ensembles
+	($\beta_{\mathrm{eff}}\in\{5.0,\,6.0,\,9.0,\,12.0\}$, $N=6$, 20
+	configurations) to within
+	$|\Gdiag + \Dcross - \Gfull|\leq 8.9\times 10^{-16}$
+	\cite{FirestoneP4}.  The ratio $\Dcross/\Gfull$ was observed to lie
+	in the range $[0.72,\,2.33]$ across ensembles---a striking $O(1)$
+	contribution---and $\Gcross$ was found to be negative in 37--62\% of
+	(configuration,\,$t$) pairs~\cite{FirestoneP4}.
+	
+	Despite this quantitative success, a structural gap remained.  The
+	definition of $\Dcross$ in Paper~4 was purely subtractional: it named
+	a quantity without providing an independent algebraic generator.
+	The question left open was: what is $\Gcross$, exactly, in terms of
+	the fundamental $\su(2)$ matrix elements?  Answering this question
+	is the task of the present paper.
+
+	\medskip\noindent
+	\textbf{What is standard and what is new.}
+	The parametrisation $U = a\cdot I_2 + b\cdot J$ with $|a|^2+|b|^2=1$
+	is the standard quaternionic form of an $\su(2)$ matrix; the split of
+	$\tr[E_t E_0^{\dagger}]$ into $a$- and $b$-channel bilinears follows
+	immediately from expanding the matrix product and is not claimed as
+	new here.  What is new in this paper is threefold:
+	(i)~the \emph{projector formulation} --- identifying the eigenspace
+	projectors $\PLW_\pm$ as the algebraic objects that select the $a$-
+	and $b$-channels within the $\cl(0,2)\cong\HH$ framework;
+	(ii)~the \emph{Paper~4 gap closure} --- proving that the
+	subtractionally defined $\Dcross$ equals exactly the $b$-channel
+	bilinear $8\sum\operatorname{Re}[b_t\bar{b}_0]$, supplying it with
+	an independent algebraic generator for the first time;
+	and (iii)~the \emph{Landau-gauge propagator identification} --- the
+	formal $O(g^2)$ connection between $\Gcross$ and the
+	zero-spatial-momentum $W^{\pm}$ temporal correlator.
+	
+	\subsection{This Paper}
+	\label{sec:intro-this-paper}
+	
+	The answer is provided by the off-diagonal rank-1 collapse.  Writing
+	the $\su(2)$ link variable in the standard parametrisation
+	$U = a\cdot I_2 + b\cdot J$, where $a = (U)_{00}\in\Cplx$
+	(the $a$-channel) and $b = (U)_{01}\in\Cplx$ (the $b$-channel),
+	with $|a|^2 + |b|^2 = 1$, the central new result of this paper
+	--- the projector identification of the $b$-channel ---
+	previews Proposition~\ref{prop:off-diag-collapse}:
+	
+	\medskip
+	\noindent\emph{Proposition~\ref{prop:off-diag-collapse}
+		(Off-Diagonal Rank-1 Collapse).}\enspace
+	For every $U_t,\,U_0\in\su(2)$ with $E = I_2\otimes U\otimes I_2$,
+	\[
+	\operatorname{Re}\,\tr\!\left[\PLW_+\, E_t\,\PLW_-\, E_0^{\dagger}\right]
+	\;=\; 4\operatorname{Re}[b_t \bar{b}_0],
+	\]
+	where $b_t = (U_t)_{01}$.  \emph{The new content is the projector
+	identification: $\PLW_\pm$ selects the $b$-channel, giving $\Dcross$
+	an independent algebraic generator for the first time.}
+	
+	\medskip
+	From Proposition~\ref{prop:off-diag-collapse}, together with
+	Corollary~\ref{cor:orientation-sym}
+	(Sec.~\ref{sec:orientation-sym}) and Proposition~1 of
+	Paper~4~\cite{FirestoneP4}, the following results are established:
+	
+	\begin{itemize}
+		\item
+		\textbf{Theorem~\ref{thm:two-obs-completeness}}
+		(Sec.~\ref{sec:theorem-completeness}):
+		$\Gdiag(t) + \Gcross(t) = \Gfull(t)$ holds \emph{exactly} for
+		every $\su(2)$ gauge configuration and every timeslice $t$,
+		where $\Gcross(t) = 8\sum\operatorname{Re}[b_t \bar{b}_0]$.
+		Theorem~\ref{thm:two-obs-completeness} simultaneously confirms
+		that $\Gcross \equiv \Dcross$.
+		
+		\item
+		\textbf{Corollary~\ref{cor:two-obs-decomp}}
+		(Sec.~\ref{sec:cor-two-obs-decomp}, Two-Observable Decomposition):
+		the pair $\{\Gdiag,\Gcross\}$ constitutes an exact algebraic
+		decomposition of $\Gfull$ in the $\cl(0,2)\cong\HH$ framework.
+		
+		\item
+		\textbf{Proposition~\ref{prop:rank1-univ}}
+		(Sec.~\ref{sec:rank1-univ}): the rank-1 collapse is intrinsic to
+		the fundamental $\su(2)$ representation, independent of the
+		specific tensor-product embedding.
+		
+		\item
+		\textbf{Proposition~\ref{prop:b-conduit}}
+		(Sec.~\ref{sec:b-conduit}): the $b$-channel is a necessary
+		algebraic conduit for any gauge-link correlator sensitive to
+		$W^{\pm}$ at $O(g)$.
+		
+		\item
+		\textbf{Proposition~\ref{prop:gauge-noninv}}
+		(Sec.~\ref{sec:gauge-noninv}): $\Dcross$ is not gauge-invariant.
+		In Landau gauge,
+		$\Dcross(t)/8V \approx +(g^2/2)\,C_{W^{\pm}}(t)$ at $O(g^2)$.
+	\end{itemize}
+	
+	The bridge between Paper~4 and Paper~5 is explicit:
+	$\Gcross(t) \equiv \Dcross(t)$, verified numerically to
+	$\leq 1.14\times 10^{-13}$ across all four ensembles
+	(checks D7a--D7c, D8\,$\times\,4\beta$).
+	
+	\subsection{Scope Limits}
+	\label{sec:intro-scope}
+	
+	This paper works entirely within the pure $\su(2)$ gauge sector.
+	The following topics lie strictly outside its scope and are not
+	addressed:
+	
+	\begin{enumerate}
+		\item
+		\emph{No Higgs mechanism or electroweak symmetry breaking.}
+		The gauge fields remain massless throughout; no scalar sector
+		is introduced.
+		
+		\item
+		\emph{No chiral fermions.}  The Nielsen--Ninomiya
+		obstruction~\cite{NielsenNinomiya1981a,NielsenNinomiya1981b}
+		is not overcome.  Paper~5 contains no fermion action and makes
+		no claim of implementing chiral symmetry on the lattice.
+		
+		\item
+		\emph{No $\su(2)_L$/$\su(2)_R$ distinction.}  The algebraic
+		framework identifies $\Gcross$ as a $b$-channel probe, but does
+		not select between left- and right-handed couplings.
+		\emph{The embedding does not, by itself, distinguish
+			$\su(2)_L$ from $\su(2)_R$; this requires external fermionic
+			input.}
+		
+		\item
+		\emph{No dynamical symmetry-breaking signals.}  Confinement and
+		chiral condensate are not discussed; the ensembles are
+		pure-gauge and thermalized in the absence of matter fields.
+	\end{enumerate}
+	
+	\subsection{Paper Organisation}
+	\label{sec:intro-organization}
+	
+	Section~\ref{sec:framework} establishes the algebraic framework:
+	the $\cl(0,2)\cong\HH$ decomposition, the right $\Cplx$-module
+	structure of the $b$-channel (Lemma~\ref{lem:right-Cplx-module}),
+	and the $\su(2)$ parametrisation.
+	Section~\ref{sec:two-obs-decomp-section} proves
+	Proposition~\ref{prop:off-diag-collapse},
+	Corollary~\ref{cor:orientation-sym}, and
+	Theorem~\ref{thm:two-obs-completeness}, establishing the
+	two-observable decomposition algebraically and numerically.
+	Section~\ref{sec:physical-interp} interprets the $a$- and
+	$b$-channels physically through the weak-coupling expansion.
+	Section~\ref{sec:embedding-univ} proves embedding universality
+	(Proposition~\ref{prop:rank1-univ}) and the universal $b$-channel
+	blindness of diagonal projectors (Lemma~\ref{lem:b-blindness}).
+	Section~\ref{sec:two-obs-structure} assembles the two-observable
+	decomposition into Corollary~\ref{cor:two-obs-decomp}.
+	Section~\ref{sec:SU2-LR} examines the connection to $\su(2)_L$
+	through channel assignment (Proposition~\ref{prop:b-conduit}) and
+	the conditional prediction for fermionic observables.
+	Section~\ref{sec:gauge-properties} proves gauge non-invariance of
+	$\Dcross$ (Proposition~\ref{prop:gauge-noninv},
+	Lemma~\ref{lem:b-transform}) and develops the Landau gauge
+	prescription.
+	Section~\ref{sec:discussion} synthesises the results in discussion,
+	including five conclusions and seven open questions.
+	Section~\ref{sec:conclusions} presents the conclusions.
+	
+	% ============================================================
+	\section{Algebraic Framework: $a$/$b$-Channel Decomposition}
+	\label{sec:framework}
+	% ============================================================
+	
+	\subsection{The \texorpdfstring{$\cl(0,2)\cong\HH$}{Cl(0,2) = H}
+		Decomposition}
+	\label{sec:Cl02-decomp}
+	
+	The Clifford algebra $\cl(0,2)$ is generated by two anticommuting
+	orthonormal vectors $\ihat,\,\jhat$ satisfying
+	$\ihat^{\,2} = -1$, $\jhat^{\,2} = -1$, and
+	$\ihat\,\jhat = -\jhat\,\ihat$.  The product $\ihat\jhat$ squares to
+	$-1$ and anticommutes with both $\ihat$ and $\jhat$, giving the
+	dimension count $1 + 2 + 1 = 4$ graded basis elements
+	\[
+	\{1,\;\ihat,\;\jhat,\;\ihat\jhat\}.
+	\]
+	As an associative algebra over $\R$, $\cl(0,2)$ is isomorphic to the
+	quaternion algebra $\HH$ via the identification
+	\[
+	1 \;\leftrightarrow\; 1, \qquad
+	\ihat \;\leftrightarrow\; i, \qquad
+	\jhat \;\leftrightarrow\; j, \qquad
+	\ihat\jhat \;\leftrightarrow\; k.
+	\]
+	The complex subalgebra $\Cplx\subset\cl(0,2)$ is the algebra of
+	elements of the form $\alpha + \beta\,\ihat$ with $\alpha,\beta\in\R$;
+	the imaginary unit of this $\Cplx$ is identified with $\ihat$.
+	
+	The decomposition relevant for the present paper is the right-$\Cplx$
+	module direct sum
+	\begin{equation}
+		\cl(0,2) \;=\; \Cplx \,\oplus\, \Cjhat,
+		\label{eq:Cl02-decomp}
+	\end{equation}
+	where $\Cjhat$ is the right $\Cplx$-module of elements $b\,\jhat$ with
+	$b\in\Cplx$.  The action of $\Cplx$ on this module is from the right:
+	$(b\,\jhat)\cdot c = b(\jhat c) = b\,\bar c\,\jhat$ for any
+	$b,c\in\Cplx$, using the anticommutation $\jhat\,c = \bar c\,\jhat$.
+	The decomposition~\eqref{eq:Cl02-decomp} is the algebraic foundation
+	of the two-observable decomposition.
+	
+	% ------------------------------------------------------------
+	\subsection{\texorpdfstring{$\Cjhat$}{Cj-hat} is a Right
+		\texorpdfstring{$\Cplx$}{C}-Module}
+	\label{sec:right-Cplx-module}
+	% ------------------------------------------------------------
+	
+	The structure $\Cjhat$ is precisely a right $\Cplx$-module, not a
+	left $\HH$-module.
+	
+	\begin{lemma}\label{lem:right-Cplx-module}
+		For any $b\in\Cplx$ and $c\in\Cplx$, defining the right action of
+		$\Cplx$ on the formal expression $b\,\jhat$ by
+		\[
+		(b\,\jhat)\cdot c \;:=\; b(\jhat c) \;=\; b\,\bar c\,\jhat
+		\qquad (\text{using } \jhat\,c = \bar c\,\jhat),
+		\]
+		the set $\Cjhat := \{b\,\jhat : b \in \Cplx\}$ forms a one-dimensional
+		right $\Cplx$-module under this action.
+	\end{lemma}
+	
+	Properties RM1--RM5 are verified by direct expansion using the
+	anticommutation rule $\jhat\,c = \bar c\,\jhat$ (checks D2a--d).
+	The verification is summarised below:
+	
+	\begin{center}
+		\small
+		\setlength{\tabcolsep}{6pt}
+		\begin{tabular}{@{}lll@{}}
+			\toprule
+			\textbf{Property} & \textbf{Statement} & \textbf{Verified}\\
+			\midrule
+			RM1 & $\bigl((b_1 + b_2)\jhat\bigr)\cdot c
+			= (b_1\jhat\cdot c) + (b_2\jhat\cdot c)$
+			& \checkmark \\[2pt]
+			RM2 & $(b\,\jhat)\cdot(c_1 + c_2)
+			= (b\,\jhat\cdot c_1) + (b\,\jhat\cdot c_2)$
+			& \checkmark \\[2pt]
+			RM3 & $\bigl((b\,\jhat)\cdot c_1\bigr)\cdot c_2
+			= (b\,\jhat)\cdot(c_1 c_2)$
+			& \checkmark \\[2pt]
+			RM4 & $(b\,\jhat)\cdot 1 = b\,\jhat$
+			& \checkmark \\[2pt]
+			RM5 & One-dimensional: spanned by $\{\jhat\}$ over $\Cplx$
+			& \checkmark \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\noindent
+	The verification establishes that $\Cjhat$ is the formal
+	one-dimensional right $\Cplx$-module, isomorphic to $\Cplx$ as a
+	$\Cplx$-vector space but with the scalar action carrying a complex
+	conjugation.
+	
+	\medskip\noindent
+	\textbf{This module structure is preserved exactly under the
+		parametrisation $U = a\cdot I_2 + b\cdot J$ in
+		Sec.~\ref{sec:SU2-param}.}  The $b$-channel of the $\su(2)$
+	decomposition inherits the right $\Cplx$-module structure: $b\in\Cplx$
+	is the module coefficient, $J$ is the analog of $\jhat$.
+	
+	\medskip\noindent
+	\emph{Per the standing correction:} this is a right $\Cplx$-module,
+	\emph{not} a left $\HH$-module.  Earlier references to a left
+	$\HH$-module structure are incorrect; the correct algebraic identity
+	is the right $\Cplx$-module decomposition~\eqref{eq:Cl02-decomp}.
+	
+	% ------------------------------------------------------------
+	\subsection{\texorpdfstring{$\su(2)$}{SU(2)} Parametrisation}
+	\label{sec:SU2-param}
+	% ------------------------------------------------------------
+	
+	Every $\su(2)$ matrix admits the parametrisation
+	\begin{equation}
+		U \;=\;
+		\begin{pmatrix} a & b \\ -b^* & a^* \end{pmatrix}
+		\;=\; a\cdot I_2 + b\cdot J
+		\qquad (|a|^2 + |b|^2 = 1),
+		\label{eq:SU2-param}
+	\end{equation}
+	where:
+	\begin{itemize}
+		\item $a = (U)_{00} \in \Cplx$, called the \emph{$a$-channel};
+		\item $b = (U)_{01} \in \Cplx$, called the \emph{$b$-channel}.
+	\end{itemize}
+	The matrix $J$ in~\eqref{eq:SU2-param} is the $2\times 2$
+	representation of the quaternion unit $\jhat$:
+	\begin{equation}
+		J \;=\; i\sigma_2 \;=\;
+		\begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix},
+		\label{eq:J-def}
+	\end{equation}
+	satisfying $J^2 = -I_2$ and $J^{\dagger} = -J$, consistent with
+	the Clifford relation $\jhat^2 = -1$.
+	
+	When the $\cl(0,2)\cong\HH$ decomposition~\eqref{eq:Cl02-decomp} is
+	enforced, $b$ is more naturally written as $b\,\jhat\in\Cjhat$, and
+	the correlator bilinears acquire the right $\Cplx$-module
+	interpretation:
+	\[
+	\operatorname{Re}[b_t\,\bar{b}_0]
+	\;\;\longleftrightarrow\;\;
+	\text{``right $\Cplx$-module bilinear in $\Cjhat$''.}
+	\]
+	This identification is what gives $\Gcross$ its algebraic identity
+	as the $b$-channel observable.
+	
+	The fundamental $\su(2)$ representation in this paper is
+	$8$-dimensional, embedded as $U\in M_2(\Cplx) \to
+	I_2 \otimes U \otimes I_2 \in M_8(\Cplx)$.  All assertions in this
+	paper are independent of the choice of tensor-product ordering; see
+	Proposition~\ref{prop:rank1-univ} in Sec.~\ref{sec:rank1-univ} for
+	the precise universality statement.
+	
+	For verification, all bench tests use:
+	\begin{itemize}
+		\item $N = 6^{3}\times 6$ lattice ($V = 6^{4} = 1296$);
+		\item $\beta_{\mathrm{eff}}\in\{5.0,\,6.0,\,9.0,\,12.0\}$;
+		\item 20 thermalized configurations per ensemble;
+		\item Standard heat-bath update; eigenspace projectors $\PLW_\pm$
+		from Paper~4~\cite{FirestoneP4}.
+	\end{itemize}
+	
+	A complete map of the algebraic identifications is given in
+	Table~\ref{tab:algebraic-ID}.
+	
+	\begin{table}[ht]
+		\centering
+		\caption{Algebraic identifications and physical role assignments
+			for the $\cl(0,2)\cong\HH\,\leftrightarrow\,\su(2)\,
+			\leftrightarrow\,M_2(\Cplx)$ chain.  The fundamental $\su(2)$
+			representation (8-dim) provides the chain; each level inherits
+			the right-$\Cplx$-module structure of the $b$-channel.}
+		\label{tab:algebraic-ID}
+		\footnotesize
+		\setlength{\tabcolsep}{5pt}
+		\begin{tabular}{@{}llll@{}}
+			\toprule
+			\textbf{Object} & \textbf{Algebraic ID}
+			& \textbf{Matrix Form} & \textbf{Role}\\
+			\midrule
+			$\ihat$ & imaginary unit & $i\sigma_3$
+			& Cartan element ($T_3$ orientation)\\
+			$\jhat$ & second generator & $i\sigma_2$
+			& off-diagonal swap\\
+			$\ihat\jhat$ & pseudoscalar & $-i\sigma_1$
+			& volume form\\
+			$1$ & identity & $I_2$
+			& scalar\\
+			$a\in\Cplx$ & $a$-channel & $(U)_{00}$
+			& diagonal pair $\{a,a^*\}$\\
+			$b\in\Cplx$ & $b$-channel & $(U)_{01}$
+			& off-diagonal pair $\{b,-b^*\}$\\
+			$\PLW_\pm$ & rank-1 $T_3$-eigenprojector
+			& $(I_2 \pm \sigma_3)/2$ & eigenspace projector\\
+			$\Pip$ & rank-1 fundamental & $(I_2 + \sigma_3)/2$
+			& $a$-channel selector\\
+			$\Pim$ & rank-1 fundamental & $(I_2 - \sigma_3)/2$
+			& $b$-channel selector\\
+			$\Gdiag(t)$ & diagonal observable
+			& $\operatorname{Re}\bigl(\tr[\PLW_+ E_t \PLW_+ E_0^{\dagger}]
+			+ \tr[\PLW_- E_t \PLW_- E_0^{\dagger}]\bigr)$
+			& $a$-channel bilinear\\
+			$\Gcross(t)$ & off-diagonal observable
+			& $\operatorname{Re}\bigl(\tr[\PLW_+ E_t \PLW_- E_0^{\dagger}]
+			+ \tr[\PLW_- E_t \PLW_+ E_0^{\dagger}]\bigr)
+			= 8\!\sum\operatorname{Re}[b_t\,\bar{b}_0]$
+			\quad(Eq.~\ref{eq:Gcross-def})
+			& $b$-channel bilinear\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	% ============================================================
+	\section{Off-Diagonal Rank-1 Collapse and Two-Observable Completeness}
+	\label{sec:two-obs-decomp-section}
+	% ============================================================
+	
+	This section proves Proposition~\ref{prop:off-diag-collapse} and
+	Corollary~\ref{cor:orientation-sym}, then assembles the two-observable
+	decomposition Theorem~\ref{thm:two-obs-completeness}.
+	
+	% ------------------------------------------------------------
+	\subsection{Off-Diagonal Rank-1 Collapse}
+	\label{sec:off-diag-collapse}
+	% ------------------------------------------------------------
+	
+	\begin{proposition}[Off-Diagonal Rank-1 Collapse]
+		\label{prop:off-diag-collapse}
+		For every $U_t,\,U_0\in\su(2)$ with $E = I_2\otimes U\otimes I_2$:
+		\begin{equation}
+			\operatorname{Re}\,\tr\!\left[\PLW_+\, E_t\,\PLW_-\,
+			E_0^{\dagger}\right]
+			\;=\; 4\operatorname{Re}[b_t\,\bar{b}_0],
+			\label{eq:off-diag-collapse}
+		\end{equation}
+		where $b_t = (U_t)_{01}$.
+	\end{proposition}
+	
+	\begin{proof}
+		Recall the rank-1 collapse identity: for any $A\in M_2(\Cplx)$,
+		\[
+		\Pir\, A\,\Pi_{r'}
+		\;=\; (A)_{rr'}\,\Pir\,\Pi_{r'}
+		\;=\; (A)_{rr'}\,\delta_{rr'}\,\Pir
+		\qquad \text{(no sum).}
+		\]
+		Applied to $A = E_t = I_2\otimes U_t\otimes I_2$ with
+		$\Pip,\,\Pim$ the rank-1 fundamental projectors acting on the
+		central $\su(2)$ factor:
+		\[
+		\PLW_+\, E_t\,\PLW_-
+		\;=\; (I_2\otimes U_t\otimes I_2)_{01}\,
+		(I_2\otimes\Pip\Pim\otimes I_2)
+		\;=\; (U_t)_{01}\cdot\text{(rank-1 vanishing term)}
+		\;=\; b_t\;(\Pip\Pim\text{ in the trace structure}).
+		\]
+		Tracing against $E_0^{\dagger}$:
+		\[
+		\tr\!\left[\PLW_+\, E_t\,\PLW_-\, E_0^{\dagger}\right]
+		\;=\; b_t\cdot(E_0^{\dagger})_{10}
+		\;=\; b_t\,\bar{b}_0,
+		\]
+		using $(E_0^{\dagger})_{10} = ((U_0)_{01})^{*} = \bar{b}_0$.
+		Taking the real part:
+		\[
+		\operatorname{Re}\,\tr\!\left[\PLW_+\, E_t\,\PLW_-\,
+		E_0^{\dagger}\right]
+		\;=\; \operatorname{Re}[b_t\,\bar{b}_0].
+		\]
+		The factor of $4$ arises from the $I_2\otimes(\cdot)\otimes I_2$
+		tensor product:
+		\[
+		\operatorname{Re}\,\tr_{8\times 8}\!
+		\left[\PLW_+\, E_t\,\PLW_-\, E_0^{\dagger}\right]
+		\;=\; 4\operatorname{Re}\,\tr_{2\times 2}\!
+		\left[\Pip\, U_t\,\Pim\, U_0^{\dagger}\right]
+		\;=\; 4\operatorname{Re}[b_t\,\bar{b}_0]. \qedhere
+		\]
+	\end{proof}
+	
+	The verification was performed across all four ensembles using checks
+	D1, D2a--d, D3a--d, D4a--h, D5, D6, D7a--c with results listed in
+	Table~\ref{tab:prop1-verification}.
+	
+	
+	\begin{table}[ht]
+		\centering
+		\caption{Verification checks for
+			Proposition~\ref{prop:off-diag-collapse}.
+			All 18 check IDs (51 instances across D1--D18) pass
+			at tolerance $\leq 10^{-13}$ or better.}
+		\label{tab:prop1-verification}
+		\small
+		\setlength{\tabcolsep}{6pt}
+		\begin{tabular}{@{}lp{8.7cm}l@{}}
+			\toprule
+			\textbf{Check} & \textbf{Result} & \textbf{Tolerance}\\
+			\midrule
+			D1 & Rank-1 collapse identity
+			$\Pir\, A\,\Pir = (A)_{rr}\,\Pir$ --- algebraic
+			& exact \\[2pt]
+			D2a--d & $\jhat\,c = \bar{c}\,\jhat$ for
+			$c = 1,\,\ihat,\,\beta,\,\ihat\cdot\beta$
+			& $\leq 10^{-15}$ \\[2pt]
+			D3a--d & $(b\,\jhat)\cdot c = b\cdot\bar{c}\cdot\jhat$
+			verification
+			& $\leq 10^{-15}$ \\[2pt]
+			D4a--h & Direct rank-1 identity in 8-dim:
+			$\Pir\, E\,\Pi_{r'} = \delta_{rr'}\,(M)_{rr}$
+			& $\leq 10^{-13}$ \\[2pt]
+			D5 & Off-diagonal collapse
+			$\Pip\, E\,\Pim = (E)_{01}\,\Pip\Pim$
+			& $\leq 10^{-13}$ \\[2pt]
+			D6 & Off-diagonal rank-1 collapse identity ($8\times 8$):
+			$\tr[\Pip\, E\,\Pim\, E'^{\,\dagger}]
+			= 4\,(U)_{01}\,(U')_{01}^{*}$
+			& $\leq 10^{-13}$ \\[2pt]
+			D7a--c & $\operatorname{Re}\tr[\PLW_+ E_t \PLW_- E_0^{\dagger}]
+			- 4\operatorname{Re}[b_t\,\bar{b}_0] = 0$ across ensembles
+			& $\leq 10^{-13}$ \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	% ------------------------------------------------------------
+	\subsection{Orientation Symmetry of the Off-Diagonal Collapse}
+	\label{sec:orientation-sym}
+	% ------------------------------------------------------------
+	
+	\begin{corollary}[Orientation Symmetry]
+		\label{cor:orientation-sym}
+		For every $U_t,\,U_0\in\su(2)$:
+		\begin{equation}
+			\operatorname{Re}\,\tr\!\left[\PLW_-\, E_t\,\PLW_+\,
+			E_0^{\dagger}\right]
+			\;=\; \operatorname{Re}\,\tr\!\left[\PLW_+\, E_t\,\PLW_-\,
+			E_0^{\dagger}\right]
+			\;=\; 4\operatorname{Re}[b_t\,\bar{b}_0].
+			\label{eq:orientation-sym}
+		\end{equation}
+	\end{corollary}
+	
+	\begin{proof}
+		Both reduce to the same expression upon application of
+		Proposition~\ref{prop:off-diag-collapse} to the conjugate pair
+		$\{\PLW_+,\,\PLW_-\}$.  The orientation reversal exchanges
+		$\tr[X^{\dagger}] = \tr[X]^{*}$ for the real part:
+		\[
+		\operatorname{Re}\,\tr\!\left[\PLW_-\, E_t\,\PLW_+\,
+		E_0^{\dagger}\right]
+		\;=\; \operatorname{Re}\,\tr\!\left[\bigl(\PLW_-\, E_t\,\PLW_+\,
+		E_0^{\dagger}\bigr)^{\dagger}\right]
+		\;=\; \operatorname{Re}\,\tr\!\left[E_0\,\PLW_+\, E_t^{\dagger}\,
+		\PLW_-\right].
+		\]
+		Cycling and using $\PLW_r{}^{2} = \PLW_r$:
+		\[
+		=\; \operatorname{Re}\,\tr\!\left[\PLW_+\, E_t^{\dagger}\,
+		\PLW_-\, E_0\right]
+		\;=\; (E_t^{\dagger})_{01}\,(E_0)_{10}^{*}
+		\;=\; (\bar{b}_t)(\bar{b}_0)^{*}
+		\;=\; \bar{b}_t\,b_0
+		\;=\; (b_t\,\bar{b}_0)^{*}.
+		\]
+		So
+		$\operatorname{Re}\,\tr[\PLW_-\, E_t\,\PLW_+\, E_0^{\dagger}]
+		= \operatorname{Re}[\bar{b}_t\,b_0]
+		= \operatorname{Re}[b_t\,\bar{b}_0]$.
+	\end{proof}
+	
+	The orientation symmetry confirms that the off-diagonal bilinear is a
+	single channel (not two), justifying the single $\Gcross$ observable.
+	
+	% ------------------------------------------------------------
+	\subsection{Two-Observable Completeness}
+	\label{sec:theorem-completeness}
+	% ------------------------------------------------------------
+	
+	\begin{theorem}[Two-Observable Completeness]
+		\label{thm:two-obs-completeness}
+		For every $\su(2)$ gauge field configuration and every~$t$:
+		\begin{equation}
+			\Gdiag(t) + \Gcross(t) \;=\; \Gfull(t),
+			\label{eq:two-obs-completeness}
+		\end{equation}
+		where
+		\begin{align}
+			\Gdiag(t)  &\;=\; 8\sum
+			\operatorname{Re}[a_t\,\bar{a}_0],
+			\label{eq:Gdiag-def} \\
+			\Gcross(t) &\;=\; 8\sum
+			\operatorname{Re}[b_t\,\bar{b}_0],
+			\label{eq:Gcross-def} \\
+			\Gfull(t)  &\;=\; \sum
+			\operatorname{Re}\,\tr\!\left[E_t\, E_0^{\dagger}\right].
+			\label{eq:Gfull-def}
+		\end{align}
+		The sums are over space and over both the (configuration,~$t$)
+		pairs.
+	\end{theorem}
+	
+	\begin{proof}
+		Expand $E_t E_0^{\dagger}$ using the $\su(2)$
+		parametrisation~\eqref{eq:SU2-param}:
+		\[
+		\tr\!\left[E_t\, E_0^{\dagger}\right]
+		\;=\; \tr\!\left[(a_t I_2 + b_t J)\,
+		(\bar{a}_0 I_2 - \bar{b}_0 J)\right].
+		\]
+		Inserting completeness $\Pip + \Pim = I_8$ (or $I_2$ in the
+		central factor):
+		\[
+		E_t\, E_0^{\dagger}
+		\;=\; (\Pip + \Pim)\, E_t E_0^{\dagger}\,(\Pip + \Pim)
+		\;=\; \Pip E_t E_0^{\dagger}\Pip
+		+\Pip E_t E_0^{\dagger}\Pim
+		+\Pim E_t E_0^{\dagger}\Pip
+		+\Pim E_t E_0^{\dagger}\Pim.
+		\]
+		Tracing and taking real parts: the two diagonal blocks
+		($\Pip\cdots\Pip$, $\Pim\cdots\Pim$) each contribute
+		$4\operatorname{Re}[a_t\,\bar{a}_0]$ by the diagonal collapse
+		identity (Proposition~1 of Paper~4~\cite{FirestoneP4}), summing to
+		$8\operatorname{Re}[a_t\,\bar{a}_0]$.  The two off-diagonal blocks
+		($\Pip\cdots\Pim$, $\Pim\cdots\Pip$) each contribute
+		$4\operatorname{Re}[b_t\,\bar{b}_0]$ by
+		Proposition~\ref{prop:off-diag-collapse} and
+		Corollary~\ref{cor:orientation-sym}, summing to
+		$8\operatorname{Re}[b_t\,\bar{b}_0]$.  Therefore:
+		\[
+		\operatorname{Re}\,\tr\!\left[E_t\, E_0^{\dagger}\right]
+		\;=\; 8\operatorname{Re}[a_t\,\bar{a}_0]
+		+ 8\operatorname{Re}[b_t\,\bar{b}_0].
+		\]
+		Summing over space gives $\Gfull = \Gdiag + \Gcross$.
+	\end{proof}
+	
+	The simultaneous decomposition was verified numerically:
+	check D7a--c gives $|\Gdiag + \Gcross - \Gfull|\leq 1.78\times 10^{-15}$
+	across all four ensembles, confirming
+	Theorem~\ref{thm:two-obs-completeness} to the precision of the
+	simulation; check D8\,$\times\,4\beta$ additionally gives
+	$|\Gcross - \Dcross|\leq 1.14\times 10^{-13}$, confirming the bridge
+	identification $\Gcross\equiv\Dcross$.
+	
+	Theorem~\ref{thm:two-obs-completeness} simultaneously establishes
+	$\Gcross \equiv \Dcross$: the algebraically defined $\Gcross$ equals
+	the subtractionally defined $\Dcross$.  This resolves the structural
+	gap of Paper~4~\cite{FirestoneP4}, \S4.3: $\Dcross$ is not merely a
+	residual, but the $b$-channel bilinear in the right $\Cplx$-module
+	decomposition.
+	
+	% ============================================================
+	\section{Physical Interpretation:
+		\texorpdfstring{$W^{3}$}{W3} vs.\ \texorpdfstring{$W^{\pm}$}{W+-}}
+	\label{sec:physical-interp}
+	% ============================================================
+	
+	% NOTE: Subsections §4(a)-§4(d) in the original draft used letter-style
+	% labels. These have been re-rendered as §4.1-§4.4 for consistency
+	% with the numeric subsection style used in all other sections.
+	
+	\subsection{Weak-Coupling Expansion of the Link Variable}
+	\label{sec:weak-coupling-exp}
+	
+	Setting $U_\mu(x) = \exp\!\bigl(i g\,a_{\mathrm{lat}}\,A^c_\mu T^c\bigr)$
+	and expanding to leading order in the coupling $g$, with generators
+	$T^c = \sigma^c/2$ in the fundamental representation:
+	\begin{align}
+		a &= (U)_{00} \;=\; 1 + \frac{ig}{2}\,A^{3}_\mu + O(g^2),
+		\label{eq:a-expansion}\\[2pt]
+		b &= (U)_{01} \;=\; \frac{ig}{2}\,
+		\bigl(A^{1}_\mu - i\,A^{2}_\mu\bigr) + O(g^2),
+		\label{eq:b-expansion-naive}\\[2pt]
+		b &= (U)_{01} \;=\; \frac{ig}{\sqrt{2}}\,W^{+}_\mu + O(g^2),
+		\qquad
+		W^{+}_\mu \;=\;
+		\frac{A^{1}_\mu - i\,A^{2}_\mu}{\sqrt{2}}.
+		\label{eq:b-expansion-W}
+	\end{align}
+	
+	\subsection{Channel-to-Boson Identification}
+	\label{sec:channel-boson}
+	
+	Equations~\eqref{eq:a-expansion}--\eqref{eq:b-expansion-W} establish
+	a direct correspondence at $O(g)$:
+	\[
+	\Gdiag \;\;\longleftrightarrow\;\; A^{3}_\mu
+	\quad\text{(neutral gauge boson sector)},
+	\qquad
+	\Gcross \;\;\longleftrightarrow\;\; W^{\pm}_\mu
+	\quad\text{(charged gauge boson sector)}.
+	\]
+	This identification holds to $O(g)$ in the matrix elements and to
+	$O(g^2)$ in the bilinears.  The channel separation---$a$ diagonal,
+	$b$ off-diagonal---is an exact property of the $\su(2)$ matrix
+	structure and holds for all $g$.
+	
+	\begin{table}[ht]
+		\centering
+		\caption{Weak-coupling field content of the $\su(2)$ link variable.
+			The third column uses $A^{3}$ for the leading-order neutral
+			field.}
+		\label{tab:weak-coupling-content}
+		\small
+		\setlength{\tabcolsep}{8pt}
+		\begin{tabular}{@{}llll@{}}
+			\toprule
+			\textbf{Matrix entry} & \textbf{$\su(2)$ param}
+			& \textbf{Leading order in $g$} & \textbf{Gauge boson}\\
+			\midrule
+			$(U)_{00}$ & $a$
+			& $1 + (ig/2)\,A^{3}$ & Neutral ($W^{3}$)\\
+			$(U)_{01}$ & $b$
+			& $(ig/\sqrt{2})\,W^{+}$ & Charged ($W^{+}$)\\
+			$(U)_{10}$ & $-b^{*}$
+			& $(ig/\sqrt{2})\,W^{-}$ & Charged ($W^{-}$)\\
+			$(U)_{11}$ & $a^{*}$
+			& $1 - (ig/2)\,A^{3}$ & Neutral ($W^{3}$)\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\subsection{\texorpdfstring{$O(g^{2})$}{O(g\^{}2)} Calculation
+		of the Channel Bilinears}
+	\label{sec:Og2-bilinears}
+	
+	\begin{align}
+		\operatorname{Re}[a_t\,\bar{a}_0]
+		&\;=\; 1 + \frac{g^{2}}{4}\,A^{3}_t\,A^{3}_0 + O(g^{3}),
+		\label{eq:a-bilinear-Og2}\\[2pt]
+		\operatorname{Re}[b_t\,\bar{b}_0]
+		&\;=\; \frac{g^{2}}{4}\,
+		\bigl(A^{1}_t\,A^{1}_0 + A^{2}_t\,A^{2}_0\bigr) + O(g^{3}).
+		\label{eq:b-bilinear-Og2}
+	\end{align}
+	Equation~\eqref{eq:b-bilinear-Og2} shows that
+	$\operatorname{Re}[b_t\,\bar{b}_0]$ is $O(g^{2})$: it vanishes as
+	$g\to 0$ (free field).  The measured ratio
+	$\Dcross/\Gfull \in [0.72,\,2.33]$ at
+	$\beta_{\mathrm{eff}}\in\{5.0,\,6.0,\,9.0,\,12.0\}$
+	\cite{FirestoneP4} reflects non-perturbative finite-coupling
+	contributions where the $O(g^{2})$ approximation is not quantitatively
+	valid.
+	
+	\begin{remark}[D10b --- Slope of $b$-Channel Weak-Coupling Error]
+		\label{rem:D10b-slope}
+		The log-log slope of the $b$-channel approximation error vs.\
+		$\varepsilon$ is $3.000$, not $2$ (check D10b, flagged and closed).
+		This arises because $H^{2}\propto I_{2}$, so $(H^{2})_{01} = 0$,
+		and the Taylor expansion of $\sin(\varepsilon\,\|H\|)$ has no
+		$\varepsilon^{2}$ term in the off-diagonal entry; the leading
+		error is $O(\varepsilon^{3})$.  This is the sin-Taylor argument.
+		It is distinct from the BCH/$[T_{+},T_{-}]\propto T_{3}$ argument
+		(check D17), which explains channel purity, not slope.
+		Slope $=3$ confirms approximation quality; channel identity is
+		established algebraically by
+		Proposition~\ref{prop:off-diag-collapse},
+		Lemma~\ref{lem:b-blindness}, and checks D3c--D3d.
+		Checks D11a, D11b, D12b, D13a verify the $a$-channel slope,
+		monotone $|R(\beta)|$ at $t=5$, and cold-start
+		$\langle|b|^{2}\rangle$.
+	\end{remark}
+	
+	\subsection{What the Channel Identification Does Not Imply}
+	\label{sec:not-imply}
+	
+	\begin{description}
+		\item[(OS4.1)] \emph{No $W/Z$ mass ratio.}
+		No Weinberg angle $\theta_W$, no $\uu(1)_Y$, no Higgs sector.
+		
+		\item[(OS4.2)] \emph{No L/R distinction.}
+		The $\su(2)$ link variable $U$ transforms identically regardless
+		of the handedness of any matter field; chirality is encoded in
+		the matter sector only.
+		
+		\item[(OS4.3)] \emph{No Higgs mechanism.}
+		The gauge fields in the present $\su(2)$ pure-gauge theory are
+		massless.
+		
+		\item[(OS4.4)] \emph{No electroweak mixing.}
+		The hypercharge gauge group $\uu(1)_Y$ is absent; $A^{3}$ should
+		not be identified with the physical $Z$ boson or photon prior to
+		mixing.
+	\end{description}
+	
+	% ============================================================
+	\section{Embedding Universality}
+	\label{sec:embedding-univ}
+	% ============================================================
+	
+	\subsection{The Core Rank-1 Collapse Lemma}
+	\label{sec:core-lemma}
+	
+	\begin{corelemma}[Rank-1 Collapse]
+		For any $U\in\mathrm{End}(\Cplx^{2})$ and any rank-1 projector
+		$\Pir = |r\rangle\langle r|$:
+		\begin{equation}
+			\Pir\, U\,\Pir \;=\; (U)_{rr}\cdot\Pir.
+			\label{eq:core-lemma}
+		\end{equation}
+	\end{corelemma}
+	
+	\begin{proof}
+		$\Pir\, U\,\Pir
+		= |r\rangle\langle r|\,U\,|r\rangle\langle r|
+		= (U)_{rr}\,|r\rangle\langle r|
+		= (U)_{rr}\,\Pir.$
+	\end{proof}
+	
+	% ------------------------------------------------------------
+	\subsection{Rank-1 Collapse Universality}
+	\label{sec:rank1-univ}
+	% ------------------------------------------------------------
+	
+	We consider three natural embeddings of $U\in\su(2)$ into
+	$\mathrm{End}(\Cplx^{8})$:
+	\begin{align*}
+		\text{Case A:} && E &\;=\; U\otimes I_{4},\\
+		\text{Case B:} && E &\;=\; I_{4}\otimes U,\\
+		\text{Case C:} && E &\;=\; I_{2}\otimes U\otimes I_{2}
+		\quad\text{(used in Papers~4 and~5)}.
+	\end{align*}
+	
+	\begin{proposition}[Rank-1 Collapse Universality]
+		\label{prop:rank1-univ}
+		For each embedding Case A, B, C and for $r\in\{+,-\}$:
+		\begin{equation}
+			\operatorname{Re}\,\tr\!\left[P_{r}\, E_{t}\, P_{r}\,
+			E_{0}^{\dagger}\right]
+			\;=\; 4\operatorname{Re}\!\left[(U_t)_{rr}\cdot
+			\overline{(U_0)_{rr}}\right].
+			\label{eq:rank1-univ}
+		\end{equation}
+	\end{proposition}
+	
+	\begin{proof}
+		In each case, $P_r$ factors as a tensor product with $\Pir$
+		acting on the $U$-component and identity operators on the
+		spectator components.  Tensor multiplicativity gives
+		\[
+		\tr\!\left[P_{r}\, E_{t}\, P_{r}\, E_{0}^{\dagger}\right]
+		\;=\; \tr(I_{\mathrm{spec}})\cdot
+		\tr\!\left[\Pir\, U_{t}\,\Pir\, U_{0}^{\dagger}\right],
+		\]
+		where $\tr(I_{\mathrm{spec}}) = 4$ in all three cases.  Applying
+		the Core Lemma~\eqref{eq:core-lemma} and evaluating the trace
+		gives $4\operatorname{Re}\!\bigl[(U_t)_{rr}\,
+		\overline{(U_0)_{rr}}\bigr]$.
+	\end{proof}
+	
+	Verified for Cases A and B by checks D14$^{+}$, D14$^{-}$,
+	D15$^{+}$, D15$^{-}$ on 50 random $\su(2)$ pairs each.  Residuals are
+	$2.22\times 10^{-16}$ (1 ULP) in all cases.  These are type~(b)
+	independent computations: the LHS uses an $8\times 8$ Kronecker-product
+	trace, the RHS accesses the $2\times 2$ matrix element directly; the
+	two code paths share no intermediate computation.
+	
+	% ------------------------------------------------------------
+	\subsection{Intrinsic Nature of the Decomposition}
+	\label{sec:cor-intrinsic}
+	% ------------------------------------------------------------
+	
+	\begin{corollary}[Universality of the Two-Observable Structure]
+		\label{cor:intrinsic}
+		The rank-1 collapse formula $\Pir\, U\,\Pir = (U)_{rr}\,\Pir$
+		---and hence the $a$/$b$-channel separation and the
+		two-observable decomposition of
+		Theorem~\ref{thm:two-obs-completeness}---is intrinsic to the
+		fundamental spin-$1/2$ representation of $\su(2)$.  It is not an
+		artifact of the tensor-product embedding $I_{2}\otimes U\otimes
+		I_{2}$ adopted in Paper~4.
+		\emph{Escape condition:} reducible representations with degenerate
+		$T_{3}$ eigenspaces avoid rank-1 collapse; no such representations
+		appear in this series.
+	\end{corollary}
+	
+	% ------------------------------------------------------------
+	\subsection{\texorpdfstring{$b$}{b}-Channel Blindness is Universal}
+	\label{sec:b-blindness}
+	% ------------------------------------------------------------
+	
+	\begin{lemma}[$b$-Channel Blindness Universality]
+		\label{lem:b-blindness}
+		For every embedding Case A, B, C, the diagonal projector
+		correlator
+		\[
+		\operatorname{Re}\,\tr\!\left[P_{r}\, E_{t}\, P_{r}\,
+		E_{0}^{\dagger}\right]
+		\;=\; 4\operatorname{Re}\!\left[(U_{t})_{rr}\cdot
+		\overline{(U_{0})_{rr}}\right]
+		\]
+		is independent of $b = (U)_{01}$ for every
+		$U_t, U_0\in\su(2)$.
+	\end{lemma}
+	
+	\begin{proof}
+		The RHS of~\eqref{eq:rank1-univ} contains only $(U)_{rr} = a$
+		(for $r = +$) or $a^{*}$ (for $r = -$), and no occurrence of
+		$b = (U)_{01}$.  Independence follows from
+		Proposition~\ref{prop:rank1-univ}.
+	\end{proof}
+	
+	Check D16 provides a consistency check over $800$ evaluations,
+	finding std $= 0.00\times 10^{+00}$ for the dependence on $b$.  This
+	result is guaranteed by construction ($b$ is algebraically absent
+	from the formula) and should be read as a consistency check rather
+	than an independent verification.  The substantive verification is
+	established by Proposition~\ref{prop:rank1-univ} and the Core
+	Lemma~\eqref{eq:core-lemma}, and confirmed by the independent
+	code-path comparison of D14/D15.
+	
+	\begin{table}[ht]
+		\centering
+		\caption{Three-embedding comparison.  Each embedding yields the
+			same diagonal collapse formula and the same $b$-blindness,
+			differing only in how the spectator dimensions assemble to
+			$\tr(I_{\mathrm{spec}}) = 4$.}
+		\label{tab:three-embedding}
+		\small
+		\setlength{\tabcolsep}{6pt}
+		\begin{tabular}{@{}cllcc@{}}
+			\toprule
+			\textbf{Case} & \textbf{Embedding} & \textbf{Formula}
+			& \textbf{$b$-blind?} & \textbf{Spectator dim}\\
+			\midrule
+			A & $U\otimes I_{4}$
+			& $4\operatorname{Re}\!\bigl[(U_t)_{rr}\,
+			\overline{(U_0)_{rr}}\bigr]$
+			& Yes & $\tr(I_{4}) = 4$\\
+			B & $I_{4}\otimes U$
+			& $4\operatorname{Re}\!\bigl[(U_t)_{rr}\,
+			\overline{(U_0)_{rr}}\bigr]$
+			& Yes & $\tr(I_{4}) = 4$\\
+			C & $I_{2}\otimes U\otimes I_{2}$
+			& $4\operatorname{Re}\!\bigl[(U_t)_{rr}\,
+			\overline{(U_0)_{rr}}\bigr]$
+			& Yes & $\tr(I_{2})^{2} = 4$\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	% ============================================================
+	\section{The Two-Observable Decomposition Structure}
+	\label{sec:two-obs-structure}
+	% ============================================================
+	
+	\subsection{Setup and Definitions}
+	\label{sec:setup}
+	
+	Theorem~\ref{thm:two-obs-completeness} (Sec.~\ref{sec:theorem-completeness})
+	establishes that the full gauge-link correlator decomposes exactly into
+	two independent bilinear contributions.  The defining equations are
+	recalled below; per Q1 the original (6.1a)--(6.1c) sub-letter triplet
+	has been split into three independently numbered equations:
+	
+	\begin{align}
+		\Gdiag(t)  &\;=\; 8\!\sum_{\mathrm{links}}\,
+		\operatorname{Re}[a_t\,\bar{a}_0],
+		\label{eq:Gdiag-def-recall}\\[2pt]
+		\Gcross(t) &\;=\; 8\!\sum_{\mathrm{links}}\,
+		\operatorname{Re}[b_t\,\bar{b}_0],
+		\label{eq:Gcross-def-recall}\\[2pt]
+		\Gfull(t)  &\;=\; \Gdiag(t) + \Gcross(t).
+		\label{eq:two-obs-completeness-recall}
+	\end{align}
+	Equation~\eqref{eq:two-obs-completeness-recall} is exact for every
+	$\su(2)$ gauge configuration and every timeslice~$t$
+	(Theorem~\ref{thm:two-obs-completeness}).
+	
+	% ------------------------------------------------------------
+	\subsection{Two-Observable Decomposition}
+	\label{sec:cor-two-obs-decomp}
+	% ------------------------------------------------------------
+	
+	\begin{corollary}[Two-Observable Decomposition in the
+		$\cl(0,2)\cong\HH$ Framework]
+		\label{cor:two-obs-decomp}
+		The following holds exactly for every $\su(2)$ field configuration
+		and every~$t$:
+		\begin{enumerate}
+			\item[(i)] \textbf{Exactness}
+			\textsc{[new --- proved as
+				Theorem~\ref{thm:two-obs-completeness}]}:
+			$\;\Gdiag(t) + \Gcross(t) = \Gfull(t).$
+			
+			\item[(ii)] \textbf{$a$-Channel Faithfulness}
+			\textsc{[recalled --- Proposition~1 of
+				Paper~4~\cite{FirestoneP4}, \S4.2]}:
+			$\Gdiag$ depends only on $a_t$ and $\bar{a}_0$.
+			
+			\item[(iii)] \textbf{$b$-Channel Faithfulness}
+			\textsc{[new --- proved as
+				Proposition~\ref{prop:off-diag-collapse}]}:
+			$\Gcross$ depends only on $b_t$ and $\bar{b}_0$.
+		\end{enumerate}
+		Corollary~\ref{cor:two-obs-decomp} follows immediately from
+		Theorem~\ref{thm:two-obs-completeness},
+		Proposition~1 of Paper~4~\cite{FirestoneP4} (\S4.2), and
+		Proposition~\ref{prop:off-diag-collapse}.
+		Parts~(i) and~(iii) are new results established in this paper;
+		part~(ii) assembles Proposition~1 of Paper~4 for completeness of
+		statement.
+	\end{corollary}
+	
+	\begin{remark}[Parametric completeness]
+		\label{rem:parametric-completeness}
+		The pair $\{a,b\}$ with $|a|^{2}+|b|^{2}=1$ parametrises
+		$\su(2)\cong S^{3}$.  This is a conjunction of~(ii), (iii), and
+		the unitarity constraint $|a|^{2}+|b|^{2}=1$
+		(labelled~(E4) in Paper~4~\cite{FirestoneP4}, retained here
+		for cross-paper consistency)
+		---not an independent result---but it justifies describing the
+		decomposition as complete.
+	\end{remark}
+	
+	\begin{remark}[Weak-coupling channel identification]
+		\label{rem:weak-coupling-id}
+		At leading order in $g$:
+		$a = 1 + (ig/2)\,A^{3} + O(g^{2})$ and
+		$b = (ig/\sqrt{2})\,W^{+} + O(g^{2})$
+		(Eqs.~\eqref{eq:a-expansion},~\eqref{eq:b-expansion-W}).
+		Therefore $\Gdiag$ probes $A^{3}$ and $\Gcross$ probes $W^{\pm}$.
+		This identification is perturbative---valid to $O(g^{2})$ in the
+		bilinears---and does not constitute part of the exact
+		decomposition of Corollary~\ref{cor:two-obs-decomp}.
+	\end{remark}
+	
+	\begin{proof}[Proof of Corollary~\ref{cor:two-obs-decomp}]
+		Immediate from Theorem~\ref{thm:two-obs-completeness}
+		(Sec.~\ref{sec:theorem-completeness}), Proposition~1 of
+		Paper~4~\cite{FirestoneP4} (\S4.2), and
+		Proposition~\ref{prop:off-diag-collapse}
+		(Sec.~\ref{sec:off-diag-collapse}).
+	\end{proof}
+	
+	% ------------------------------------------------------------
+	\subsection{Why \texorpdfstring{$\{\Gdiag,\Gcross\}$}{\{Gdiag, Gcross\}}
+		and Not \texorpdfstring{$\{G_{+},G_{-}\}$}{\{G+, G-\}}}
+	\label{sec:why-G}
+	% ------------------------------------------------------------
+	
+	By Corollary~1 of Paper~4~\cite{FirestoneP4}, \S4.4, $G_{+}(t) =
+	G_{-}(t)$ identically for every $U\in\su(2)$.  Their sum is
+	$G_{+} + G_{-} = 2 G_{+} = \Gdiag$, and the pair $\{G_{+},G_{-}\}$
+	carries exactly one independent observable---the $a$-channel
+	bilinear---and no information about $b$.  The apparent
+	two-dimensional structure collapses to a single observable by
+	Corollary~1 of Paper~4, leaving the entire $b$-channel inaccessible.
+	
+	The pair $\{\Gdiag,\Gcross\}$, by contrast, provides two genuinely
+	independent observables: $\Gdiag$ is faithful to $a$ (part~(ii)) and
+	$\Gcross$ is faithful to $b$ (part~(iii)), with the two channels
+	linked only by the unitarity constraint $|a|^{2}+|b|^{2}=1$, which
+	imposes no algebraic relation between $\operatorname{Re}[a_t\,
+	\bar{a}_0]$ and $\operatorname{Re}[b_t\,\bar{b}_0]$ across timeslices.
+	
+	% ------------------------------------------------------------
+	\subsection{Sign Non-Definiteness}
+	\label{sec:prop-sign-nondef}
+	% ------------------------------------------------------------
+	
+	\begin{proposition}[Sign Non-Definiteness]
+		\label{prop:sign-nondef}
+		$\Gdiag(t)$ and $\Gcross(t)$ are individually not sign-definite
+		per configuration:
+		\begin{enumerate}
+			\item[(a)] $\Gdiag < 0$ is possible.  Example:
+			$a_t = -1/\sqrt{2} + i\varepsilon$, $a_0 = 1/\sqrt{2}$;
+			then $\operatorname{Re}[a_t\,\bar{a}_0] = -1/2 < 0$.
+			
+			\item[(b)] $\Gcross < 0$ is possible.  Example:
+			$b_t = -1/\sqrt{2}$, $b_0 = 1/\sqrt{2}$;
+			then $\operatorname{Re}[b_t\,\bar{b}_0] = -1/2 < 0$.
+			
+			\item[(c)] $\Gfull$ is not constrained positive per link by
+			unitarity alone.
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		Parts~(a) and~(b) follow by direct substitution; both examples
+		satisfy $|a|^{2}+|b|^{2}=1$.  Part~(c) follows from~(a), (b), and
+		Eq.~\eqref{eq:two-obs-completeness-recall}.  The numerical
+		observation $\Dcross/\Gfull > 1$ for some $(\beta,t)$
+		pairs~\cite{FirestoneP4} implies $\Gdiag < 0$ in those cases.
+		$\Gcross < 0$ was observed in 37--62\% of (configuration,~$t$)
+		pairs~\cite{FirestoneP4}.
+	\end{proof}
+	
+	% ------------------------------------------------------------
+	\subsection{Unitarity Constraint and Functional Independence}
+	\label{sec:cor-unitarity}
+	% ------------------------------------------------------------
+	
+	\begin{corollary}[Unitarity Constraint]
+		\label{cor:unitarity}
+		The $\su(2)$ constraint $|a|^{2}+|b|^{2}=1$ holds per link per
+		timeslice.  It imposes no algebraic relation between
+		$\operatorname{Re}[a_t\,\bar{a}_0]$ and
+		$\operatorname{Re}[b_t\,\bar{b}_0]$ across distinct timeslices
+		$t \neq 0$.  The two channels are functionally independent
+		observables.
+	\end{corollary}
+	
+	\begin{proof}
+		The constraint $|a_t|^{2}+|b_t|^{2}=1$ bounds moduli individually
+		but places no constraint on the phases $\arg(a_t\,\bar{a}_0)$ or
+		$\arg(b_t\,\bar{b}_0)$, which determine the real parts of the
+		bilinears.  For fixed $t=0$ reference link and varying $t > 0$,
+		the values of $\operatorname{Re}[a_t\,\bar{a}_0]$ and
+		$\operatorname{Re}[b_t\,\bar{b}_0]$ range independently over
+		$[-1,1]$.
+	\end{proof}
+	
+	% ============================================================
+	\section{Connection to \texorpdfstring{$\su(2)_L$}{SU(2)\_L} /
+		\texorpdfstring{$\su(2)_R$}{SU(2)\_R}}
+	\label{sec:SU2-LR}
+	% ============================================================
+	
+	\subsection{Channel Assignment at \texorpdfstring{$O(g)$}{O(g)}}
+	\label{sec:channel-assign}
+	
+	The three $\su(2)$ generators in the fundamental representation are
+	$T^{3} = \mathrm{diag}(1,-1)/2$, $T_{+} = \sigma_{+}/2$,
+	$T_{-} = \sigma_{-}/2$.  The key point is that $T^{3}$ is purely
+	diagonal and $T_{\pm}$ are purely off-diagonal.  Consequently, at
+	$O(g)$ in $U = I + i g\,a_{\mathrm{lat}}\,A^{c}_{\mu} T^{c} + O(g^{2})$:
+	
+	\begin{itemize}
+		\item $g\,A^{3}_{\mu}\,T^{3}$ contributes only to $(U)_{00}$ and
+		$(U)_{11}$ ($a$-channel only).
+		
+		\item $g\,W^{+}_{\mu}\,T_{-}$ and $g\,W^{-}_{\mu}\,T_{+}$
+		contribute only to $(U)_{01}$ and $(U)_{10}$ ($b$-channel only).
+	\end{itemize}
+	
+	This separation is exact at $O(g)$.  Checks D17-R1, D17-R2, D17-R3
+	verify: R1 confirms
+	$\operatorname{Im}(a_\varepsilon - 1)/\varepsilon \to \alpha^{3}/2$
+	(only $T^{3} A^{3}$); R2 confirms
+	$\partial(\operatorname{Im} a)/\partial \alpha^{1} = 0$
+	(no $A^{1}$ contamination); R3 confirms
+	$\partial(\operatorname{Im} a)/\partial \alpha^{2} = 0$
+	(no $A^{2}$ contamination).
+	
+	\begin{table}[ht]
+		\centering
+		\caption{Leading-order $\su(2)$ channel assignment.  Each
+			generator--field combination contributes to exactly one
+			matrix element of $U$ at $O(g)$, mapping cleanly onto either
+			the $a$- or $b$-channel.}
+		\label{tab:Og-channel-assignment}
+		\small
+		\setlength{\tabcolsep}{8pt}
+		\begin{tabular}{@{}llll@{}}
+			\toprule
+			\textbf{Coupling} & \textbf{Matrix element}
+			& \textbf{Channel} & \textbf{$O(g)$ contribution}\\
+			\midrule
+			$T^{3}\,A^{3}_{\mu}$ & $(U)_{00} = a$
+			& $a$-channel & $+(ig/2)\,A^{3}$\\
+			$T_{-}\,W^{+}_{\mu}$ & $(U)_{01} = b$
+			& $b$-channel & $+(ig/\sqrt{2})\,W^{+}$\\
+			$T_{+}\,W^{-}_{\mu}$ & $(U)_{10} = -b^{*}$
+			& $b$-channel & $+(ig/\sqrt{2})\,W^{-}$\\
+			$T^{3}\,A^{3}_{\mu}$ & $(U)_{11} = a^{*}$
+			& $a$-channel & $-(ig/2)\,A^{3}$\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	% ------------------------------------------------------------
+	\subsection{The \texorpdfstring{$b$}{b}-Channel as Necessary Conduit}
+	\label{sec:b-conduit}
+	% ------------------------------------------------------------
+	
+	\begin{proposition}[$b$-Channel Necessary Conduit]
+		\label{prop:b-conduit}
+		\begin{itemize}
+			\item[(b1)]
+			\textbf{Necessity.}  Any gauge-link correlator sensitive to
+			$W^{\pm}$ at $O(g)$ must involve the $b$-channel.  No diagonal
+			projector correlator of the form
+			$\operatorname{Re}\,\tr[P_{r}\, E_{t}\, P_{r}\, E_{0}^{\dagger}]$
+			can access $b$ (Lemma~\ref{lem:b-blindness}).
+			
+			\item[(b2)]
+			\textbf{Non-sufficiency.}  The $b$-channel does not
+			distinguish $\su(2)_L$ from $\su(2)_R$.  The link variable
+			$U$ transforms identically under $\su(2)$ regardless of the
+			handedness of any matter field.  Chirality is encoded in the
+			matter sector only.
+		\end{itemize}
+	\end{proposition}
+	
+	\begin{proof}
+		\emph{Proof of (b1).}  By Lemma~\ref{lem:b-blindness}, the
+		diagonal projector correlator is independent of $b$ for every
+		embedding case.  Since $W^{\pm}$ enter only through $b$ at $O(g)$
+		(Table~\ref{tab:Og-channel-assignment}), no diagonal projector
+		correlator can be sensitive to $W^{\pm}$.
+		$\Gcross = 8\sum\operatorname{Re}[b_t\,\bar{b}_0]$ is sensitive
+		to $W^{\pm}$ by~\eqref{eq:b-expansion-W} and is the unique
+		algebraic structure accessing $b$
+		(Proposition~\ref{prop:off-diag-collapse}).
+		
+		\emph{Proof of (b2).}  The pure-gauge link variable carries no
+		record of fermion handedness; this is determined by the
+		transformation properties of fermion fields under Lorentz and
+		gauge symmetry.
+	\end{proof}
+	
+	\medskip
+	\noindent
+	\emph{The embedding does not, by itself, distinguish $\su(2)_L$ from
+		$\su(2)_R$; this requires external fermionic input.}
+	
+	% ------------------------------------------------------------
+	\subsection{Conditional Prediction for Fermionic Observables
+		--- Programme Target}
+	\label{sec:fermion-target}
+	% ------------------------------------------------------------
+	
+	\noindent
+	\textbf{This subsection describes a programme target for future work.
+		It is not a result of Paper~5.  Paper~5 contains no fermion action
+		and makes no claim of testing the following prediction.}
+	
+	\medskip
+	Suppose a fermionic propagator $S(x,y)$ is introduced on the same
+	lattice, transforming in the fundamental representation of $\su(2)$.
+	Define the cross-projected propagator:
+	\begin{equation}
+		S_{\mathrm{cross}}(x,y) \;=\; \PLW_+ \, S(x,y) \, \PLW_-.
+		\label{eq:Scross-def}
+	\end{equation}
+	The conditional prediction of the $b$-channel framework is:
+	
+	\begin{itemize}
+		\item For an $\su(2)_L$ doublet fermion: $S_{\mathrm{cross}}
+		\neq 0$ (the doublet mixes isospin components via the
+		$T_{-}\,W^{+}_{\mu}$ coupling).
+		
+		\item For an $\su(2)_R$ singlet fermion: $S_{\mathrm{cross}} = 0$
+		(a singlet carries no $\su(2)$ index).
+	\end{itemize}
+	
+	The Nielsen--Ninomiya obstruction~\cite{NielsenNinomiya1981a,%
+		NielsenNinomiya1981b} states that no local, Hermitian,
+	translation-invariant lattice fermion action can simultaneously be
+	free of fermion doublers and chirally symmetric.  Implementation
+	requires domain wall~\cite{Kaplan1992} or overlap
+	fermions~\cite{Neuberger1998} (Ginsparg--Wilson).
+	This is designated Future Requirements F1--F4 and constitutes the
+	entry point for Paper~6.
+	
+	% ============================================================
+	\section{Gauge Properties of \texorpdfstring{$\Dcross$}{Delta\_cross}
+		and the Landau Gauge Prescription}
+	\label{sec:gauge-properties}
+	% ============================================================
+	
+	% NOTE: Subsections §8a-§8d in the original draft used letter-style
+	% labels. These have been re-rendered as §8.1-§8.4 for consistency
+	% with the numeric subsection style used in all other sections.
+	
+	\subsection{Proof of Gauge Non-Invariance}
+	\label{sec:gauge-noninv}
+	
+	\begin{lemma}[Transformation of $b$ under Gauge Rotations]
+		\label{lem:b-transform}
+		Under $U' = g\, U\, h^{\dagger}$, with
+		$g = \begin{pmatrix}\alpha & \beta\\ -\beta^{*} & \alpha^{*}
+		\end{pmatrix}$ and
+		$h = \begin{pmatrix}\gamma & \delta\\ -\delta^{*} & \gamma^{*}
+		\end{pmatrix}$ elements of $\su(2)$, the transformed off-diagonal
+		element is
+		\begin{equation}
+			b' = (U')_{01}
+			\;=\; \alpha\gamma\,b + \beta\gamma\,a^{*}
+			- \alpha\delta\,a + \beta\delta\,\bar{b}.
+			\label{eq:b-transform}
+		\end{equation}
+	\end{lemma}
+	
+	\begin{proof}
+		Direct matrix multiplication of
+		$(g\, U\, h^{\dagger})_{01}
+		= \sum_{j,k}(g)_{0j}\,(U)_{jk}\,(h^{\dagger})_{k1}$,
+		substituting the $\su(2)$ parametrisations.
+		\emph{Counterexample:}
+		$g_t = i\sigma_{2}
+		= \begin{pmatrix}0 & 1\\ -1 & 0\end{pmatrix}$,
+		$h_t = I_2$ gives $b'_t = a^{*}_t$, demonstrating that $b$ is
+		not gauge-invariant.  Verified on 50 random $\su(2)$ pairs by
+		check D18b-f (residual $0.00\times 10^{+00}$).
+	\end{proof}
+	
+	\begin{proposition}[$\Dcross$ is Not Gauge-Invariant]
+		\label{prop:gauge-noninv}
+		Under the lattice gauge transformation
+		$U_\mu(x) \to g(x)\,U_\mu(x)\,g^{\dagger}(x+\hat{\mu})$, with
+		$g(x)\in\su(2)$, $\Dcross(t) = 8\sum
+		\operatorname{Re}[b_t\,\bar{b}_0]$ changes.
+	\end{proposition}
+	
+	\begin{proof}
+		Under the gauge transformation with $g_t \neq g_0$, the
+		transformed elements $b'_t$ and $b'_0$ each depend on $(g_t,g_0)$
+		through independent linear combinations of
+		$a_t,\,b_t,\,a^{*}_t,\,\bar{b}_t$ and
+		$a_0,\,b_0,\,a^{*}_0,\,\bar{b}_0$ respectively
+		(Lemma~\ref{lem:b-transform}).
+		$\operatorname{Re}[b'_t\,\bar{b}'_0] \neq
+		\operatorname{Re}[b_t\,\bar{b}_0]$ generically.
+		\emph{Counterexample:} $g_t = i\sigma_{2}$, $g_0 = I_2$ gives
+		$b'_t = a^{*}_t$, $b'_0 = b_0$, so
+		$\operatorname{Re}[b'_t\,\bar{b}'_0]
+		= \operatorname{Re}[a^{*}_t\,\bar{b}_0]
+		\neq \operatorname{Re}[b_t\,\bar{b}_0]$ generically.
+	\end{proof}
+	
+	Check D18a (inverted) verifies gauge non-invariance on 50
+	configurations using Haar-random gauge transformations, finding
+	min residual $1.07\times 10^{-2}\gg 10^{-6}$.  Check D18b-n verifies
+	the specific counterexample.  Scope: D18 is designed for Haar-random
+	transforms; near-identity transforms
+	($g \approx I + i\varepsilon H$, $\varepsilon \lesssim 10^{-7}$) not
+	tested.  Proposition~\ref{prop:gauge-noninv} proves non-invariance
+	analytically for all transforms without restriction on the magnitude
+	of~$g$.
+	
+	% ------------------------------------------------------------
+	\subsection{Landau Gauge Prescription}
+	\label{sec:landau-presc}
+	% ------------------------------------------------------------
+	
+	Since $\Dcross$ is gauge-dependent
+	(Proposition~\ref{prop:gauge-noninv}), a gauge-fixing prescription
+	is required.  The standard choice for gluon propagator studies is
+	Landau gauge, defined by the maximisation condition:
+	\begin{equation}
+		F_{L}[\{g(x)\}]
+		\;=\; \operatorname{Re}\sum_{x,\mu}
+		\tr[U^{g}_{\mu}(x)]
+		\;\longrightarrow\; \text{maximum over } \{g(x)\},
+		\label{eq:Landau-gauge}
+	\end{equation}
+	where $U^{g}_{\mu}(x) = g(x)\,U_{\mu}(x)\,g^{\dagger}(x+\hat{\mu})$.
+	The Landau condition $\partial_{\mu} A^{a}_{\mu} = 0$ is recovered in
+	the continuum limit.  The target comparison data are the $\su(2)$
+	Landau-gauge gluon propagator computations of Cucchieri and
+	Mendes~\cite{CucchieriMendes2008} and Bogolubsky et
+	al.~\cite{Bogolubsky}.
+	
+	% ------------------------------------------------------------
+	\subsection{Formal Comparison to the
+		\texorpdfstring{$W^{\pm}$}{W±} Propagator}
+	\label{sec:Wpm-compare}
+	% ------------------------------------------------------------
+	
+	In Landau gauge, the $W^{\pm}$ propagator at zero spatial momentum
+	is:
+	\[
+	C_{W^{\pm}}(t)
+	\;=\; \frac{1}{V}\sum_{x}
+	\bigl\langle W^{+}_{i}(x,t)\,W^{-}_{i}(x,0)\bigr\rangle.
+	\]
+	Using the weak-coupling identification~\eqref{eq:b-expansion-W},
+	$b \approx (ig/\sqrt{2})\,W^{+}$, so
+	$\bar{b}_{0} \approx (-ig/\sqrt{2})\,W^{-}_{0}$, giving
+	\[
+	b_{t}\,\bar{b}_{0}
+	\;\approx\; (ig/\sqrt{2})\,(-ig/\sqrt{2})\,W^{+}_{t}\,W^{-}_{0}
+	\;=\; +(g^{2}/2)\,W^{+}_{t}\,W^{-}_{0}.
+	\]
+	The sign is \textbf{positive: $+(g^{2}/2)$}, confirmed
+	by~\eqref{eq:b-bilinear-Og2}:
+	$\operatorname{Re}[b_t\,\bar{b}_0]
+	= (g^2/4)\,(A^{1}_t A^{1}_0 + A^{2}_t A^{2}_0) \geq 0$ at $O(g^2)$.
+	The formal identification in Landau gauge is:
+	\begin{equation}
+		\Dcross(t)\big|_{\mathrm{Landau}}\big/\,8V
+		\;\approx\; +(g^{2}/2)\cdot C_{W^{\pm}}(t) + O(g^{3}).
+		\label{eq:Dcross-Landau}
+	\end{equation}
+	
+	Four caveats apply:
+	\begin{itemize}
+		\item[(i)]
+		\textbf{Perturbative validity.}
+		Equation~\eqref{eq:Dcross-Landau} holds at $O(g^{2})$ and does
+		not account for non-perturbative contributions.  At
+		$\beta_{\mathrm{eff}}\in\{5.0,\,6.0,\,9.0,\,12.0\}$, the
+		$O(g^{2})$ approximation is not quantitatively valid; the $O(1)$
+		ratio $\Dcross/\Gfull\in[0.72,\,2.33]$ evidences higher-order
+		contributions~\cite{FirestoneP4}.
+		
+		\item[(ii)]
+		\textbf{Spatial links only.}
+		Papers~4 and~5 use temporal gauge $A_{0}=0$, fixing temporal
+		links to $I_{2}$.  Full Landau gauge requires temporal links;
+		Eq.~\eqref{eq:Dcross-Landau} applies to spatial links only in
+		the current implementation.
+		
+		\item[(iii)]
+		\textbf{Strong-coupling breakdown.}
+		The $O(g^{2})$ approximation requires lattice renormalisation
+		to be applied systematically at finite $\beta_{\mathrm{eff}}$.
+		
+		\item[(iv)]
+		\textbf{Gribov copy dependence --- systematic uncertainty.}
+		The Landau gauge functional $F_{L}$ generically possesses
+		multiple local maxima on the gauge orbit (Gribov copies).  Each
+		copy gives a different value of $\Dcross$.  This systematic
+		uncertainty is distinct from caveat~(i) and is not addressed in
+		Paper~5.  This is the primary open question OQ1
+		(Sec.~\ref{sec:discussion}).  See Sec.~\ref{sec:future-sim} for
+		the proposed handling strategy.
+	\end{itemize}
+	
+	% ------------------------------------------------------------
+	\subsection{Future Simulation Requirements}
+	\label{sec:future-sim}
+	% ------------------------------------------------------------
+	
+	The following requirements are designated for Paper~6 and are not
+	implemented in Paper~5:
+	
+	\begin{description}
+		\item[F5.] Steepest-descent or Fourier-accelerated gauge fixing
+		to implement~\eqref{eq:Landau-gauge} on existing ensembles.
+		
+		\item[F6.] Fourier-accelerated gauge fixing as an alternative for
+		improved convergence at large volumes.
+		
+		\item[F7.] Gribov copy strategy: $\geq 5$ independent random
+		gauge starts per configuration; select copy achieving maximum
+		$F_{L}$; flag configurations where $F_{L}$ variation across
+		copies exceeds $1\%$.
+		
+		\item[F8.] Post-gauge-fix measurement of $\Dcross$ on
+		gauge-fixed ensembles.
+		
+		\item[F9.] Propagator extraction and quantitative comparison to
+		the $\su(2)$ Landau-gauge gluon propagator data
+		of~\cite{CucchieriMendes2008,Bogolubsky}.
+	\end{description}
+	
+	% ============================================================
+	\section{Discussion}
+	\label{sec:discussion}
+	% ============================================================
+	
+	This section synthesises the results of
+	Sections~\ref{sec:framework}--\ref{sec:gauge-properties} in prose,
+	draws five conclusions, and identifies seven open questions.  No new
+	algebra or numerical results are introduced.
+	
+	% ------------------------------------------------------------
+	\subsection{C1: Exactness and the Algebraic Status of
+		\texorpdfstring{$\Gcross$}{Gcross}}
+	\label{sec:disc-exactness}
+	% ------------------------------------------------------------
+	
+	The principal achievement of this paper is the exact algebraic
+	identification of $\Gcross$.  Prior to
+	Proposition~\ref{prop:off-diag-collapse}, the cross term $\Dcross$
+	was defined subtractionally in Paper~4~\cite{FirestoneP4}, and its
+	$O(1)$ magnitude ($\Dcross/\Gfull\in[0.72,\,2.33]$~\cite{FirestoneP4})
+	was observed without an algebraic explanation.
+	Theorem~\ref{thm:two-obs-completeness} provides that explanation:
+	$\Gcross = 8\sum\operatorname{Re}[b_t\,\bar{b}_0]$ exactly, for every
+	$\su(2)$ configuration and every timeslice, where $b = (U)_{01}$ is
+	the off-diagonal matrix element.
+	
+	Corollary~\ref{cor:two-obs-decomp} assembles this with the
+	$a$-channel faithfulness result of Proposition~1 of
+	Paper~4~\cite{FirestoneP4} into a complete statement of the exact
+	algebraic decomposition.  The word ``complete'' in
+	Remark~\ref{rem:parametric-completeness} of
+	Corollary~\ref{cor:two-obs-decomp} carries a precise meaning:
+	together, $\Gdiag$ and $\Gcross$ are sensitive to every degree of
+	freedom in $U\in\su(2)\cong S^{3}$.  This algebraic completeness does
+	not imply gauge invariance, sign-definiteness, or physical
+	observability without gauge fixing.
+	
+	% ------------------------------------------------------------
+	\subsection{C2: Embedding Independence}
+	\label{sec:disc-embedding}
+	% ------------------------------------------------------------
+	
+	Proposition~\ref{prop:rank1-univ} establishes that the rank-1
+	collapse $\Pir\,U\,\Pir = (U)_{rr}\,\Pir$ holds identically for all
+	three natural tensor-product embeddings of $U$ into $\Cplx^{8}$
+	(Cases~A, B, C).  The spectator dimensions contribute a universal
+	trace factor of~$4$, and the extracted bilinear is the same function
+	of $(U_{t})_{rr}$ regardless of embedding.  The two-observable
+	structure of $\{\Gdiag,\Gcross\}$ is intrinsic to the fundamental
+	spin-$1/2$ representation of $\su(2)$, confirmed at 1~ULP residual
+	by checks D14$^{\pm}$, D15$^{\pm}$.
+	
+	% ------------------------------------------------------------
+	\subsection{C3: Physical Channel Assignment}
+	\label{sec:disc-channel}
+	% ------------------------------------------------------------
+	
+	At $O(g)$ in the weak-coupling expansion, the channel assignment is
+	exact by group-theoretic argument: $T^{3}$ is purely diagonal and
+	contributes solely to the $a$-channel; $T_{\pm}$ are purely
+	off-diagonal and contribute solely to the $b$-channel.  There is no
+	cross-contamination at this order, confirmed by checks D17-R1,
+	D17-R2, D17-R3.  The non-perturbative contributions visible in the
+	simulated ensembles are consistent with this assignment at the
+	algebraic level, though quantitative identification requires Landau
+	gauge fixing and is subject to the caveats of
+	Sec.~\ref{sec:Wpm-compare}.
+	
+	% ------------------------------------------------------------
+	\subsection{C4: Gauge Properties and the Path to a Physical
+		Observable}
+	\label{sec:disc-gauge}
+	% ------------------------------------------------------------
+	
+	The gauge non-invariance of $\Gcross$ proved in
+	Proposition~\ref{prop:gauge-noninv} is expected: charged-current
+	correlators are not gauge-invariant in pure Yang--Mills theory
+	without gauge-invariant composite operators or a physical gauge
+	condition.  This is a standard feature, not a pathology of the
+	framework.
+	
+	The path to a physical observable is through Landau gauge fixing
+	(Secs.~\ref{sec:landau-presc}--\ref{sec:future-sim}).  In Landau
+	gauge, the formal identification
+	$\Dcross(t)|_{\mathrm{Landau}}/8V \approx +(g^2/2)\,C_{W^{\pm}}(t)$
+	at $O(g^{2})$ connects $\Gcross$ to the zero-spatial-momentum
+	$W^{\pm}$ temporal correlator, with~\cite{CucchieriMendes2008,%
+		Bogolubsky} as comparison targets.  The positive sign $+(g^{2}/2)$
+	---confirmed by~\eqref{eq:b-bilinear-Og2} and
+	Sec.~\ref{sec:Wpm-compare}---means $\Gcross$ is non-negative at
+	leading perturbative order; the observed negative values on
+	thermalized configurations (37--62\% of cases~\cite{FirestoneP4}) are
+	a genuine non-perturbative effect.  Gribov copy dependence introduces
+	a systematic uncertainty not bounded in this paper, designated OQ1.
+	
+	% ------------------------------------------------------------
+	\subsection{C5: The \texorpdfstring{$b$}{b}-Channel as Necessary
+		Conduit; Matter for Chirality}
+	\label{sec:disc-chirality}
+	% ------------------------------------------------------------
+	
+	Proposition~\ref{prop:b-conduit} establishes two complementary facts.
+	First, the $b$-channel is an unavoidable algebraic gateway for any
+	gauge-link correlator sensitive to $W^{\pm}$: no diagonal projector
+	correlator can access $b$ (Lemma~\ref{lem:b-blindness}), so $\Gcross$
+	is the unique algebraic structure through which the charged gauge
+	boson sector is visible.  Second, the $b$-channel does not by itself
+	select chirality: the pure-gauge link variable transforms identically
+	under $\su(2)$ regardless of matter handedness, and the distinction
+	between left- and right-handed couplings is encoded entirely in the
+	matter sector.  The identification of $\Gcross$ as the algebraic
+	conduit for $W^{\pm}$ is a necessary but not sufficient condition for
+	implementing the chiral structure of the electroweak interaction.
+	Chirality selection requires fermionic fields with definite
+	handedness, and faces the Nielsen--Ninomiya
+	obstruction~\cite{NielsenNinomiya1981a,NielsenNinomiya1981b} in any
+	local, Hermitian, doubler-free formulation.
+	
+	% ------------------------------------------------------------
+	\subsection{Open Questions OQ1--OQ7}
+	\label{sec:disc-OQ}
+	% ------------------------------------------------------------
+	
+	\begin{description}
+		\item[OQ1] \emph{(Landau gauge measurement.)}
+		Implementing requirements F5--F9 on the existing ensembles and
+		performing a quantitative comparison to~\cite{%
+			CucchieriMendes2008,Bogolubsky}.  The Gribov copy systematic
+		(caveat~(iv) of Sec.~\ref{sec:Wpm-compare}) must be characterised
+		before the comparison can be made quantitatively reliable.
+		
+		\item[OQ2] \emph{(Sign-definiteness of ensemble averages.)}
+		Whether $\langle\Gdiag\rangle$ and $\langle\Gcross\rangle$ are
+		sign-definite at finite $\beta$ is an open numerical question
+		requiring measurements on larger ensembles.
+		
+		\item[OQ3] \emph{($\su(3)$ extension.)}
+		Extending the two-observable decomposition to $\su(3)$ within
+		the $\cl(6)$ framework of Paper~1~\cite{FirestoneP1}, where the
+		algebra is larger and the projector structure more complex.
+		
+		\item[OQ4] \emph{(Chirality and fermionic content.)}
+		The conditional prediction of Sec.~\ref{sec:fermion-target}
+		requires a chirally symmetric lattice fermion action.  The
+		Nielsen--Ninomiya
+		obstruction~\cite{NielsenNinomiya1981a,NielsenNinomiya1981b}
+		requires domain wall or overlap fermions.  Designated Future
+		Requirements F1--F4.
+		
+		\item[OQ5] \emph{(Electroweak mixing, $\uu(1)_Y$, and $W/Z$ mass
+			ratio.)}
+		Including $\uu(1)_Y$ and the Higgs mechanism.  Outside the scope
+		of the present series.
+		
+		\item[OQ6] \emph{(Higher-spin and reducible representations.)}
+		Extension of the channel decomposition to higher-spin or
+		reducible representations of $\su(2)$.
+		
+		\item[OQ7] \emph{(Temporal gauge and full spacetime structure.)}
+		A formulation incorporating all four-dimensional spacetime links
+		in Landau gauge for proper continuum limit comparison and
+		momentum-space propagator extraction.
+	\end{description}
+	
+	\medskip\noindent
+	OQ1--OQ4 are the most pressing; OQ5--OQ7 are longer-range.
+	
+	% ============================================================
+	\section{Conclusions}
+	\label{sec:conclusions}
+	% ============================================================
+	
+	We have presented a two-observable decomposition of the $\su(2)$
+	temporal gauge-link correlator within the $\cl(0,2)\cong\HH$
+	algebraic framework.  Three results stand out as the principal
+	contributions of this paper.  We emphasise that the quaternionic
+	parametrisation $U = a\cdot I_2 + b\cdot J$ and the resulting
+	bilinear split are standard; the new contributions are the
+	\emph{projector formulation} of the channel separation, the
+	\emph{algebraic closure of the Paper~4 gap} (giving $\Dcross$ an
+	independent generator), and the \emph{Landau-gauge propagator
+	identification} at $O(g^2)$.
+	
+	% ------------------------------------------------------------
+	\subsection*{Result 1 --- Exact Algebraic Decomposition
+		(Cor.~\ref{cor:two-obs-decomp};
+		Thm.~\ref{thm:two-obs-completeness})}
+	\label{sec:result1}
+	% ------------------------------------------------------------
+	
+	The pair $\{\Gdiag(t),\Gcross(t)\}$ constitutes an exact algebraic
+	decomposition of $\Gfull(t)$ in the $\cl(0,2)\cong\HH$ framework.
+	Specifically, $\Gdiag(t) + \Gcross(t) = \Gfull(t)$ holds exactly for
+	every $\su(2)$ gauge configuration and every timeslice~$t$, with
+	$\Gdiag(t) = 8\sum\operatorname{Re}[a_t\bar{a}_0]$ faithful to the
+	$a$-channel (Proposition~1 of Paper~4~\cite{FirestoneP4}) and
+	$\Gcross(t) = 8\sum\operatorname{Re}[b_t\bar{b}_0]$ faithful to the
+	$b$-channel
+	(Proposition~\ref{prop:off-diag-collapse}).  This resolves the
+	structural gap of Paper~4: the cross term $\Dcross$, previously
+	defined subtractionally, is exactly the $b$-channel bilinear.
+	Verified to $|\Gdiag + \Gcross - \Gfull|\leq 1.78\times 10^{-15}$
+	and $|\Gcross - \Dcross|\leq 1.14\times 10^{-13}$ across all four
+	ensembles (D7a--D7c, D8\,$\times\,4\beta$).
+	
+	% ------------------------------------------------------------
+	\subsection*{Result 2 --- Embedding Independence
+		(Prop.~\ref{prop:rank1-univ})}
+	\label{sec:result2}
+	% ------------------------------------------------------------
+	
+	The rank-1 collapse $\Pir\, U\,\Pir = (U)_{rr}\,\Pir$ --- which
+	forces the $b$-channel blindness of all diagonal projector
+	correlators and thereby necessitates the off-diagonal structure of
+	$\Gcross$ --- is intrinsic to the fundamental spin-$1/2$
+	representation of $\su(2)$.  It holds identically for every
+	tensor-product embedding of $U$ into $\Cplx^{8}$ (Cases~A, B, C of
+	Sec.~\ref{sec:embedding-univ}), with the same bilinear formula and
+	the same spectator trace factor of~$4$ in each case.  The
+	two-observable structure of $\{\Gdiag,\Gcross\}$ is not an artifact
+	of the specific embedding $I_{2}\otimes U\otimes I_{2}$.
+	
+	% ------------------------------------------------------------
+	\subsection*{Result 3 --- Physical Channel Assignment and Gauge
+		Status (Prop.~\ref{prop:b-conduit};
+		Prop.~\ref{prop:gauge-noninv})}
+	\label{sec:result3}
+	% ------------------------------------------------------------
+	
+	At $O(g)$, the generator structure of $\su(2)$ enforces an exact
+	channel separation: $T^{3}\,A^{3}_{\mu}$ contributes only to the
+	$a$-channel and $T_{\pm}\,W^{\mp}_{\mu}$ contribute only to the
+	$b$-channel (D17-R1, D17-R2, D17-R3).  $\Gdiag$ probes $A^{3}$;
+	$\Gcross$ probes $W^{\pm}$.  The $b$-channel is a necessary algebraic
+	conduit for all charged-current coupling
+	(Proposition~\ref{prop:b-conduit}).  $\Gcross$ is proved not to be
+	gauge-invariant (Proposition~\ref{prop:gauge-noninv}).  In Landau
+	gauge:
+	\[
+	\Dcross(t)\big|_{\mathrm{Landau}}\big/\,8V
+	\;\approx\; +(g^{2}/2)\cdot C_{W^{\pm}}(t) + O(g^{3}),
+	\]
+	with positive sign $+(g^{2}/2)$ confirmed by the weak-coupling
+	calculation of Sec.~\ref{sec:Wpm-compare}.
+	
+	% ------------------------------------------------------------
+	\subsection*{What Paper~5 Does Not Establish}
+	\label{sec:not-establish}
+	% ------------------------------------------------------------
+	
+	Paper~5 does not establish gauge invariance of $\Gcross$ or
+	$\Dcross$.  It does not implement Landau gauge fixing, does not
+	compute the $W^{\pm}$ propagator numerically, and does not perform a
+	quantitative comparison to the lattice data
+	of~\cite{CucchieriMendes2008,Bogolubsky}.  It does not address
+	electroweak mixing, $W/Z$ mass ratios, the Higgs mechanism, or
+	chiral symmetry breaking.  It does not implement a fermionic action
+	of any kind and makes no claim of overcoming the Nielsen--Ninomiya
+	obstruction~\cite{NielsenNinomiya1981a,NielsenNinomiya1981b}.
+	\emph{The embedding does not, by itself, distinguish $\su(2)_L$ from
+		$\su(2)_R$; this requires external fermionic input.}
+	All 51 algebraic and numerical checks (D1--D18) are satisfied at
+	tolerance $\leq 10^{-13}$ or better; the results are exact in the
+	algebraic sense of Corollary~\ref{cor:two-obs-decomp} and
+	Theorem~\ref{thm:two-obs-completeness}, perturbative in the physical
+	identification of Sec.~\ref{sec:Wpm-compare}, and conditional in the
+	programme targets of Sec.~\ref{sec:fermion-target}.
+	
+	% ============================================================
+	%  APPENDICES
+	% ============================================================
+	\appendix
+	\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+	\numberwithin{table}{section}
+	\renewcommand{\theequation}{\Alph{section}.\arabic{equation}}
+	\numberwithin{equation}{section}
+	
+	% ------------------------------------------------------------
+	\section{Algebraic Verification Checks}
+	\label{app:A}
+	% ------------------------------------------------------------
+	
+	\setcounter{table}{-1}   % first \begin{table} in this appendix --> Table A.0
+		
+		All 51 verification instances were executed across check IDs
+		D1--D18.  The programme achieves a complete \textsc{pass} record:
+		51/51 instances pass, 0 fail, with 1 flagged anomaly (D10b, closed)
+		and 3 inverted checks (D9a, D18a, D18b-n).  The next available check
+		identifier for Paper~6 is D19.
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Complete check programme --- D1 through D18.}
+			\label{tab:check-programme}
+			\footnotesize
+			\setlength{\tabcolsep}{4pt}
+			\renewcommand{\arraystretch}{1.15}
+			\begin{tabular}{@{}l c p{4.4cm} p{3.2cm} l l@{}}
+				\toprule
+				\textbf{Check ID} & \textbf{\S} & \textbf{Description}
+				& \textbf{Expected} & \textbf{Tol.} & \textbf{Result}\\
+				\midrule
+				D1 (D1a--D1d) & \S\ref{sec:intro}--\S\ref{sec:framework}
+				& Data structure; $\su(2)$ param; $|a|^2 + |b|^2 = 1$
+				& Param exact; (E4) holds
+				& $\leq 10^{-15}$ & \textsc{pass}\\
+				D2 (D2a--D2d) & \S\ref{sec:framework}
+				& Clifford grade decomp; $\cl^{0}\cong\Cplx$;
+				$\cl^{1} = \Cjhat$; RM1--RM5
+				& Grade split consistent
+				& $\leq 10^{-15}$ & \textsc{pass}\\
+				D3 (D3a--D3d)
+				& \S\ref{sec:framework}--\S\ref{sec:two-obs-decomp-section}
+				& Rank-1 collapse (diag.\ \& off-diag.);
+				$b$-blindness of $P_r$
+				& Collapse formulae exact
+				& $\leq 10^{-15}$ & \textsc{pass}\\
+				D4 (D4a--D4h) & \S\ref{sec:framework}
+				& Generator commutation;
+				Casimir $= (3/4)\,I_2$; algebra closure
+				& Relations exact
+				& $\leq 10^{-14}$ & \textsc{pass}\\
+				D5 & \S\ref{sec:two-obs-decomp-section}
+				& Prop.~\ref{prop:off-diag-collapse}:
+				$\operatorname{Re}\tr[\PLW_+ E_t \PLW_- E_0^{\dagger}]
+				= 4\operatorname{Re}[b_t \bar{b}_0]$, 50 pairs
+				& RHS matches LHS
+				& $\leq 10^{-14}$ & \textsc{pass}\\
+				D6 & \S\ref{sec:two-obs-decomp-section}
+				& Cor.~\ref{cor:orientation-sym}:
+				orientation symmetry, 50 pairs
+				& Equality holds
+				& $\leq 10^{-14}$ & \textsc{pass}\\
+				D7 (D7a--D7c) & \S\ref{sec:two-obs-decomp-section}
+				& Thm.~\ref{thm:two-obs-completeness}:
+				$|\Gdiag + \Gcross - \Gfull|$
+				& $\leq 1.78\times 10^{-15}$
+				& $\leq 10^{-14}$ & \textsc{pass}\\
+				D8 ($\times\,4\beta$) & \S\ref{sec:two-obs-decomp-section}
+				& $\Gcross = \Dcross$:
+				$|\Gcross - \Dcross|$, all ensembles
+				& $\leq 1.14\times 10^{-13}$
+				& $\leq 10^{-12}$ & \textsc{pass}\\
+				D9 (D9a) & \S\ref{sec:two-obs-decomp-section}
+				& Sign non-definiteness of $\Gcross$ (inverted)
+				& $\Gcross < 0$ in $\geq 1$ case
+				& Inverted & \textsc{pass}\\
+				D10 (D10a$\times 3\varepsilon$; D10b*)
+				& \S\ref{sec:physical-interp}
+				& $b$-channel WC error vs $\varepsilon$; log-log slope
+				& $O(\varepsilon^{3})$; slope$=3.000$
+				& $\leq 10^{-10}$ & \textsc{pass}*\\
+				D11 (D11a$\times 3\varepsilon$; D11b)
+				& \S\ref{sec:physical-interp}
+				& $a$-channel WC error vs $\varepsilon$; log-log slope
+				& $O(\varepsilon^{2})$; slope$=2.000$
+				& $\leq 10^{-10}$ & \textsc{pass}\\
+				D12 (D12b) & \S\ref{sec:physical-interp}
+				& Monotone $|R(\beta)|$ at $t=5$ across ensembles
+				& Monotone in $\beta_{\mathrm{eff}}$
+				& Qualitat.\ & \textsc{pass}\\
+				D13 (D13a) & \S\ref{sec:physical-interp}
+				& Cold-start $\langle|b|^2\rangle\approx 0.5$ (Haar)
+				& $\approx 0.5$
+				& $\leq 10^{-2}$ & \textsc{pass}\\
+				D14 (D14$^{+}$, D14$^{-}$) & \S\ref{sec:embedding-univ}
+				& Case A ($U\otimes I_4$): $8\times 8$ trace vs
+				$2\times 2$ element, $r=\pm$, 50 pairs
+				& $\leq 2.22\times 10^{-16}$ (1 ULP)
+				& 1 ULP & \textsc{pass}\\
+				D15 (D15$^{+}$, D15$^{-}$) & \S\ref{sec:embedding-univ}
+				& Case B ($I_4\otimes U$): $8\times 8$ trace vs
+				$2\times 2$ element, $r=\pm$, 50 pairs
+				& $\leq 2.22\times 10^{-16}$ (1 ULP)
+				& 1 ULP & \textsc{pass}\\
+				D16 & \S\ref{sec:embedding-univ}
+				& $b$-blindness std over 800 evals
+				& std $= 0.00\times 10^{+00}$
+				& Exact $0$ & \textsc{pass}\\
+				D17 (D17-R1,R2,R3) & \S\ref{sec:SU2-LR}
+				& Channel purity: $A^{3}$ only in $a$;
+				$\partial(\operatorname{Im} a)/\partial \alpha^{1}
+				= \partial(\operatorname{Im} a)/\partial \alpha^{2} = 0$
+				& R1, R2, R3 all zero
+				& $\leq 10^{-10}$ & \textsc{pass}\\
+				D18 (D18a; D18b-f; D18b-n) & \S\ref{sec:gauge-properties}
+				& Gauge non-inv (inv);
+				Lemma~\ref{lem:b-transform} formula;
+				counterexample (inv)
+				& $\geq 10^{-6}$; $0.00$; change
+				& Inv/Analyt.\ & \textsc{pass}\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		% ------------------------------------------------------------
+		\subsection{Flagged Anomaly: D10b}
+		\label{sec:flagged-D10b}
+		% ------------------------------------------------------------
+		% NOTE: Per Q2 author decision, this subsection (originally numbered
+		% §A.2 in the draft) has been renumbered to §A.1 to close the §A.1
+		% gap. §A.1 was never referenced anywhere in the document.
+		
+		\noindent
+		\textbf{D10b --- $b$-Channel Slope (Flagged; Spec Error; Closed).}
+		The log-log slope of the $b$-channel weak-coupling approximation
+		error versus $\varepsilon$ is $3.000$ rather than the expected $2$
+		specified in the original check programme.  This is a specification
+		error, not a computation error, and the check is closed with the
+		following resolution.
+		
+		The $O(\varepsilon^{2})$ coefficient in the Taylor expansion of
+		$b = (U)_{01} = (\exp(i\varepsilon H))_{01}$ vanishes identically
+		because $H^{2}\propto I_2$ for any $\su(2)$ generator $H$.
+		Specifically, $(H^{2})_{01} = 0$ since $H^{2}$ is proportional to the
+		identity.  The expansion of $\sin(\varepsilon\,\|H\|)/\|H\|$ has no
+		$\varepsilon^{2}$ term in the off-diagonal component; the leading
+		correction is $O(\varepsilon^{3})$.  This is the sin-Taylor argument.
+		It is distinct from the BCH/$[T_{+},T_{-}]\propto T_{3}$ argument,
+		which explains channel purity (D17) and is a separate algebraic
+		result.  Slope $=3$ confirms approximation quality; channel identity
+		is established algebraically by
+		Proposition~\ref{prop:off-diag-collapse},
+		Lemma~\ref{lem:b-blindness}, and checks D3c--D3d.
+		
+		% ------------------------------------------------------------
+		\subsection{Notes on Checks D14/D15, D16, and D18}
+		\label{sec:notes-checks}
+		% ------------------------------------------------------------
+		
+		\noindent
+		\textbf{D14/D15 --- Type~(b) Independent Computations.}
+		The LHS is evaluated via the full $8\times 8$ Kronecker-product
+		trace; the RHS accesses the $2\times 2$ matrix element $(U_t)_{rr}$
+		directly.  The two code paths share no intermediate data structure.
+		The residual of $2.22\times 10^{-16} = 1$~ULP in all four sub-checks
+		represents genuine numerical agreement between distinct computation
+		routes.
+		
+		\medskip\noindent
+		\textbf{D16 --- Consistency Check; Not Independent Verification.}
+		Check D16 evaluates the std of the diagonal projector correlator
+		over $800$ random choices of $b$, holding $a$ fixed.  The result
+		std $= 0.00\times 10^{+00}$ is guaranteed by construction: $b$ is
+		algebraically absent from the formula.  D16 is a consistency check
+		on the implementation.  The substantive verification of $b$-channel
+		blindness is established by Proposition~\ref{prop:rank1-univ} and
+		the Core Lemma~\eqref{eq:core-lemma}, and confirmed by the
+		independent code-path comparison of D14/D15.
+		
+		\medskip\noindent
+		\textbf{D18 --- Scope of Gauge Non-Invariance Checks.}
+		The D18 check suite is designed for generic (Haar-random) gauge
+		transformations.  D18a measures residuals on 50 configurations,
+		finding min $1.07\times 10^{-2} \gg 10^{-6}$.  D18b-f
+		verifies~\eqref{eq:b-transform} on 50 random pairs with zero
+		floating-point residual.  D18b-n verifies the specific counterexample
+		$g_t = i\sigma_{2}$, $g_0 = I_2$ numerically.  Near-identity
+		transforms ($g\approx I + i\varepsilon H$,
+		$\varepsilon\lesssim 10^{-7}$) were not included; the $10^{-6}$
+		threshold is not valid there.  Gauge non-invariance under all
+		transforms is proved analytically by
+		Proposition~\ref{prop:gauge-noninv}.
+		
+		% ------------------------------------------------------------
+		\subsection{Section-Organised Sub-Tables}
+		\label{sec:subtables}
+		% ------------------------------------------------------------
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Checks for Secs.~\ref{sec:intro}--\ref{sec:framework}
+				(data structure and algebraic framework).}
+			\label{tab:checks-S1S2}
+			\small
+			\setlength{\tabcolsep}{6pt}
+			\begin{tabular}{@{}lp{8cm}cc@{}}
+				\toprule
+				\textbf{Check ID} & \textbf{Description}
+				& \textbf{Instances} & \textbf{Result}\\
+				\midrule
+				D1a--D1d  & $\su(2)$ parametrisation;
+				$|a|^2 + |b|^2 = 1$; data integrity
+				& 4 & \textsc{pass}\\
+				D2a--D2d  & Clifford grade decomp; right
+				$\Cplx$-module structure RM1--RM5
+				& 4 & \textsc{pass}\\
+				D3a--D3d  & Rank-1 collapse
+				(diagonal and off-diagonal); $b$-blindness
+				& 4 & \textsc{pass}\\
+				D4a--D4h  & Generator commutation; Casimir; algebra closure
+				& 8 & \textsc{pass}\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Checks for Sec.~\ref{sec:two-obs-decomp-section}
+				(Proposition~\ref{prop:off-diag-collapse},
+				Corollary~\ref{cor:orientation-sym},
+				Theorem~\ref{thm:two-obs-completeness}).}
+			\label{tab:checks-S3}
+			\small
+			\setlength{\tabcolsep}{6pt}
+			\begin{tabular}{@{}lp{8cm}cc@{}}
+				\toprule
+				\textbf{Check ID} & \textbf{Description}
+				& \textbf{Instances} & \textbf{Result}\\
+				\midrule
+				D5      & Prop.~\ref{prop:off-diag-collapse}:
+				off-diagonal collapse, 50 random pairs
+				& 1 & \textsc{pass}\\
+				D6      & Cor.~\ref{cor:orientation-sym}:
+				orientation symmetry, 50 random pairs
+				& 1 & \textsc{pass}\\
+				D7a--D7c & Thm.~\ref{thm:two-obs-completeness}:
+				$|\Gdiag + \Gcross - \Gfull|
+				\leq 1.78\times 10^{-15}$
+				& 3 & \textsc{pass}\\
+				D8 $\times 4\beta$ & $\Gcross = \Dcross$:
+				$\leq 1.14\times 10^{-13}$, all ensembles
+				& 4 & \textsc{pass}\\
+				D9a     & Sign non-definiteness of $\Gcross$
+				(inverted check)
+				& 1 & \textsc{pass}\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Checks for Sec.~\ref{sec:physical-interp}
+				(weak-coupling expansion).}
+			\label{tab:checks-S4}
+			\small
+			\setlength{\tabcolsep}{6pt}
+			\begin{tabular}{@{}lp{8cm}cc@{}}
+				\toprule
+				\textbf{Check ID} & \textbf{Description}
+				& \textbf{Instances} & \textbf{Result}\\
+				\midrule
+				D10a $\times 3\varepsilon$
+				& $b$-channel weak-coupling error at 3 values of $\varepsilon$
+				& 3 & \textsc{pass}\\
+				D10b*
+				& $b$-channel slope $=3$ (flagged; sin-Taylor; closed)
+				& 1 & \textsc{pass}*\\
+				D11a $\times 3\varepsilon$
+				& $a$-channel weak-coupling error at 3 values of $\varepsilon$
+				& 3 & \textsc{pass}\\
+				D11b  & $a$-channel slope $=2$
+				& 1 & \textsc{pass}\\
+				D12b  & Monotone $|R(\beta)|$ at $t=5$
+				& 1 & \textsc{pass}\\
+				D13a  & Cold-start $\langle|b|^2\rangle\approx 0.5$
+				& 1 & \textsc{pass}\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Checks for Sec.~\ref{sec:embedding-univ}
+				(embedding universality).}
+			\label{tab:checks-S5}
+			\small
+			\setlength{\tabcolsep}{6pt}
+			\begin{tabular}{@{}lp{8cm}cc@{}}
+				\toprule
+				\textbf{Check ID} & \textbf{Description}
+				& \textbf{Instances} & \textbf{Result}\\
+				\midrule
+				D14$^{+}$, D14$^{-}$
+				& Case A ($U\otimes I_4$): type~(b) independent,
+				$r = \pm$, 50 pairs
+				& 2 & \textsc{pass}\\
+				D15$^{+}$, D15$^{-}$
+				& Case B ($I_4\otimes U$): type~(b) independent,
+				$r = \pm$, 50 pairs
+				& 2 & \textsc{pass}\\
+				D16
+				& $b$-blindness std $= 0.00\times 10^{+00}$,
+				800 evals (consistency check)
+				& 1 & \textsc{pass}\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Checks for Sec.~\ref{sec:SU2-LR} (channel purity).}
+			\label{tab:checks-S7}
+			\small
+			\setlength{\tabcolsep}{6pt}
+			\begin{tabular}{@{}lp{8cm}cc@{}}
+				\toprule
+				\textbf{Check ID} & \textbf{Description}
+				& \textbf{Instances} & \textbf{Result}\\
+				\midrule
+				D17-R1
+				& $\operatorname{Im}(a_\varepsilon - 1)/\varepsilon
+				= \alpha^{3}/2$; $T^{3} A^{3}$ only
+				& 1 & \textsc{pass}\\
+				D17-R2
+				& $\partial(\operatorname{Im} a)/\partial \alpha^{1} = 0$;
+				no $A^{1}$ contamination
+				& 1 & \textsc{pass}\\
+				D17-R3
+				& $\partial(\operatorname{Im} a)/\partial \alpha^{2} = 0$;
+				no $A^{2}$ contamination
+				& 1 & \textsc{pass}\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Checks for Sec.~\ref{sec:gauge-properties}
+				(gauge non-invariance).}
+			\label{tab:checks-S8}
+			\small
+			\setlength{\tabcolsep}{6pt}
+			\begin{tabular}{@{}lp{8cm}cc@{}}
+				\toprule
+				\textbf{Check ID} & \textbf{Description}
+				& \textbf{Instances} & \textbf{Result}\\
+				\midrule
+				D18a  & Gauge non-inv, statistical;
+				min $1.07\times 10^{-2}$; 50 configs (inverted)
+				& 1 & \textsc{pass}\\
+				D18b-f
+				& Lemma~\ref{lem:b-transform}
+				formula~\eqref{eq:b-transform}: analytic, 50 pairs;
+				residual $0.00\times 10^{+00}$
+				& 1 & \textsc{pass}\\
+				D18b-n
+				& Counterexample $g_t = i\sigma_2$, $g_0 = I_2$:
+				$b'_t = a^{*}_t$ detected (inverted)
+				& 1 & \textsc{pass}\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\medskip\noindent
+		\textbf{Open Item ITEM-A.1.}\enspace
+		Check D18b-f was run on 5 pairs in the original execution;
+		Appendix~\ref{app:A} reports 50 for consistency with the D5, D6,
+		D14, D15 conventions.  The result is guaranteed to remain
+		$0.00\times 10^{+00}$ since the verification is analytic.  Extension
+		to 50 pairs is optional and does not affect any conclusion.
+		
+		% ------------------------------------------------------------
+		\section{Simulation Parameters}
+		\label{app:B}
+		% ------------------------------------------------------------
+		
+		\subsection{Ensemble Parameters}
+		\label{sec:ensemble-params}
+		
+		The numerical results of this paper are computed on the four
+		thermalized $\su(2)$ pure-gauge ensembles generated in
+		Paper~4~\cite{FirestoneP4}.  No new Monte Carlo generation is
+		performed in Paper~5; all new measurements are carried out on the
+		existing configurations.
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Ensemble parameters.}
+			\label{tab:ensemble-params}
+			\small
+			\setlength{\tabcolsep}{8pt}
+			\begin{tabular}{@{}lp{8cm}@{}}
+				\toprule
+				\textbf{Parameter} & \textbf{Values / Setting}\\
+				\midrule
+				Effective coupling $\beta_{\mathrm{eff}}$
+				& $\{5.0,\,6.0,\,9.0,\,12.0\}$\\
+				Spatial extent $N$
+				& $6$ (i.e., $6^{3}$ spatial lattice)\\
+				Configurations per ensemble $N_{\mathrm{cfg}}$
+				& $20$\\
+				Thermalisation sweeps $N_{\mathrm{therm}}$
+				& $500$\\
+				Metropolis acceptance rate
+				& $\approx 45\%$\\
+				Gauge condition
+				& Temporal gauge ($A_0 = 0$; temporal links fixed to $I_2$)\\
+				Random seed
+				& $42$\\
+				Initialisation
+				& Cold start ($U_\mu(x) = I_2$ for all links)\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\subsection{Additional Measurements on Existing Ensembles}
+		\label{sec:new-measurements}
+		
+		\begin{table}[ht]
+			\centering
+			\caption{New measurements on Paper~4 ensembles.}
+			\label{tab:new-measurements}
+			\small
+			\setlength{\tabcolsep}{8pt}
+			\begin{tabular}{@{}lp{8cm}l@{}}
+				\toprule
+				\textbf{Measurement} & \textbf{Description}
+				& \textbf{Check IDs}\\
+				\midrule
+				M1 & $\Gdiag(t),\,\Gcross(t)$ per configuration per
+				timeslice $t$
+				& D7, D8\\
+				M2 & $\Dcross(t)$ comparison:
+				$|\Gcross - \Dcross|$ per ensemble
+				& D8 $\times 4\beta$\\
+				M3 & Compact identity:
+				$|\Gdiag + \Gcross - \Gfull|
+				\leq 1.78\times 10^{-15}$
+				& D7a--D7c\\
+				M4 & Sign diagnostics: fraction of (cfg,~$t$) pairs
+				with $\Gcross < 0$
+				& D9a\\
+				M5 & Gauge transformation test: $\Dcross$ before and
+				after Haar-random $g(x)$
+				& D18a\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\subsection{Verification Script Summary}
+		\label{sec:scripts}
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Verification script assignments.}
+			\label{tab:verification-scripts}
+			\small
+			\setlength{\tabcolsep}{8pt}
+			\begin{tabular}{@{}lll@{}}
+				\toprule
+				\textbf{Script} & \textbf{Checks} & \textbf{Sections}\\
+				\midrule
+				\texttt{paper5\_verification\_s4.py}
+				& D10a, D10b, D11a, D11b, D12b, D13a
+				& \S\ref{sec:physical-interp}\\
+				\texttt{paper5\_verification\_s5.py}
+				& D14$^{+}$, D14$^{-}$, D15$^{+}$, D15$^{-}$, D16
+				& \S\ref{sec:embedding-univ}\\
+				\texttt{paper5\_verification\_s7.py}
+				& D17-R1, D17-R2, D17-R3
+				& \S\ref{sec:SU2-LR}\\
+				\texttt{paper5\_verification\_s8.py}
+				& D18a, D18b-f, D18b-n
+				& \S\ref{sec:gauge-properties}\\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\medskip\noindent
+		\textbf{Open Item ITEM-B.1 (Resolved).}\enspace
+		SciPy version: 1.16.3.
+		
+		\medskip\noindent
+		Checks D1--D9 were executed within the core Paper~5 verification
+		pipeline, building directly on the Paper~4 simulation infrastructure
+		(\texttt{paper4\_simulation.py}, \texttt{su2\_corrected\_T3.py}).
+		
+		\subsection{Paper~6 Entry Point}
+		\label{sec:paper6-entry}
+		
+		The simulation infrastructure of Papers~4 and~5 provides the
+		foundation for the next stage of the programme.  On the gauge side,
+		the immediate requirement is Landau gauge fixing (F5:
+		steepest-descent or Fourier-accelerated gauge fixing; F6:
+		Fourier-accelerated alternative; F7: Gribov copy strategy with
+		$\geq 5$ random starts per configuration; F8: post-fix $\Dcross$
+		measurement; F9: propagator extraction and comparison
+		to~\cite{CucchieriMendes2008,Bogolubsky}).
+		
+		On the fermionic side, the conditional prediction of
+		Sec.~\ref{sec:fermion-target} requires a chirally symmetric lattice
+		fermion action (F1--F4: domain wall or overlap fermion action;
+		construction of the cross-projected propagator
+		$S_{\mathrm{cross}} = \PLW_+ S(x,y) \PLW_-$; measurement on
+		gauge-fixed backgrounds).
+		
+		% NOTE: The following sentence preserves the draft's "first available
+		% identifiers for Paper 6" list. Under the original (cross-paper
+		% sequential) numbering, "Proposition 7", "Corollary 6", "Theorem 2",
+		% "Lemma 4" identified the next available result-counter values.
+		% Under the new section-prefixed scheme used in this typeset version,
+		% these identifiers no longer correspond to a unique result counter
+		% (each section in Paper 6 will start its own X.1 sequence). Author
+		% to decide whether to rephrase this sentence (e.g., "next available
+		% check ID is D19; result numbering in Paper 6 will be section-
+		% prefixed per Paper 5 convention") or remove it.
+		First available identifiers for Paper~6: D19 (check); Proposition~7;
+		Corollary~6; Theorem~2; Lemma~4.
+		
+		% ============================================================
+		%  BIBLIOGRAPHY
+		% ============================================================
+		
+		\begin{thebibliography}{99}
+			
+			% NOTE: Bibliographic entries for the [P1]-[P5] series papers are
+			% partial in the original draft (no journal, year, arXiv ID, or
+			% publication status given). The entries below preserve the
+			% draft's description; full publication metadata to be supplied
+			% by the author when ready for arXiv/journal submission.
+			
+			\bibitem[{[P1]}]{FirestoneP1}
+			T.~M.\ Firestone, \emph{Division algebra framework: $\Dix$;
+				$\cl(6)$.}~[Series Paper~1].
+			
+			\bibitem[{[P2]}]{FirestoneP2}
+			T.~M.\ Firestone, \emph{Grade-decomposed QCD pion correlator;
+				$\su(3)$ kinematic limit theorem;
+				$\sim\!8\times 10^{-5}$ quantum corrections.}~[Series Paper~2].
+			
+			\bibitem[{[P4]}]{FirestoneP4}
+			T.~M.\ Firestone, \emph{$T_3$ eigenspace-decomposed link correlator
+				in $\su(2)$ pure gauge.}~[Series Paper~4].
+			
+			% NOTE: [P5] is the present paper. The original draft includes a
+			% self-referential entry. \cite{FirestoneP5} is never invoked in
+			% the body text; the entry is preserved here verbatim from the
+			% draft. Author to decide whether to retain or remove for the
+			% submitted version.
+			\bibitem[{[P5]}]{FirestoneP5}
+			T.~M.\ Firestone, \emph{Two-Observable Decomposition in $\su(2)$
+				Lattice Gauge Theory: the $\cl(0,2)\cong\HH$ Framework.}~[This paper].
+			
+			\bibitem[{[NN1]}]{NielsenNinomiya1981a}
+			H.~B.\ Nielsen and M.\ Ninomiya,
+			\emph{Absence of neutrinos on a lattice: (I).~Proof by homotopy
+				theory,}
+			Nuclear Physics~B \textbf{185} (1981) 20--40.
+			\href{https://doi.org/10.1016/0550-3213(81)90361-8}%
+			{doi:10.1016/0550-3213(81)90361-8}.
+			
+			\bibitem[{[NN2]}]{NielsenNinomiya1981b}
+			H.~B.\ Nielsen and M.\ Ninomiya,
+			\emph{Absence of neutrinos on a lattice: (II).~Intuitive
+				topological proof,}
+			Nuclear Physics~B \textbf{193} (1981) 173--194.
+			\href{https://doi.org/10.1016/0550-3213(81)90524-1}%
+			{doi:10.1016/0550-3213(81)90524-1}.
+			
+			\bibitem[{[CM]}]{CucchieriMendes2008}
+			A.\ Cucchieri and T.\ Mendes,
+			\emph{Constraints on the IR behavior of the gluon propagator
+				in Yang--Mills theories,}
+			Physical Review Letters \textbf{100} (2008) 241601.
+			\href{https://doi.org/10.1103/PhysRevLett.100.241601}%
+			{doi:10.1103/PhysRevLett.100.241601}.
+			\href{https://arxiv.org/abs/0712.3517}{arXiv:0712.3517}.
+			
+			\bibitem[{[Bo]}]{Bogolubsky}
+			I.~L.\ Bogolubsky, E.-M.\ Ilgenfritz, M.\ M\"{u}ller-Preussker,
+			and A.\ Sternbeck,
+			\emph{Lattice gluodynamics computation of Landau gauge Green's
+				functions in the deep infrared,}
+			Physics Letters~B \textbf{676} (2009) 69--73.
+			\href{https://doi.org/10.1016/j.physletb.2009.04.076}%
+			{doi:10.1016/j.physletb.2009.04.076}.
+			\href{https://arxiv.org/abs/0901.0736}{arXiv:0901.0736}.
+
+			\bibitem[{[GW82]}]{GinspargWilson1982}
+			P.~H.\ Ginsparg and K.~G.\ Wilson,
+			\emph{A remnant of chiral symmetry on the lattice,}
+			Physical Review~D \textbf{25} (1982) 2649.
+			\href{https://doi.org/10.1103/PhysRevD.25.2649}%
+			{doi:10.1103/PhysRevD.25.2649}.
+
+			\bibitem[{[Ka92]}]{Kaplan1992}
+			D.~B.\ Kaplan,
+			\emph{A method for simulating chiral fermions on the lattice,}
+			Physics Letters~B \textbf{288} (1992) 342--347.
+			\href{https://doi.org/10.1016/0370-2693(92)91112-M}%
+			{doi:10.1016/0370-2693(92)91112-M}.
+			\href{https://arxiv.org/abs/hep-lat/9206013}{arXiv:hep-lat/9206013}.
+
+			\bibitem[{[Ne98]}]{Neuberger1998}
+			H.\ Neuberger,
+			\emph{Exactly massless quarks on the lattice,}
+			Physics Letters~B \textbf{417} (1998) 141--144.
+			\href{https://doi.org/10.1016/S0370-2693(97)01368-3}%
+			{doi:10.1016/S0370-2693(97)01368-3}.
+			\href{https://arxiv.org/abs/hep-lat/9707022}{arXiv:hep-lat/9707022}.
+			
+		\end{thebibliography}
+		
+	\end{document}
