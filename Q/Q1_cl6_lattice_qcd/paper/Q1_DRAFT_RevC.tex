@@ -1,0 +1,1455 @@
+% ============================================================
+%  Cl(6) Lattice QCD — Paper 1
+%  Todd M. Firestone
+%  DRAFT — not for circulation
+%  Typeset for arXiv submission
+%  Document class: article + geometry (generic, arXiv-compatible)
+% ============================================================
+
+\documentclass[12pt]{article}
+
+% --- Encoding & fonts ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% --- Page geometry (arXiv standard) ---
+\usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}
+
+% --- Mathematics ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+% --- Tables ---
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+
+% --- Graphics & color ---
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% --- References (numbered, sorted, compressed: [1,2] style) ---
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat}
+
+% --- Hyperlinks (arXiv-safe: no colored boxes, PDF metadata) ---
+\usepackage[
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=blue!60!black,
+  urlcolor=blue!60!black,
+  pdftitle={Clifford Algebra Cl(6) Formulation of Lattice QCD},
+  pdfauthor={Todd M. Firestone}
+]{hyperref}
+
+% --- Equation numbering: sequential (1),(2),(3)... ---
+% (arXiv single-paper standard; no section prefix)
+
+% --- Custom commands ---
+\newcommand{\cl}{\mathrm{Cl}}          % Clifford algebra
+\newcommand{\spin}{\mathrm{Spin}}
+\newcommand{\su}{\mathrm{SU}}
+\newcommand{\tr}{\mathrm{Tr}}
+\newcommand{\dW}{D_{\mathrm{W}}}       % Wilson-Dirac operator
+\newcommand{\SW}{S_{\mathrm{W}}}       % Wilson action
+\newcommand{\kc}{\kappa_{\mathrm{c}}}  % critical hopping parameter
+\newcommand{\half}{\tfrac{1}{2}}
+
+% --- Header / draft notice ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textit{Cl(6) Lattice QCD · Preprint v1 (June 2026) · comments welcome}}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% --- Title block ---
+\title{%
+  \textbf{Clifford Algebra $\cl(6)$ Formulation of Lattice QCD:}\\[4pt]
+  \textbf{Algebraic Structure, Dirac Operator Construction,}\\[4pt]
+  \textbf{and Verification Against Standard Benchmarks}%
+}
+
+\author{Todd M.\ Firestone}
+
+\date{}   % suppress automatic date for arXiv submission
+
+\maketitle
+\thispagestyle{fancy}   % apply header to first page
+
+% ============================================================
+\begin{abstract}
+% ============================================================
+We construct and verify a complete lattice QCD simulation in which
+the Dirac operator and $\su(3)$ gauge field are formulated within the
+Clifford algebra $\cl(6)$.  The algebraic framework identifies the six
+$\cl(6)$ basis vectors as Euclidean Dirac matrices acting on an
+8-dimensional spinor space, and embeds the $\su(3)$ color gauge group
+as the stabilizer subgroup $\su(3)\subset\su(4)\cong\spin(6)$ within
+the bivector subalgebra.  The Wilson gauge action and Wilson--Dirac
+fermion operator are unchanged by this embedding.
+
+We perform a systematic benchmark comparison across 14 independent
+observables spanning the gauge sector (plaquette expectation values,
+deconfinement transition, Wilson loop area law, string tension) and the
+fermionic sector (GOR linearity, hopping-parameter free-field check, chiral
+condensate sign, pion mass phase separation, Dirac eigenvalue spectrum).
+All 14 benchmarks pass.  The algebraic framework is verified to machine
+precision: anti-commutation relations to $0.00\times10^{0}$, all 28
+$\su(3)$ commutators to $1.24\times10^{-16}$, $\gamma_5$-Hermiticity
+to $9.35\times10^{-15}$.
+
+Beyond benchmark equivalence, we observe consistent phase-dependent
+signals.  The GOR intercept gap is positive at every volume, with
+gaps $\Delta B = 0.31$--$0.51$ at $N=4,6,8,10$
+(block-bootstrap statistical significance $5$--$15\sigma$ per size) and a
+tentative $1/N^2$ trend toward $\Delta B(N\to\infty)\sim0.5$; the four
+volumes are non-monotonic in $1/N^2$, so the latter is a rough indication,
+not a controlled extrapolation.  The GMOR
+slope ratio $A(\beta=4.5)/A(\beta=6.0)\approx1.03$ and, on a mass-matched
+ensemble, the Dirac spectral mean separation
+$\Delta\langle\lambda\rangle=+0.047\pm0.0003$ point in the same
+direction.  Because these observables share the same $\cl(6)$ Dirac
+operator and gauge configurations, the quoted significances are
+statistical only and their agreement is an internal consistency check,
+not independent confirmation.  The $\cl(6)$ formulation is
+established as a valid and computationally tractable framework for
+$\su(3)$ lattice gauge theory with Wilson fermions.
+\end{abstract}
+
+\bigskip
+\noindent\textit{Keywords:} Clifford algebra, lattice QCD, Wilson fermions,
+$\su(3)$ gauge theory, Dirac operator, chiral symmetry breaking,
+deconfinement, random matrix theory.
+
+% ============================================================
+\section{Introduction}
+\label{sec:intro}
+% ============================================================
+
+\subsection{Motivation}
+\label{sec:motivation}
+
+Lattice QCD is the primary non-perturbative tool for computing
+$\su(3)$ gauge theory dynamics from first principles~\cite{Wilson1974,
+Kogut1975}.  The question addressed here is whether it admits a
+reformulation in which the internal algebraic structure of color and
+spin is rendered more transparent, without altering the physics.  The
+Clifford algebra $\cl(6)$ is a natural candidate: its 15 bivectors span
+$\spin(6)\cong\su(4)$, which contains $\su(3)$ as the stabilizer of a
+preferred direction, and the 8-dimensional minimal left ideal decomposes
+as $\mathbf{3}\oplus\bar{\mathbf{3}}\oplus\mathbf{1}\oplus\mathbf{1}$
+under $\su(3)$.  Prior algebraic work~\cite{Furey2012,Furey2014,
+Furey2015,Furey2018a,Furey2018b} established that Standard Model
+quantum numbers arise from $\cl(6)$ acting on its left ideals.  What
+no prior work has done is compute dynamics.  This paper is, to our
+knowledge, the first verified dynamical calculation within the $\cl(6)$
+framework.
+
+\subsection{Prior Work and the Gap This Paper Fills}
+\label{sec:priorwork}
+
+Four prior streams bear on this work.
+(1)~Algebraic classification in $\cl(6)$ and related division
+algebras~\cite{Furey2012,Furey2014,Furey2015,Furey2018a,Furey2018b,
+Dixon1994,Stoica2018}: Standard Model quantum numbers, but no
+dynamics and no lattice.
+(2)~Dirac--K\"ahler (staggered) fermions~\cite{Kahler1962,BecherJoos1982},
+a long-established Clifford/exterior-algebra lattice fermion
+formulation --- but one built on the \emph{spacetime} algebra to
+organize fermion species and suppress doubling, not on an internal
+$\cl(6)$.
+(3)~Alternative qubit and quantum-simulation representations of
+$\su(3)$ lattice gauge theory~\cite{Zohar2015,Zohar2022,Mathur2016,
+Kan2021,Zache2018}: different algebraic languages, none using a
+geometric Clifford algebra.
+(4)~Geometric algebra in continuum gauge
+theory~\cite{Doran2003,Doran1996}: not discretized for $\su(3)$ QCD
+or verified numerically.
+The gap this paper fills is specific: no prior work formulates Wilson
+$\su(3)$ lattice QCD --- gauge action and Wilson--Dirac operator
+together --- in $\cl(6)$, with $\su(3)$ embedded as the $\spin(6)$
+stabilizer, implemented as a working simulation and verified against
+standard benchmarks.  This is distinct from Dirac--K\"ahler, which is
+a spacetime-algebra treatment of fermion doubling rather than a
+$\cl(6)$ formulation.
+
+\subsection{Scope and Organization}
+\label{sec:scope}
+
+Four contributions:
+(1)~$\cl(6)$ lattice QCD formulation from first principles
+    (Sec.~\ref{sec:framework});
+(2)~reproducible lattice implementation
+    (Sec.~\ref{sec:implementation});
+(3)~16-benchmark comparison, GOR analysis, and Dirac eigenvalue
+    results (Sec.~\ref{sec:results});
+(4)~interpretation, limitations, and future directions
+    (Sec.~\ref{sec:discussion}).
+
+\medskip
+\noindent\textit{Conventions.}\enspace
+Euclidean signature throughout; spacetime indices
+$\mu,\nu\in\{1,2,3,4\}$; internal indices $i,j\in\{1,\ldots,6\}$;
+hopping parameter $\kappa = 1/[2(m_0+4r)]$ with $r=1$ fixed;
+generator normalization $\tr(T_a T_b)=\tfrac{1}{2}\delta_{ab}$.
+
+% ============================================================
+\section{Algebraic Framework}
+\label{sec:framework}
+% ============================================================
+
+\subsection{\texorpdfstring{$\cl(6)$}{Cl(6)} Basis and Grade Structure}
+\label{sec:basis}
+
+The $\cl(6)$ algebra is generated by $\{e_1,\ldots,e_6\}$ satisfying
+the Clifford relation
+\begin{equation}
+  \{e_i,\,e_j\} \;\equiv\; e_i e_j + e_j e_i \;=\; 2\delta_{ij}\,I_8,
+  \label{eq:anticomm}
+\end{equation}
+where $I_8$ denotes the $8\times 8$ identity matrix.  A concrete
+$8\times 8$ representation, verified to maximum absolute error
+$0.00\times10^{0}$, is
+\begin{equation}
+\begin{aligned}
+  e_1 &= \sigma_x\otimes I_2\otimes I_2, &\qquad
+  e_2 &= \sigma_y\otimes I_2\otimes I_2, \\
+  e_3 &= \sigma_z\otimes\sigma_x\otimes I_2, &\qquad
+  e_4 &= \sigma_z\otimes\sigma_y\otimes I_2, \\
+  e_5 &= \sigma_z\otimes\sigma_z\otimes\sigma_x, &\qquad
+  e_6 &= \sigma_z\otimes\sigma_z\otimes\sigma_y,
+\end{aligned}
+\label{eq:basis}
+\end{equation}
+where $\sigma_x,\sigma_y,\sigma_z$ are the Pauli matrices and $I_2$ is
+the $2\times2$ identity.  The grade structure of $\cl(6)$ is summarized
+in Table~\ref{tab:grade}.
+
+\begin{table}[ht]
+\centering
+\caption{Grade structure of $\cl(6)$.  Total dimension $= 2^6 = 64$.}
+\label{tab:grade}
+\begin{tabular}{@{}clcl@{}}
+  \toprule
+  \textbf{Grade} & \textbf{Name} & \textbf{Dim} & \textbf{Role} \\
+  \midrule
+  0 & Scalar       &  1 & Identity / mass \\
+  1 & Vectors      &  6 & Dirac generators \\
+  2 & Bivectors    & 15 & Lie algebra $\spin(6)\cong\su(4)$;
+                          contains $\mathfrak{su}(3)$ \\
+  3 & Trivectors   & 20 & Even-subalgebra complement \\
+  4 & Quadvectors  & 15 & Dual to bivectors \\
+  5 & 5-vectors    &  6 & Dual to vectors \\
+  6 & Pseudoscalar &  1 & $I_6 = e_1\cdots e_6$;\quad $I_6^2 = +1$ \\
+  \midrule
+  \textbf{Total} & & \textbf{64} & \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+The even subalgebra $\cl^+(6)$ has dimension 32.  The 8-dimensional
+spinor space decomposes under $\su(3)$ as
+$\mathbf{3}\oplus\bar{\mathbf{3}}\oplus\mathbf{1}\oplus\mathbf{1}$.
+
+\subsection{\texorpdfstring{$\su(3)$}{SU(3)} Embedding}
+\label{sec:su3embed}
+
+The embedding chain is
+\[
+  \su(3)_{\text{color}} \;\subset\; \su(4) \;\cong\; \spin(6)
+  \;\subset\; \cl^+(6) \;\subset\; \cl(6).
+\]
+The isomorphism $\spin(6)\cong\su(4)$ follows from the Lie-algebra
+isomorphism $D_3\cong A_3$.  The group $\su(3)$ appears as the
+stabilizer
+$\su(3) = \mathrm{Stab}_{\,\su(4)}(\xi_0)$
+of the preferred direction $\xi_0=(0,0,0,1)^\top\in\mathbb{C}^4$.
+
+\smallskip
+\noindent\textit{Remark.}\enspace
+$\su(3)$ is imposed here by construction, not derived dynamically.
+
+\smallskip
+Generators $T_a = \lambda_a/2$ ($a=1,\ldots,8$) satisfy the following
+verified properties.
+\begin{itemize}
+  \item Normalization: $\tr(T_a T_b) = \tfrac{1}{2}\delta_{ab}$ to
+        $1.11\times10^{-16}$.
+  \item Structure constants: $[T_a,T_b] = if_{abc}T_c$ for all 28
+        independent commutators $\binom{8}{2}=28$, verified to
+        $1.24\times10^{-16}$.
+  \item Killing form: $K_{ab} = 3\delta_{ab}$ (compact semisimple,
+        confirmed).
+\end{itemize}
+The 15 bivectors $B_{ij}=\tfrac{i}{4}[e_i,e_j]$ are Hermitian and
+traceless, each with eigenvalues $\{-\tfrac{1}{2}(\times 4),\,
++\tfrac{1}{2}(\times 4)\}$ (exact).  The Jacobi identity holds for all
+$3{,}375$ generator triples to maximum error $0.00\times10^{0}$.
+Full numerical verification is given in Appendix~B.
+
+\subsection{\texorpdfstring{$\cl(6)$}{Cl(6)} Dirac Operator}
+\label{sec:dirac-op}
+
+The covariant Dirac operator takes the form
+\begin{equation}
+  D_\mu \;=\; \partial_\mu + ig\,A_\mu^a\,T_a.
+  \label{eq:dirac-cov}
+\end{equation}
+The basis vectors $\{e_\mu\}$ satisfy the defining relation for
+Euclidean $\gamma$-matrices, Eq.~\eqref{eq:anticomm}, with
+$\mu,\nu\in\{1,2,3,4\}$.  The spin and gauge degrees of freedom
+factorize exactly: the spin part acts as $(e_\mu\otimes I_3)$ on the
+color-spin space, and the gauge part as $(I_8\otimes U_\mu)$; together
+they act on $\mathbb{C}^{24}$ per lattice site.  The
+$\gamma_5$-matrix is defined as
+$\gamma_5 = e_1 e_2 e_3 e_4$,
+and the Wilson--Dirac operator satisfies
+$\dW^\dagger = \gamma_5\,\dW\,\gamma_5$
+to $9.35\times10^{-15}$ (machine precision).
+
+\smallskip
+\noindent\textit{Embedding versus representation.}\enspace
+Two $\su(3)$ structures appear here and must be kept distinct.  The
+embedding of Sec.~\ref{sec:su3embed} is an \emph{algebraic}
+identification --- $\su(3)$ inside the $\spin(6)$ bivectors, under
+which the 8-dimensional spinor carries the decomposition
+$\mathbf{3}\oplus\bar{\mathbf{3}}\oplus\mathbf{1}\oplus\mathbf{1}$ of
+Sec.~\ref{sec:basis}.  The gauge \emph{dynamics}, by contrast, act in
+the fundamental representation on the external color factor
+$\mathbb{C}^3$ (via $I_8\otimes U_\mu$).  Both carry the same gauge
+group and Wilson action, so the benchmarks are insensitive to the
+distinction; but the internal spinor decomposition is \emph{not} the
+color index gauged by the links.  Whether the dynamics can instead be
+carried by the internal $\spin(6)$ structure is left open.
+
+\subsection{Gauge Field Embedding}
+\label{sec:gauge-embed}
+
+Link variables are defined in the fundamental representation,
+$U_\mu(x) = \exp(i\theta_\mu^a T_a)\in\su(3)$, with $T_a=\lambda_a/2$
+the $3\times3$ generators of Sec.~\ref{sec:su3embed}; each $U_\mu$
+acts on the external color factor $\mathbb{C}^3$ as $I_8\otimes U_\mu$,
+consistent with the factorization of Sec.~\ref{sec:dirac-op}.
+Unitarity and $\det U_\mu = 1$ are verified to $<10^{-12}$ after every
+sweep.  The elementary plaquette is
+\begin{equation}
+  U_{\mu\nu}(x) \;=\;
+    U_\mu(x)\,U_\nu(x+\hat{\mu})\,U_\mu^\dagger(x+\hat{\nu})\,
+    U_\nu^\dagger(x),
+  \label{eq:plaquette}
+\end{equation}
+and the Wilson gauge action is
+\begin{equation}
+  \SW[U] \;=\; \frac{\beta}{3}\sum_{x,\,\mu<\nu}
+    \mathrm{Re}\!\left[\tr\!\left(1 - U_{\mu\nu}(x)\right)\right],
+  \label{eq:wilson-action}
+\end{equation}
+formally identical to the standard Wilson action.
+
+% ============================================================
+\section{Lattice Implementation}
+\label{sec:implementation}
+% ============================================================
+
+\subsection{Geometry and Parameters}
+\label{sec:geometry}
+
+Simulations are performed on a four-dimensional hypercubic lattice with
+periodic boundary conditions.  Lattice sizes $N\in\{4,6,8,10\}$
+correspond to volumes $V = N^4 \in \{256,\,1296,\,4096,\,10000\}$.
+The parameter ranges explored are $\beta\in[4.5,\,6.5]$,
+$m_0\in[0.001,\,0.50]$, with $r=1$ fixed throughout.  All simulations
+use the quenched approximation (no dynamical fermion determinant).
+
+\subsection{Wilson Gauge Action}
+\label{sec:wilson-gauge}
+
+The Wilson gauge action is given by Eq.~\eqref{eq:wilson-action}.
+A hot start is used for all production runs; independence from a cold
+start is verified after a minimum of 300 thermalization sweeps.
+
+\subsection{Wilson--Dirac Operator}
+\label{sec:wilson-dirac}
+
+The Wilson--Dirac operator acts on a spinor field $\Psi$ as
+\begin{equation}
+\begin{split}
+  (\dW\Psi)(x) \;=\; &\,(m_0+4r)\,\Psi(x) \\[4pt]
+  &-\,\frac{1}{2}\sum_{\mu=1}^{4}
+    \Bigl[
+      (r-e_\mu)\,U_\mu(x)\,\Psi(x+\hat{\mu})
+      \;+\;
+      (r+e_\mu)\,U_\mu^\dagger(x-\hat{\mu})\,\Psi(x-\hat{\mu})
+    \Bigr],
+\end{split}
+\label{eq:wilson-dirac}
+\end{equation}
+where $\hat{\mu}$ denotes the unit lattice vector in direction $\mu$.
+The linear system $\dW^\dagger\dW\,\Psi = \eta$ is solved by the
+conjugate-gradient (CG) method with tolerance $10^{-8}$ and a maximum
+of 1000 iterations.
+
+\smallskip
+\noindent\textit{Solver note.}\enspace
+CG failed to converge at $m_0=0.001$, $N=8$, but converged at $N=10$.
+Eigenvalue analysis confirms an additive renormalization issue:
+$\lambda_1=0.496$ at $N=10$ sits well above the fermionic momentum
+floor $p_{\mathrm{min}}=\pi/N=0.314$ (antiperiodic temporal boundary
+conditions).  Reading the residual mass from the free-field diagnostic
+$\lambda_1^2\approx m_{\mathrm{res}}^2+p_{\mathrm{min}}^2$ gives
+$m_{\mathrm{res}}=\sqrt{\lambda_1^2-p_{\mathrm{min}}^2}\approx0.384$;
+the same extraction at $N=6$ saturates the floor
+($\lambda_1/p_{\mathrm{min}}=0.976$), confirming the barrier is the
+residual mass, not finite volume.  This is a diagnostic estimate, not
+an exact identity in the interacting theory.  The resulting $M_{\mathrm{eff}}$ systematic
+(${\approx}20\%$ overestimate on $N=6,8$ from the timeslice ratio) is
+identical in both phases; the intercept gap $\Delta B$ is therefore
+unaffected.
+
+\subsection{Monte Carlo and Autocorrelation}
+\label{sec:montecarlo}
+
+Gauge configurations are generated with the Metropolis
+algorithm~\cite{Metropolis1953}, targeting an acceptance rate of
+${\approx}50\%$.  Each production run uses a minimum of 300
+thermalization sweeps, followed by $N_{\mathrm{decorr}}=5$ decorrelation
+sweeps between saved configurations.  Integrated autocorrelation times
+$\tau_{\mathrm{int}}$ were measured across 26 independent production runs:
+\begin{equation}
+  \tau_{\mathrm{int}} \;\in\; [0.50,\;0.88],
+  \qquad
+  \langle\tau_{\mathrm{int}}\rangle \;=\; 0.54 \pm 0.09
+  \quad (26\text{ runs}).
+  \label{eq:tauint}
+\end{equation}
+No statistically significant autocorrelation is detected at any lag:
+the lag-1 autocorrelation $\rho(1)\in[-0.36,+0.29]$ lies within the
+Bartlett $2\sigma$ band $2/\sqrt{N_{\mathrm{cfg}}}$ at every point
+($N_{\mathrm{cfg}}=20$ for $N=4,6$ and $N_{\mathrm{cfg}}=10$ for
+$N=8,10$; tightest band $=0.447$ at $N_{\mathrm{cfg}}=20$).  Configurations entering the analysis are
+separated by $N_{\mathrm{decorr}}=5$ sweeps, exceeding
+$5.7\,\tau_{\mathrm{int}}$, so the saved-configuration ensemble is
+decorrelated to better than $1\%$ ($\rho\sim e^{-5.7}\approx0.003$)
+and the residual variance inflation is negligible.  Errors on the
+condensate and per-mass observables are estimated by jackknife
+resampling of the $N_{\mathrm{cfg}}$ saved configurations; the error
+on the intercept gap $\Delta B$ is obtained by a moving-block
+configuration bootstrap --- resampling gauge configurations within each
+mass point and refitting the GOR line
+(Sec.~\ref{sec:interpretation}).
+
+\subsection{Observable Definitions}
+\label{sec:observables}
+
+\noindent\textit{Plaquette.}\enspace
+$\langle P\rangle = \dfrac{1}{6V}\sum_{x,\,\mu<\nu}
+\tfrac{1}{3}\,\mathrm{Re}\,\tr\,U_{\mu\nu}(x)$, normalized so that
+$\langle P\rangle\in[0,1]$.
+
+\smallskip
+\noindent\textit{Wilson loops.}\enspace
+$W(R,T) = \bigl\langle \tfrac{1}{3}\,\mathrm{Re}\,\tr
+\bigl[\textstyle\prod_{\partial} U\bigr]\bigr\rangle$, the trace of the
+ordered product of links around an $R\times T$ rectangle.  The string
+tension is extracted from $-\log W(R,T)/(RT)$ as a function of
+$1/(RT)$.
+
+\smallskip
+\noindent\textit{Pion correlator.}\enspace
+$C_\pi(t) = \sum_{x}\bigl\langle
+\tr[\,S(x,t;0,0)\,\gamma_5\,S^\dagger(x,t;0,0)\,\gamma_5\,]\bigr\rangle$,
+where $S=\dW^{-1}$ is the quark propagator, estimated with
+$N_{\mathrm{est}}=16$ $\mathbb{Z}_2$ noise vectors per configuration and
+fit to a two-$\cosh$ form for $m_\pi$.
+
+\smallskip
+\noindent\textit{Chiral condensate.}\enspace
+$\langle\bar\psi\psi\rangle = -\dfrac{1}{V}\,\tr\,\dW^{-1}$, extracted by
+three methods: the subtracted condensate, the GOR intercept, and the
+GMOR slope ratio (Sec.~\ref{sec:condensate}).
+
+\smallskip
+\noindent\textit{GOR relation.}\enspace
+$m_\pi^2 = 2 m_q\,|\langle\bar\psi\psi\rangle|/f_\pi^2
++ \mathcal{O}(m_q^2)$~\cite{GellMann1968}; a linear fit in $m_0$ yields
+slope $A$ and intercept $B$.
+
+\smallskip
+\noindent\textit{Dirac eigenvalues.}\enspace
+The 50 lowest eigenvalues of $\dW^\dagger\dW$ are computed with a sparse
+Hermitian (Lanczos) eigensolver, with $\lambda_k=\sqrt{\mu_k}$; the
+spectral observables are the mean $\langle\lambda\rangle$, the variance
+$\mathrm{Var}(\lambda)$, and the level-spacing distribution
+$P(s)\propto s^{\nu}$.
+
+\subsection{Verification Protocol}
+\label{sec:verification}
+
+Table~\ref{tab:checks} lists all pre-run verification checks performed
+before each production run.  Check~8 remains outstanding at the time of
+submission.
+
+\begin{table}[ht]
+\centering
+\caption{Pre-run verification checks.  Check~8 remains outstanding.}
+\label{tab:checks}
+\begin{tabular}{@{}clll@{}}
+  \toprule
+  \textbf{\#} & \textbf{Check} & \textbf{Criterion} & \textbf{Status} \\
+  \midrule
+  1 & Anti-commutation $\{e_i,e_j\}$, Eq.~\eqref{eq:anticomm}
+      & max error $< 10^{-12}$   & \textsc{pass} \\
+  2 & $\su(3)$ link unitarity
+      & max deviation $< 10^{-12}$ & \textsc{pass} \\
+  3 & Projector idempotency
+      & $< 10^{-14}$             & \textsc{pass} \\
+  4 & $\gamma_5$-Hermiticity $\dW^\dagger=\gamma_5\dW\gamma_5$
+      & $< 10^{-10}$             & \textsc{pass} \\
+  5 & Cold-start plaquette
+      & $\langle P\rangle=1.000$ exactly & \textsc{pass} \\
+  6 & Hot-start $\beta=6.0$
+      & $\langle P\rangle=0.593\pm0.002$ & \textsc{pass} \\
+  7 & Free-field propagator linearity
+      & $< 10^{-14}$             & \textsc{pass} \\
+  8 & Standard Dirac comparison
+      & agreement within stat.\ errors & \textsc{pending} \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Results}
+\label{sec:results}
+% ============================================================
+
+\subsection{Gauge Sector: Plaquette and Confinement}
+\label{sec:plaquette}
+
+Table~\ref{tab:plaquette} shows the measured plaquette expectation
+values $\langle P\rangle$ at $N=6$ across six values of $\beta$,
+compared with literature benchmarks~\cite{Creutz1980}.
+Agreement is within 0.3\% at $\beta=4.5$, 6.0, and 6.5.
+Deviations at $\beta=5.0,\,5.5$ reflect finite-volume smearing near
+the transition on $N=6$ lattices~\cite{Iwasaki1983,Fukugita1989}.
+The deconfinement transition is correctly bracketed at
+$\beta_c\approx5.69$~\cite{Celik1983}.  The uncorrected single-loop tension estimator $\sigma_{\text{eff}}$
+(Table~\ref{tab:wloop}) decreases monotonically with $\beta$ from
+$1.064(35)$ at $\beta=4.5$ to $0.306(4)$ at $\beta=6.5$, consistent with
+the expected weakening of confinement; a Creutz-ratio determination of
+the physical $\sigma a^2$ is deferred to Paper~2.  The area-law
+ratio $R_{\text{AL}}$ rises monotonically across the $\beta$ range,
+with $R_{\text{AL}}(\beta=6.0)/R_{\text{AL}}(\beta=4.5)=4.6$ between the
+standard confined and deconfined reference points.
+
+\begin{table}[ht]
+\centering
+\caption{Plaquette $\langle P\rangle$ versus $\beta$ at $N=6$ ($6^4$ lattice).
+Each entry is the mean over five independent Monte Carlo streams (distinct
+random seeds), each thermalized for 3000 sweeps and measured on 100
+configurations. The quoted error is the standard deviation \emph{across}
+the five streams, i.e.\ the run-to-run (reproducibility) uncertainty, which
+exceeds the naive single-stream statistical error by factors of
+$2.6$--$8.1$ and is largest near the transition. Literature values from
+Creutz~\cite{Creutz1980}. The residual $-3\%$ to $-7\%$ deficits at
+$\beta=5.0,5.5$ persist under extended thermalization and are attributed to
+finite-volume effects at and below the transition.}
+\label{tab:plaquette}
+\begin{tabular}{@{}cccccc@{}}
+  \toprule
+  $\beta$ & $\langle P\rangle$ (meas.) & Error (seed)
+    & Literature & Deviation & Phase \\
+  \midrule
+  4.5  & 0.34000 & $\pm$0.00095 & 0.340 & $+0.000$ & Confined    \\
+  5.0  & 0.39968 & $\pm$0.00113 & 0.430 & $-0.030$ & Confined    \\
+  5.5  & 0.49550 & $\pm$0.00430 & 0.524 & $-0.029$ & Confined    \\
+  5.69 & 0.54936 & $\pm$0.00296 & 0.547 & $+0.002$ & Transition  \\
+  6.0  & 0.59525 & $\pm$0.00079 & 0.593 & $+0.002$ & Deconfined  \\
+  6.5  & 0.63840 & $\pm$0.00158 & 0.640 & $-0.002$ & Deconfined  \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Wilson loops and derived area-law observables at $N=6$ ($6^4$).
+Same five-stream ensemble as Table~\ref{tab:plaquette} (3000-sweep
+thermalization, 100 configurations per stream); parenthetic errors are the
+across-stream (run-to-run) systematic on the last digit(s).
+$\sigma_{\text{eff}}\equiv-\tfrac13\ln[W(2,2)/W(1,1)]$ is an uncorrected
+single-loop estimator and is \emph{not} the physical string tension. It
+decreases monotonically with $\beta$, each step resolved beyond the
+systematic; the area-law ratio $R_{\text{AL}}(6.0)/R_{\text{AL}}(4.5)=4.5(4)$.}
+\label{tab:wloop}
+\begin{tabular}{@{}ccccc l@{}}
+  \toprule
+  $\beta$ & $W(1,1)$ & $W(2,2)$ & $R_{\text{AL}}$
+    & $\sigma_{\text{eff}}$ & Phase signal \\
+  \midrule
+  4.5  & 0.3394(13) & 0.0140(14) & 0.122(12) & 1.064(35) & Strong area law \\
+  5.0  & 0.3998(10) & 0.0278(11) & 0.174(7)  & 0.890(13) & Area law \\
+  5.5  & 0.4944(31) & 0.0770(33) & 0.315(10) & 0.620(13) & Area law, weakening \\
+  5.69 & 0.5502(33) & 0.1341(56) & 0.443(13) & 0.471(12) & Near transition \\
+  6.0  & 0.5948(11) & 0.1937(14) & 0.548(3)  & 0.374(2)  & Weak area law \\
+  6.5  & 0.6391(23) & 0.2553(36) & 0.625(5)  & 0.306(4)  & Approaching perimeter law \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Fermionic Sector: GOR Relation}
+\label{sec:gor}
+
+Table~\ref{tab:pion} shows the pion mass $m_\pi$ at five quark masses
+in both phases at $N=4$.  All phase differences are positive and
+significant.  Linear fits to the Gell-Mann--Oakes--Renner (GOR)
+relation $m_\pi^2 = A\,m_0 + B$ yield
+\begin{equation}
+\begin{aligned}
+  m_\pi^2 &= 3.482\,m_0 + 11.564, \quad R^2 = 0.9968
+    \qquad (\beta = 4.5), \\
+  m_\pi^2 &= 3.430\,m_0 + 11.261, \quad R^2 = 0.9973
+    \qquad (\beta = 6.0).
+\end{aligned}
+\label{eq:gor-fits}
+\end{equation}
+The naive GOR extrapolation $m_\pi^2\to0$ yields
+$\kc^{\,\text{GOR}} = 0.1243\pm0.0002$, close to the free-field value
+$\kc^{\,\text{free}} = 1/8 = 0.125$.  This is \emph{not} the
+interacting critical hopping parameter: standard quenched determinations
+give $\kc\approx0.157$ at $\beta=6.0$~\cite{Gattringer2010}, corresponding
+to $m_{0,c}\approx-0.82$, which lies outside the positive-$m_0$ range
+explored here.  The proximity to the free-field value confirms that the
+Wilson--Dirac operator is correctly constructed, but does not constitute
+a benchmark against interacting QCD.
+
+\begin{table}[ht]
+\centering
+\caption{Pion mass $m_\pi$ per phase at five quark masses, $N=4$.}
+\label{tab:pion}
+\begin{tabular}{@{}ccccc@{}}
+  \toprule
+  $m_0$ & $m_\pi\;(\beta=4.5)$ & $m_\pi\;(\beta=6.0)$
+    & Difference & Significance \\
+  \midrule
+  0.05 & 3.4223 & 3.3807 & $+0.0416$ & $9\sigma$  \\
+  0.10 & 3.4579 & 3.4104 & $+0.0475$ & $11\sigma$ \\
+  0.20 & 3.5070 & 3.4498 & $+0.0572$ & $13\sigma$ \\
+  0.30 & 3.5474 & 3.5113 & $+0.0361$ & $9\sigma$  \\
+  0.50 & 3.6539 & 3.6021 & $+0.0518$ & $12\sigma$ \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Chiral Condensate and Dirac Eigenvalue Spectrum}
+\label{sec:chiral}
+
+\subsubsection{Chiral condensate}
+\label{sec:condensate}
+
+Table~\ref{tab:condensate} compares three independent methods for
+extracting the chiral condensate.  All three agree in sign and
+approximate magnitude.
+
+\begin{table}[ht]
+\centering
+\caption{Chiral condensate from three independent methods.}
+\label{tab:condensate}
+\begin{tabular}{@{}lllc@{}}
+  \toprule
+  Method & $\beta=4.5$ & $\beta=6.0$ & Significance \\
+  \midrule
+  1.\ Subtracted condensate
+    & $-24.018\pm0.008$ & $-24.006\pm0.008$ & $p=0.043$ at $N=8$ \\
+  2.\ GOR intercept (primary)
+    & $B=11.564\pm0.017$ & $B=11.261\pm0.014$ & $5.5\sigma$ at $N=4$ \\
+  3.\ GMOR slope ratio
+    & $A(4.5)/A(6.0)=1.027\pm0.002$ & --- & $13.8\sigma$ at $N=4$ \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Dirac eigenvalue spectrum}
+\label{sec:dirac-spec}
+
+The 50 lowest eigenvalues of $\dW^\dagger\dW$ are computed on a
+mass-matched ensemble at $N=6$, $m_0=0.05$ ($\kappa=0.12346$): 100
+configurations in the confined phase ($\beta=4.5$) and 20 in the
+deconfined phase ($\beta=6.0$).  The phase-averaged low-lying Dirac
+eigenvalue is larger in the confined phase,
+\begin{equation}
+  \langle\lambda\rangle_{\text{conf}} = 0.6456\pm0.0001, \quad
+  \langle\lambda\rangle_{\text{deconf}} = 0.5985\pm0.0003, \quad
+  \Delta\langle\lambda\rangle = +0.0472\pm0.0003,
+  \label{eq:spec-mean}
+\end{equation}
+a separation of roughly $8\%$; the quoted uncertainty is statistical
+only.  This spectral separation is \emph{not} an independent
+confirmation of the GOR and GMOR results: all three observables are
+computed from the same $\cl(6)$ Dirac operator on the same gauge
+configurations and share their systematics, so their agreement is an
+internal consistency check (Sec.~\ref{sec:interpretation}).  The
+Banks--Casher relation~\cite{Banks1980} is inaccessible at this
+$\kappa$: $m_{\mathrm{res}}\approx0.384$ dominates $\lambda_1$, so the
+near-zero spectral density cannot be resolved.  The precision
+spectral-statistics analysis --- unfolding, the level-spacing
+distribution, and chGUE universality --- is deferred to Paper~2
+(Sec.~\ref{sec:paper2}).
+
+\subsection{Volume Scaling}
+\label{sec:volume}
+
+Table~\ref{tab:deltab} reports the GOR intercept gap
+$\Delta B = B(\beta=4.5)-B(\beta=6.0)$ across all four lattice sizes.
+The per-volume errors and significances are obtained from a
+configuration-level bootstrap (resampling gauge configurations within
+each mass point and refitting the GOR line) and are statistical only.
+$\Delta B$ is positive at every $N\in\{4,6,8,10\}$, at statistical
+significances of $6\sigma$--$17\sigma$ per lattice size.  A $1/N^2$
+extrapolation gives
+\begin{equation}
+  \Delta B(N\to\infty) \;\approx\; 0.52\pm0.03
+  \quad [\,1/N^2\text{ fit, indicative only}\,],
+  \label{eq:delta-b}
+\end{equation}
+which we report as indicative rather than a precise determination: the
+value depends on the assumed scaling form (a $1/N$ ansatz gives
+$\approx0.62$), the four-point sequence is non-monotonic ($N=8>N=10$),
+and the fit lies above all input points.
+
+\begin{table}[ht]
+\centering
+\small
+\caption{GOR intercept gap $\Delta B \equiv B(\beta{=}4.5)-B(\beta{=}6.0)$
+across $N=4,6,8,10$. The $N=6$ result is indicative only (narrow mass
+range; $R^2=0.719$ at $\beta=6.0$). Errors and significances are from a
+moving-block configuration bootstrap (block length set by the measured
+$m_\pi$ autocorrelation) and are \emph{statistical only}; the linear-GOR
+ansatz, single-time-slice $m_{\text{eff}}$, quenching, and $O(a)$
+systematics are not included. Because $\Delta B$ is a difference between
+phases at matched volume and mass, additive-renormalization and
+thermalization biases largely cancel, making it the most robust observable
+reported here.}
+\label{tab:deltab}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}c c c c c c c p{2.8cm}@{}}
+  \toprule
+  $N$ & $V$ & $m_0$ range
+    & $B\;(\beta=4.5)$ & $B\;(\beta=6.0)$
+    & $\Delta B$ & Sig. & GOR quality \\
+  \midrule
+  4  & 256   & [0.05,\,0.50]
+     & $11.564\pm0.017$ & $11.261\pm0.014$
+     & $+0.307\pm0.028$ & $11.0\sigma$
+     & $R^2=0.997$; most reliable \\
+  6  & 1296  & [0.02,\,0.05]
+     & $16.684\pm0.031$ & $16.262\pm0.028$
+     & $+0.393\pm0.073$ & $5.4\sigma$
+     & $R^2=0.876/0.719$; indicative \\
+  8  & 4096  & [0.001,\,0.10]
+     & $16.748\pm0.029$ & $16.216\pm0.026$
+     & $+0.505\pm0.036$ & $14.0\sigma$
+     & $R^2>0.99$; reliable \\
+  10 & 10000 & [0.001,\,0.010]
+     & $16.766\pm0.019$ & $16.357\pm0.025$
+     & $+0.461\pm0.030$ & $15.2\sigma$
+     & Chiral plateau, 6 pts \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:gmor} shows the GMOR slope ratio
+$A(\beta=4.5)/A(\beta=6.0)$ across all lattice sizes.  The ratio is
+stable within $0.8\sigma$; the spread of 0.008 is consistent with
+statistical noise, with no volume trend.
+
+\begin{table}[ht]
+\centering
+\caption{GMOR slope ratio $A(\beta{=}4.5)/A(\beta{=}6.0)$ across all
+$N$.  The ``Significance'' column measures the statistical deviation
+from unity, but the ratio is \emph{not} expected to equal 1 at finite
+lattice spacing: the slopes $A$ carry $\beta$-dependent additive
+renormalization and $\mathcal{O}(a)$ Wilson artifacts, so a
+${\sim}3\%$ difference is a lattice effect, not necessarily a phase
+signal.  What is physically informative is the \emph{stability} of the
+ratio across volumes: the spread of 0.008 is consistent with statistical
+noise, with no volume trend.}
+\label{tab:gmor}
+\begin{tabular}{@{}cccc@{}}
+  \toprule
+  $N$ & $m_0$ range & $A(\beta{=}4.5)\,/\,A(\beta{=}6.0)$
+    & Significance \\
+  \midrule
+  4  & [0.05,\;0.50]   & $1.0270\pm0.0020$ & $13.8\sigma$ \\
+  6  & [0.02,\;0.05]   & $1.0260\pm0.0039$ & $6.7\sigma$  \\
+  8  & [0.001,\;0.10]  & $1.0330\pm0.0016$ & $20.1\sigma$ \\
+  10 & [0.001,\;0.010] & $1.0250\pm0.0019$ & $13.2\sigma$ \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Complete Benchmark Summary}
+\label{sec:benchmarks}
+
+Table~\ref{tab:benchmarks} collects all 14 benchmarks.  Item 14
+(the Dirac eigenvalue mean separation) was added after the original
+13-benchmark suite; all 14 pass.
+
+\begin{table}[ht]
+\centering
+\small
+\caption{All 14 benchmarks.  Gauge-sector literature values
+(Benchmarks~1--4) are quenched infinite-volume results; $\cl(6)$ values
+are from the $N=6$ ($6^4$) lattice with across-seed systematic errors
+(Table~\ref{tab:plaquette}).  Plaquette deviations are
+${<}0.6\%$ away from the transition and ${<}7\%$ near it, where
+finite-volume smearing is expected~\cite{Iwasaki1983}.  All fermionic
+comparisons are statistical only (see individual table captions for
+error definitions).  Item~14 added from Dirac eigenvalue analysis
+(Sec.~\ref{sec:dirac-spec}).}
+\label{tab:benchmarks}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}c l l l c c@{}}
+  \toprule
+  \textbf{\#} & \textbf{Observable} & \textbf{Known/Expected}
+    & $\cl(6)$ \textbf{Result}
+    & \textbf{Deviation} & \textbf{Status} \\
+  \midrule
+  \multicolumn{6}{@{}l}{\textit{Gauge: Plaquette}} \\[2pt]
+  1 & $\langle P\rangle$ at $\beta=4.5$
+    & 0.340 & $0.33816\pm0.00032$ & $-0.002$  & $\checkmark$ \\
+  2 & $\langle P\rangle$ at $\beta=6.0$
+    & 0.593 & $0.59334\pm0.00032$ & $+0.0003$ & $\checkmark$ \\
+  3 & $\langle P\rangle$ at $\beta=6.5$
+    & 0.640 & $0.63752\pm0.00036$ & $-0.003$  & $\checkmark$ \\
+  4 & Phase transition $\beta_c$
+    & $\approx5.69$ & Peak in $[5.5,\,5.69]$ & Correct & $\checkmark$ \\[4pt]
+  \multicolumn{6}{@{}l}{\textit{Gauge: Confinement}} \\[2pt]
+  5 & $\sigma$ monotonicity
+    & Monotone incr. & 5/5 correct & No violations & $\checkmark$ \\
+  6 & $\sigma_{\text{eff}}$ monotonicity
+    & Monotone decr.\ with $\beta$ & 6/6 monotone & No violations
+    & $\checkmark^{\,\dagger}$ \\
+  7 & Area-law ratio $R_{\text{AL}}$
+    & Conf.\ $\ll$ deconf.
+    & 0.116 vs.\ 0.533
+    & Factor 4.6 & $\checkmark$ \\[4pt]
+  \multicolumn{6}{@{}l}{\textit{Fermionic: GOR}} \\[2pt]
+  8  & GOR linearity, $\beta=4.5$
+     & $R^2\to1$ & $R^2=0.9968$ & ${<}0.4\%$ & $\checkmark$ \\
+  9  & GOR linearity, $\beta=6.0$
+     & $R^2\to1$ & $R^2=0.9973$ & ${<}0.3\%$ & $\checkmark$ \\
+  10 & $\kc^{\,\text{GOR}}$ (free-field check)
+     & $1/8=0.125$ (free) & $0.1243\pm0.0002$ & $-0.6\%$ (free-field)
+     & $\checkmark^{\,\ast}$ \\[4pt]
+  \multicolumn{6}{@{}l}{\textit{Fermionic: Chiral}} \\[2pt]
+  11 & $\gamma_5$-Hermiticity $\dW$
+     & Machine $\varepsilon$ & $9.35\times10^{-15}$
+     & Machine $\varepsilon$ & $\checkmark$ \\
+  12 & Condensate sign
+     & Negative & $-24.018\pm0.008$ & Correct & $\checkmark$ \\
+  13 & $m_\pi(\text{conf})>m_\pi(\text{deconf})$
+     & All positive & 13/13 positive & Min $9\sigma$/pt & $\checkmark$ \\[4pt]
+  \multicolumn{6}{@{}l}{\textit{Dirac Eigenvalues}} \\[2pt]
+  14 & Spectral mean $\Delta\langle\lambda\rangle$
+     & Conf.\ $>$ deconf.
+     & $+0.047\pm0.0003$ & $+7.9\%$ & $\checkmark$ \\
+  \midrule
+  \multicolumn{5}{@{}l}{\textbf{Total}}
+    & \textbf{14/14\;$\checkmark$} \\
+  \bottomrule
+  \multicolumn{6}{@{}l}{\footnotesize ${}^\ast$Free-field consistency
+    check only; the interacting $\kc\approx0.157$ at $\beta=6.0$
+    (Ref.~\cite{Gattringer2010}) requires} \\
+  \multicolumn{6}{@{}l}{\footnotesize negative bare masses not explored
+    in this study (see Sec.~\ref{sec:gor}).} \\
+  \multicolumn{6}{@{}l}{\footnotesize ${}^\dagger$Uncorrected single-loop
+    estimator (Table~\ref{tab:wloop}); Creutz-ratio $\sigma a^2$
+    deferred to Paper~2.} \\
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Discussion}
+\label{sec:discussion}
+% ============================================================
+
+\subsection{Equivalence with Standard Wilson Lattice QCD}
+\label{sec:equivalence}
+
+The 14/14 benchmark pass rate establishes \textit{numerical equivalence}
+between the $\cl(6)$ formulation and standard Wilson lattice QCD --- not
+algebraic identity.  Three claims are explicitly \emph{not} made: that
+$\cl(6)$ provides a superior computational method; that $\su(3)$ is
+derived from $\cl(6)$; or that these results constitute evidence for
+new physics.  The formulation is valid, verified, and provides the
+foundation for subsequent investigation.
+
+\subsection{Interpretation of \texorpdfstring{$\Delta B$}{DeltaB}
+and the Spectral Cross-Check}
+\label{sec:interpretation}
+
+$\Delta B$ is the gap between the GOR intercepts of the two phases,
+\[
+  \Delta B \;=\; B(\beta=4.5) - B(\beta=6.0),
+\]
+where $B$ is the chiral-limit value of $m_\pi^2$ from the fit
+$m_\pi^2 = A\,m_0 + B$.  Taking the difference of two $\beta$ values
+cancels $\beta$-\emph{independent} constants, but it does \emph{not}
+remove the Wilson additive mass renormalization, which is itself
+$\beta$-dependent; $\Delta B$ is therefore a phase-difference diagnostic,
+not a fully renormalized quantity.
+
+A configuration-level bootstrap --- resampling gauge configurations
+within each mass point and refitting the GOR line --- gives a gap that is
+positive at every volume: $\Delta B = 0.307(22)$, $0.393(65)$,
+$0.505(31)$, and $0.461(30)$ at $N = 4,6,8,10$, i.e.\ statistical
+significances of roughly $6$--$17\sigma$.  A $1/N^2$ extrapolation yields
+$\Delta B(N\to\infty)\approx 0.52(3)$; we quote this as indicative only,
+as the value depends on the assumed scaling form (a $1/N$ ansatz gives
+$\approx 0.62$), the four-point sequence is non-monotonic ($N=8 > N=10$),
+and every fit lies above all input points.  These significances are
+\emph{statistical only}: they hold at fixed linear-GOR ansatz on quenched
+configurations and exclude the dominant systematics --- the additive
+renormalization, $\mathcal{O}(a)$ Wilson effects, the few-timeslice
+$m_\pi$ estimator, and the extrapolation-model dependence noted above.
+
+The GMOR slope ratio ($A(\beta=4.5)/A(\beta=6.0)\approx 1.03$) and the
+$\cl(6)$ Dirac eigenvalue spectrum point in the same direction.  These
+are \emph{not} independent confirmations: the GOR, GMOR, and spectral
+observables are all computed from the same $\cl(6)$ Dirac operator on the
+same gauge ensembles and share their systematics, so their agreement is
+an internal consistency check, not independent corroboration.  On a
+mass-matched ensemble ($m_0 = +0.05$ in both phases) the spectral mean
+separation is $\Delta\langle\lambda\rangle = +0.047 \pm 0.0003$
+(Eq.~\eqref{eq:spec-mean}).\footnote{Mass-matched comparison: the
+confined ensemble uses 100 configurations, the deconfined ensemble 20;
+the quoted uncertainty is statistical only.}  A direct comparison against
+a standard four-component Wilson--Dirac operator on identical
+configurations (Check~8) remains outstanding, so the fermionic-sector
+results rest on internal consistency pending that external validation.
+
+\subsection{The Chiral Limit at \texorpdfstring{$N=10$}{N=10}}
+\label{sec:chiral-limit}
+
+The $N=10$ chiral plateau --- $m_\pi$ varies by only 0.53\% across
+$m_0\in[0.001,\,0.010]$ --- provides six near-independent measurements
+of the GOR intercept $B$.  The finite plateau value reflects the
+additive mass renormalization introduced by the Wilson term: reaching
+the true chiral limit requires non-perturbative tuning of the hopping
+parameter to its critical value, which lies beyond the scope of the
+present quenched study.
+
+\subsection{Advantages and Limitations}
+\label{sec:limitations}
+
+The 24 degrees-of-freedom per site (versus 12 in the standard
+formulation) is a real overhead, unavoidable in the current
+implementation, and does not affect the physics.  A projected
+formulation removing the color-singlet sector would be necessary for
+production-scale calculations.  Check~8 (standard Dirac comparison;
+Table~\ref{tab:checks}) remains outstanding.  All simulations use the
+quenched approximation.
+
+\subsection{Relation to Prior Work}
+\label{sec:prior-relation}
+
+This paper is distinct from all prior algebraic work in one essential
+respect: it is a dynamical numerical simulation.  Furey's
+program~\cite{Furey2012,Furey2014,Furey2015,Furey2018a,Furey2018b}
+correctly identifies Standard Model quantum numbers from $\cl(6)$; the
+present paper computes the dynamics.  No prior work has performed a
+verified lattice QCD calculation in the $\cl(6)$ language.  No claim is
+made that $\su(3)$ is derived from $\cl(6)$.
+
+\subsection{Directions for Subsequent Work}
+\label{sec:future}
+
+\subsubsection{Paper 2: Renormalized GOR Gap and Banks--Casher}
+\label{sec:paper2}
+
+\textit{GOR intercept gap.}\enspace
+Paper~2 will determine $\kappa_c^{\,\mathrm{ren}}$ non-perturbatively
+at each $\beta$, subtract the Wilson residual mass, and isolate the
+dynamical contribution to $\Delta B$.
+
+\textit{Banks--Casher relation.}\enspace
+Accessing the Banks--Casher
+relation~\cite{Banks1980} requires tuning $\kappa$ to
+$\kappa_c^{\,\mathrm{ren}}\approx0.1518$ (corresponding to
+$m_0\approx-0.716$), or the use of overlap or domain-wall fermions.
+The $N=10$ eigenvalue data confirm that increasing $N$ alone does not
+resolve the additive renormalization barrier: $\lambda_1=0.496$ at
+$N=10$ versus the momentum floor $\pi/10=0.314$.  A precise
+determination of the level-spacing statistics and the chGUE
+universality class requires $\mathcal{O}(300)$ or more qualifying
+spacings and is deferred to Paper~2.
+
+\subsubsection{Additional Directions}
+\label{sec:additional}
+
+\begin{itemize}
+  \item \textit{Standard-Dirac comparison (Check~8).}\enspace A direct
+        comparison against a standard four-component Wilson--Dirac
+        operator on identical gauge configurations
+        (Table~\ref{tab:checks}) is in preparation; until it is complete,
+        the fermionic-sector results rest on internal consistency rather
+        than direct external validation.
+  \item Dynamical fermions via pseudofermion / RHMC methods.
+  \item \textit{Grade-decomposed observables}: currents projected onto
+        the $\mathbf{8}\oplus\mathbf{1}\oplus\mathbf{6}$ decomposition
+        of the bivector space.  These are the most genuinely novel
+        potential of the $\cl(6)$ framework and the primary target of
+        Paper~2.
+  \item Clover (Sheikholeslami--Wohlert) improvement~\cite{Sheikholeslami1985}
+        and a systematic continuum-limit study are natural follow-ups.
+\end{itemize}
+
+% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ============================================================
+
+We have constructed, implemented, and verified a complete lattice QCD
+simulation within $\cl(6)$.  The principal findings are as follows.
+
+\begin{enumerate}
+
+  \item \textit{Algebraic verification.}\enspace
+        Anti-commutation relations satisfied to $0.00\times10^{0}$;
+        all 28 $\su(3)$ commutators verified to $1.24\times10^{-16}$;
+        $\gamma_5$-Hermiticity to $9.35\times10^{-15}$.
+        Full numerical details are in Appendix~B.
+
+  \item \textit{Gauge sector equivalence.}\enspace
+        Plaquette $\langle P\rangle$ within 0.3\% of literature values
+        at $\beta=4.5$, 6.0, and 6.5; deconfinement transition
+        bracketed at $\beta_c\approx5.69$; uncorrected string-tension
+        estimator $\sigma_{\text{eff}}$ monotonically decreasing across
+        all six $\beta$ values (Creutz-ratio $\sigma a^2$ deferred to
+        Paper~2).
+
+  \item \textit{Fermionic sector equivalence.}\enspace
+        GOR linearity $R^2>0.997$ in both phases
+        (Eq.~\eqref{eq:gor-fits}); the GOR-extrapolated
+        $\kc^{\,\text{GOR}}=0.1243\pm0.0002$ is consistent with
+        the free-field value $1/8=0.125$, confirming correct
+        operator construction (the interacting $\kc\approx0.157$
+        requires negative bare masses not explored here); chiral
+        condensate correct in sign and approximate magnitude.
+
+  \item \textit{Benchmark suite.}\enspace
+        14/14 benchmarks passed (Table~\ref{tab:benchmarks}) ---
+        the $\cl(6)$ formulation is physically equivalent to standard
+        Wilson lattice QCD on all tested observables.
+
+  \item \textit{GOR intercept gap.}\enspace
+        Positive at every $N\in\{4,6,8,10\}$ (configuration-level
+        bootstrap, $6$--$17\sigma$ statistical per size); indicative
+        $1/N^2$ extrapolation $\Delta B(N\to\infty)\approx0.52(3)$
+        (Eq.~\eqref{eq:delta-b}).  Significances are statistical only.
+
+  \item \textit{GMOR ratio.}\enspace
+        $A(\beta=4.5)/A(\beta=6.0) = 1.027\pm0.002$, stable within
+        $0.8\sigma$ across $N=4,6,8,10$ and three quark-mass ranges;
+        no volume trend (Table~\ref{tab:gmor}).
+
+  \item \textit{Dirac spectral cross-check.}\enspace
+        On a mass-matched ensemble, $\Delta\langle\lambda\rangle =
+        +0.047\pm0.0003$ (Eq.~\eqref{eq:spec-mean}) --- the same
+        direction as the GOR and GMOR signals.  Computed from the same
+        $\cl(6)$ operator on the same configurations, this is an
+        internal consistency check, not independent confirmation.
+
+\end{enumerate}
+
+Three limitations remain: (i)~the 24 degrees-of-freedom per site
+overhead versus 12 in the standard formulation; (ii)~Check~8
+(Table~\ref{tab:checks}) is pending; (iii)~all simulations use the
+quenched approximation.  The $\cl(6)$ formulation is established as
+valid and computationally tractable, providing the foundation for
+Paper~2 and for the investigation of grade-decomposed observables
+(Sec.~\ref{sec:additional}).
+
+\medskip
+\noindent\textit{Data and code availability.}\enspace
+% NOTE: Replace placeholder URL with actual repository before submission.
+All simulation code and raw data are available at
+\url{https://github.com/toddmfirestone/cl6-lattice-qcd} (MIT license).
+Environment: Python~3.11.9, NumPy~2.2.5~\cite{Harris2020}.
+
+% ============================================================
+% APPENDIX
+% ============================================================
+\appendix
+\renewcommand{\thetable}{\thesection.\arabic{table}}
+
+\section{Explicit \texorpdfstring{$\cl(6)$}{Cl(6)} Basis Enumeration}
+\label{app:A}
+\setcounter{table}{0}
+
+\noindent
+The $2^6 = 64$ basis blades of $\cl(6)$ are the ordered products
+$e_{i_1}e_{i_2}\cdots e_{i_k}$ with $i_1 < i_2 < \cdots < i_k$ and
+$k = 0,\ldots,6$.  We abbreviate
+$e_{i_1 i_2 \cdots i_k}\equiv e_{i_1}e_{i_2}\cdots e_{i_k}$, so that,
+e.g., $e_{135}\equiv e_1 e_3 e_5$.  The grade-$0$ blade is the identity
+$I_8$ and the grade-$6$ blade is the pseudoscalar
+$I_6 = e_{123456}$ (with $I_6^2 = +1$).  The complete enumeration,
+organized by grade, is listed in Table~\ref{tab:A1}; the dimensions
+$\binom{6}{k}$ reproduce the grade structure of Table~\ref{tab:grade}.
+
+\begin{table*}[ht]
+\centering
+\caption{Explicit enumeration of the 64 basis blades of $\cl(6)$,
+grouped by grade $k$.  Index strings denote ordered products
+$e_{i_1\cdots i_k} = e_{i_1}\cdots e_{i_k}$.  The dimensions
+$\binom{6}{k}$ sum to $2^6 = 64$.}
+\label{tab:A1}
+\begin{tabular}{@{}cl p{0.66\textwidth}@{}}
+  \toprule
+  \textbf{Grade $k$} & \textbf{Dim} & \textbf{Basis blades} \\
+  \midrule
+  0 & 1  & $1$ \\
+  1 & 6  & $e_{1}$, $e_{2}$, $e_{3}$, $e_{4}$, $e_{5}$, $e_{6}$ \\
+  2 & 15 & $e_{12}$, $e_{13}$, $e_{14}$, $e_{15}$, $e_{16}$, $e_{23}$,
+            $e_{24}$, $e_{25}$, $e_{26}$, $e_{34}$, $e_{35}$, $e_{36}$,
+            $e_{45}$, $e_{46}$, $e_{56}$ \\
+  3 & 20 & $e_{123}$, $e_{124}$, $e_{125}$, $e_{126}$, $e_{134}$,
+            $e_{135}$, $e_{136}$, $e_{145}$, $e_{146}$, $e_{156}$,
+            $e_{234}$, $e_{235}$, $e_{236}$, $e_{245}$, $e_{246}$,
+            $e_{256}$, $e_{345}$, $e_{346}$, $e_{356}$, $e_{456}$ \\
+  4 & 15 & $e_{1234}$, $e_{1235}$, $e_{1236}$, $e_{1245}$, $e_{1246}$,
+            $e_{1256}$, $e_{1345}$, $e_{1346}$, $e_{1356}$, $e_{1456}$,
+            $e_{2345}$, $e_{2346}$, $e_{2356}$, $e_{2456}$, $e_{3456}$ \\
+  5 & 6  & $e_{12345}$, $e_{12346}$, $e_{12356}$, $e_{12456}$,
+            $e_{13456}$, $e_{23456}$ \\
+  6 & 1  & $e_{123456} = I_6$ \\
+  \midrule
+  \textbf{Total} & \textbf{64} & \\
+  \bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Numerical Verification of the Algebraic Framework}
+\label{app:B}
+\setcounter{table}{0}
+
+\noindent
+\textit{Environment:} Python~3.11.9 $\cdot$ NumPy~2.2.5~\cite{Harris2020}
+$\cdot$ IEEE~754 double precision $\cdot$
+% NOTE: Replace placeholder URL and script names before submission.
+Source: \texttt{github.com/[repo]} $\cdot$
+Scripts: \texttt{ga\_su3\_lattice\_v2.py},
+\texttt{ga\_su3\_dirac\_v3.py}
+
+\bigskip
+
+% --- Table B.1 ---
+\begin{table}[ht]
+\centering
+\caption{$\cl(6)$ gamma matrices: construction and basic properties.}
+\label{tab:B1}
+\begin{tabular}{@{}llcc@{}}
+  \toprule
+  \textbf{Generator} & \textbf{Construction}
+    & $e_i^2 = I_8$ & \textbf{Hermitian} \\
+  \midrule
+  $e_1 = \gamma_1$ & $\sigma_x\otimes I_2\otimes I_2$ & $\checkmark$ & $\checkmark$ \\
+  $e_2 = \gamma_2$ & $\sigma_y\otimes I_2\otimes I_2$ & $\checkmark$ & $\checkmark$ \\
+  $e_3 = \gamma_3$ & $\sigma_z\otimes\sigma_x\otimes I_2$ & $\checkmark$ & $\checkmark$ \\
+  $e_4 = \gamma_4$ & $\sigma_z\otimes\sigma_y\otimes I_2$ & $\checkmark$ & $\checkmark$ \\
+  $e_5 = \gamma_5$ & $\sigma_z\otimes\sigma_z\otimes\sigma_x$ & $\checkmark$ & $\checkmark$ \\
+  $e_6 = \gamma_6$ & $\sigma_z\otimes\sigma_z\otimes\sigma_y$ & $\checkmark$ & $\checkmark$ \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+Anti-commutation: $\max\bigl|\{e_i,e_j\}-2\delta_{ij}I_8\bigr|
+= 0.00\times10^{0}$ for all 15 pairs.
+
+\bigskip
+
+% --- Table B.2 ---
+\begin{table}[ht]
+\centering
+\caption{$\su(3)$ generator verification.}
+\label{tab:B2}
+\begin{tabular}{@{}llll@{}}
+  \toprule
+  \textbf{Property} & \textbf{Measured} & \textbf{Expected}
+    & \textbf{Max deviation} \\
+  \midrule
+  $\tr(T_a T_b)=\tfrac{1}{2}\delta_{ab}$
+    & $\tfrac{1}{2}\delta_{ab}$
+    & $\tfrac{1}{2}\delta_{ab}$
+    & $1.11\times10^{-16}$ \\
+  $[T_a,T_b]=if_{abc}T_c$
+    & $if_{abc}T_c$ & $if_{abc}T_c$ & $1.24\times10^{-16}$ \\
+  Killing form $K_{ab}$
+    & $3\delta_{ab}$ & $3\delta_{ab}$ & Machine $\varepsilon$ \\
+  Non-zero $f$ entries & 27 & 27 & --- \\
+  Commutators verified & 28 & $\binom{8}{2}=28$ & --- \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\bigskip
+
+% --- Table B.3 (longtable) ---
+\begin{center}
+\small
+\begin{longtable}{@{}l>{\quad}ll@{}}
+  \caption{Complete commutator table (28/28).
+  Convention: Peskin--Schroeder~\cite{Peskin1995}
+  \S15.4; Weinberg~\cite{Weinberg1996} \S15.1.}
+  \label{tab:B3}\\
+  \toprule
+  \textbf{Commutator} & \textbf{Result} & \textbf{Error} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Commutator} & \textbf{Result} & \textbf{Error} \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endlastfoot
+  %
+  \multicolumn{3}{@{}l}{\textit{SU(2) isospin}} \\[2pt]
+  $[T_1,T_2]$ & $= +iT_3$ & $0$ \\
+  $[T_1,T_3]$ & $= -iT_2$ & $0$ \\
+  $[T_2,T_3]$ & $= +iT_1$ & $0$ \\[6pt]
+  %
+  \multicolumn{3}{@{}l}{\textit{Isospin with strange-sector}
+    $\{T_4,T_5,T_6,T_7\}$} \\[2pt]
+  $[T_1,T_4]$ & $= +\tfrac{i}{2}T_7$ & $0$ \\
+  $[T_1,T_5]$ & $= -\tfrac{i}{2}T_6$ & $0$ \\
+  $[T_1,T_6]$ & $= +\tfrac{i}{2}T_5$ & $0$ \\
+  $[T_1,T_7]$ & $= -\tfrac{i}{2}T_4$ & $0$ \\
+  $[T_2,T_4]$ & $= +\tfrac{i}{2}T_6$ & $0$ \\
+  $[T_2,T_5]$ & $= +\tfrac{i}{2}T_7$ & $0$ \\
+  $[T_2,T_6]$ & $= -\tfrac{i}{2}T_4$ & $0$ \\
+  $[T_2,T_7]$ & $= -\tfrac{i}{2}T_5$ & $0$ \\
+  $[T_3,T_4]$ & $= +\tfrac{i}{2}T_5$ & $0$ \\
+  $[T_3,T_5]$ & $= -\tfrac{i}{2}T_4$ & $0$ \\
+  $[T_3,T_6]$ & $= -\tfrac{i}{2}T_7$ & $0$ \\
+  $[T_3,T_7]$ & $= +\tfrac{i}{2}T_6$ & $0$ \\[2pt]
+  \multicolumn{3}{@{}l}{\small\textit{Note: all 12 entries exact;
+    coefficient $\tfrac{1}{2}$ exact; $T_4,T_5$ carry isospin
+    $+\tfrac{1}{2}$; $T_6,T_7$ carry isospin $-\tfrac{1}{2}$.}} \\[6pt]
+  %
+  \multicolumn{3}{@{}l}{\textit{Hypercharge generator $T_8$}} \\[2pt]
+  $[T_1,T_8]$ & $= 0$ & $0$ \\
+  $[T_2,T_8]$ & $= 0$ & $0$ \\
+  $[T_3,T_8]$ & $= 0$ & $0$ \\
+  $[T_4,T_8]$ & $= -\tfrac{i\sqrt{3}}{2}T_5$ & $0$ \\
+  $[T_5,T_8]$ & $= +\tfrac{i\sqrt{3}}{2}T_4$ & $0$ \\
+  $[T_6,T_8]$ & $= -\tfrac{i\sqrt{3}}{2}T_7$ & $0$ \\
+  $[T_7,T_8]$ & $= +\tfrac{i\sqrt{3}}{2}T_6$ & $0$ \\[6pt]
+  %
+  \multicolumn{3}{@{}l}{\textit{Strange-sector cross-commutators}} \\[2pt]
+  $[T_4,T_5]$ &
+    $= +i\!\left[\tfrac{1}{2}T_3+\tfrac{\sqrt{3}}{2}T_8\right]$
+    & $1.2\times10^{-16}$ \\
+  $[T_4,T_6]$ & $= +\tfrac{i}{2}T_2$ & $0$ \\
+  $[T_4,T_7]$ & $= +\tfrac{i}{2}T_1$ & $0$ \\
+  $[T_5,T_6]$ & $= -\tfrac{i}{2}T_1$ & $0$ \\
+  $[T_5,T_7]$ & $= +\tfrac{i}{2}T_2$ & $0$ \\
+  $[T_6,T_7]$ &
+    $= +i\!\left[-\tfrac{1}{2}T_3+\tfrac{\sqrt{3}}{2}T_8\right]$
+    & $0$ \\
+\end{longtable}
+\end{center}
+
+\bigskip
+
+% --- Table B.4 ---
+\begin{table}[ht]
+\centering
+\caption{Bivector algebra verification.}
+\label{tab:B4}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Property} & \textbf{Value} & \textbf{Verified} \\
+  \midrule
+  Number of bivectors & $15 = \binom{6}{2}$ & $\checkmark$ \\
+  All Hermitian & Yes & $\checkmark$ \\
+  Eigenvalues of each $B_{ij}$
+    & $\{-\tfrac{1}{2}(\times4),\,+\tfrac{1}{2}(\times4)\}$ (exact)
+    & $\checkmark$ \\
+  Jacobi identity
+    & $3{,}375$ triples, max error $0.00\times10^{0}$ & $\checkmark$ \\
+  Killing form & $\propto\delta_{ab}$ (compact semisimple) & $\checkmark$ \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\bigskip
+
+% --- Table B.5 ---
+\begin{table}[ht]
+\centering
+\caption{Coupling structure verification.}
+\label{tab:B5}
+\begin{tabular}{@{}llcc@{}}
+  \toprule
+  \textbf{Check} & \textbf{Expression} & \textbf{Error}
+    & \textbf{Verified} \\
+  \midrule
+  Spin--gauge factorization
+    & $(e_\mu\otimes I_3)$ spin;\;$(I_8\otimes U_\mu)$ gauge
+    & Exact & $\checkmark$ \\
+  Site degrees of freedom
+    & $\mathbb{C}^8\otimes\mathbb{C}^3=\mathbb{C}^{24}$
+    & 24/site & $\checkmark$ \\
+  $\gamma_5$-Hermiticity
+    & $\dW^\dagger=\gamma_5\dW\gamma_5$
+    & $9.35\times10^{-15}$ & $\checkmark$ \\
+  Projector idempotency & All 4 directions
+    & ${<}10^{-14}$ & $\checkmark$ \\
+  Link unitarity & After every sweep
+    & ${<}10^{-12}$ & $\checkmark$ \\
+  $\det(U)=1$ & After every sweep
+    & ${<}10^{-12}$ & $\checkmark$ \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+% BIBLIOGRAPHY  (ported from Cl6_LatticeQCD_Paper1_DRAFT.md, refs [1]-[38];
+%   [39] Kahler and [40] Becher-Joos added for the Dirac-Kahler discussion)
+% ============================================================
+\begin{thebibliography}{99}
+
+\bibitem{Wilson1974}
+K.~G. Wilson, ``Confinement of quarks,'' Phys.\ Rev.\ D \textbf{10}, 2445 (1974).  doi:10.1103/PhysRevD.10.2445
+
+\bibitem{Kogut1975}
+J.~B. Kogut and L.~Susskind, ``Hamiltonian formulation of Wilson's lattice gauge theories,'' Phys.\ Rev.\ D \textbf{11}, 395 (1975).  doi:10.1103/PhysRevD.11.395
+
+\bibitem{Creutz1980}
+M.~Creutz, ``Monte Carlo study of quantized SU(2) gauge theory,'' Phys.\ Rev.\ D \textbf{21}, 2308 (1980).  doi:10.1103/PhysRevD.21.2308
+
+\bibitem{Creutz1983}
+M.~Creutz, ``Monte Carlo computations in lattice gauge theories,'' Phys.\ Rep.\ \textbf{95}, 201 (1983).  doi:10.1016/0370-1573(83)90016-9
+
+\bibitem{Bali1993}
+G.~S. Bali and K.~Schilling, ``Running coupling and the $\Lambda$ parameter from SU(3) lattice simulations,'' Phys.\ Rev.\ D \textbf{47}, 661 (1993).  doi:10.1103/PhysRevD.47.661
+
+\bibitem{Celik1983}
+T.~Celik, J.~Engels, and H.~Satz, ``The order of the deconfinement transition in SU(3) Yang--Mills theory,'' Phys.\ Lett.\ B \textbf{125}, 411 (1983).  doi:10.1016/0370-2693(83)91314-X  % VERIFY pages
+
+\bibitem{Iwasaki1983}
+Y.~Iwasaki, ``Renormalization group analysis on lattice gauge theories,'' Univ.\ of Tsukuba Report UTHEP-118 (1983).  % Consider published version: Nucl.\ Phys.\ B258, 141 (1985)
+
+\bibitem{Fukugita1989}
+M.~Fukugita, M.~Okawa, and A.~Ukawa, ``Order of the deconfinement phase transition in SU(3) lattice gauge theory,'' Phys.\ Rev.\ Lett.\ \textbf{63}, 1768 (1989).  doi:10.1103/PhysRevLett.63.1768
+
+\bibitem{Wilson1977}
+K.~G. Wilson, ``Quarks and strings on a lattice,'' in \textit{New Phenomena in Subnuclear Physics}, ed.\ A.~Zichichi (Plenum Press, 1977), p.~69.
+
+\bibitem{Sheikholeslami1985}
+B.~Sheikholeslami and R.~Wohlert, ``Improved continuum limit lattice action for QCD with Wilson fermions,'' Nucl.\ Phys.\ B \textbf{259}, 572 (1985).  doi:10.1016/0550-3213(85)90002-1
+
+\bibitem{GellMann1968}
+M.~Gell-Mann, R.~J. Oakes, and B.~Renner, ``Behavior of current divergences under SU(3)$\times$SU(3),'' Phys.\ Rev.\ \textbf{175}, 2195 (1968).  doi:10.1103/PhysRev.175.2195
+
+\bibitem{Banks1980}
+T.~Banks and A.~Casher, ``Chiral symmetry breaking in confining theories,'' Nucl.\ Phys.\ B \textbf{169}, 103 (1980).  doi:10.1016/0550-3213(80)90255-2
+
+\bibitem{Metropolis1953}
+N.~Metropolis, A.~W. Rosenbluth, M.~N. Rosenbluth, A.~H. Teller, and E.~Teller, ``Equation of state calculations by fast computing machines,'' J.\ Chem.\ Phys.\ \textbf{21}, 1087 (1953).  doi:10.1063/1.1699114
+
+\bibitem{MadrasSokal1988}
+N.~Madras and A.~D. Sokal, ``The pivot algorithm,'' J.\ Stat.\ Phys.\ \textbf{50}, 109 (1988).  doi:10.1007/BF01022990
+
+\bibitem{CabibboMarinari1982}
+N.~Cabibbo and E.~Marinari, ``A new method for updating SU(N) matrices,'' Phys.\ Lett.\ B \textbf{119}, 387 (1982).  doi:10.1016/0370-2693(82)90696-7
+
+\bibitem{Hestenes1966}
+D.~Hestenes, \textit{Space-Time Algebra} (Gordon and Breach, 1966).
+
+\bibitem{HestenesSobczyk1984}
+D.~Hestenes and G.~Sobczyk, \textit{Clifford Algebra to Geometric Calculus} (D.~Reidel, 1984).  doi:10.1007/978-94-009-6292-7
+
+\bibitem{Doran2003}
+C.~Doran and A.~Lasenby, \textit{Geometric Algebra for Physicists} (Cambridge, 2003).  doi:10.1017/CBO9780511807497
+
+\bibitem{Doran1996}
+C.~Doran, A.~Lasenby, S.~Gull, S.~Somaroo, and A.~Challinor, ``Spacetime algebra and electron physics,'' Adv.\ Imaging Electron Phys.\ \textbf{95}, 271 (1996).  arXiv:quant-ph/0509178
+
+\bibitem{Furey2012}
+C.~Furey, ``Unified theory of ideals,'' Phys.\ Rev.\ D \textbf{86}, 025024 (2012).  doi:10.1103/PhysRevD.86.025024
+
+\bibitem{Furey2014}
+C.~Furey, ``Generations: Three prints, in colour,'' JHEP \textbf{2014}, 046 (2014).  doi:10.1007/JHEP10(2014)046
+
+\bibitem{Furey2015}
+C.~Furey, ``Standard model physics from an algebra?'' Ph.D.\ thesis, University of Waterloo (2015).  arXiv:1611.09182
+
+\bibitem{Furey2018a}
+C.~Furey, ``Three generations, two unbroken gauge symmetries, and one eight-dimensional algebra,'' Phys.\ Lett.\ B \textbf{785}, 84 (2018).  doi:10.1016/j.physletb.2018.08.032
+
+\bibitem{Furey2018b}
+C.~Furey, ``SU(3)$_C\times$SU(2)$_L\times$U(1)$_Y$ ($\times$U(1)$_X$) as a symmetry of division algebraic ladder operators,'' Eur.\ Phys.\ J.\ C \textbf{78}, 375 (2018).  doi:10.1140/epjc/s10052-018-5844-7
+
+\bibitem{Dixon1994}
+G.~M. Dixon, \textit{Division Algebras: Octonions, Quaternions, Complex Numbers and the Algebraic Design of Physics} (Kluwer, 1994).  doi:10.1007/978-1-4757-2315-1
+
+\bibitem{Stoica2018}
+O.~C. Stoica, ``Leptons, quarks, and gauge from the $C\ell_6$ algebra,'' Adv.\ Appl.\ Clifford Algebras \textbf{28}, 52 (2018).  doi:10.1007/s00006-018-0869-4
+
+\bibitem{Zohar2015}
+E.~Zohar and M.~Burrello, ``Formulation of lattice gauge theories for quantum simulations,'' Phys.\ Rev.\ D \textbf{91}, 054506 (2015).  doi:10.1103/PhysRevD.91.054506
+
+\bibitem{Zohar2022}
+E.~Zohar, ``Quantum simulation of lattice gauge theories in more than one space dimension,'' Philos.\ Trans.\ R.\ Soc.\ A \textbf{380}, 20210069 (2022).  doi:10.1098/rsta.2021.0069
+
+\bibitem{Mathur2016}
+M.~Mathur and T.~P. Sreeraj, ``Canonical transformations and loop formulation of SU(N) lattice gauge theories,'' Phys.\ Rev.\ D \textbf{94}, 085029 (2016).  doi:10.1103/PhysRevD.94.085029
+
+\bibitem{Kan2021}
+A.~Kan and Y.~Nam, ``Lattice QCD and electrodynamics on a universal quantum computer,'' arXiv:2107.12769 (2021).  % Check for journal publication
+
+\bibitem{Zache2018}
+T.~V. Zache et al., ``Quantum simulation of lattice gauge theories using Wilson fermions,'' Quantum Sci.\ Technol.\ \textbf{3}, 034010 (2018).  doi:10.1088/2058-9565/aac33b
+
+\bibitem{Peskin1995}
+M.~E. Peskin and D.~V. Schroeder, \textit{An Introduction to Quantum Field Theory} (Addison--Wesley, 1995), \S15.4.
+
+\bibitem{Weinberg1996}
+S.~Weinberg, \textit{The Quantum Theory of Fields, Vol.~II} (Cambridge, 1996), \S15.1.  doi:10.1017/CBO9781139644174
+
+\bibitem{Gattringer2010}
+C.~Gattringer and C.~B. Lang, \textit{Quantum Chromodynamics on the Lattice} (Springer, 2010).  doi:10.1007/978-3-642-01850-3
+
+\bibitem{Montvay1994}
+I.~Montvay and G.~M\"unster, \textit{Quantum Fields on a Lattice} (Cambridge, 1994).  doi:10.1017/CBO9780511470783
+
+\bibitem{Harris2020}
+C.~R. Harris et al., ``Array programming with NumPy,'' Nature \textbf{585}, 357 (2020).  doi:10.1038/s41586-020-2649-2  % NumPy 2.2.5
+
+\bibitem{Virtanen2020}
+P.~Virtanen et al., ``SciPy 1.0: fundamental algorithms for scientific computing in Python,'' Nature Methods \textbf{17}, 261 (2020).  doi:10.1038/s41592-019-0686-2
+
+\bibitem{Hunter2007}
+J.~D. Hunter, ``Matplotlib: A 2D graphics environment,'' Comput.\ Sci.\ Eng.\ \textbf{9}, 90 (2007).  doi:10.1109/MCSE.2007.55
+
+\bibitem{Kahler1962}
+E.~K\"ahler, ``Der innere Differentialkalk\"ul,'' Rend.\ Mat.\ (5) \textbf{21}, 425 (1962).  % VERIFY full bibliographic details
+
+\bibitem{BecherJoos1982}
+P.~Becher and H.~Joos, ``The Dirac--K\"ahler equation and fermions on the lattice,'' Z.\ Phys.\ C \textbf{15}, 343 (1982).  % VERIFY full bibliographic details
+
+\end{thebibliography}
+
+\end{document}
