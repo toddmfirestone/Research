@@ -2,9 +2,6 @@
 
 **Grade Decomposition of the Lattice QCD Pion Correlator in the Cl(6) Framework**
 
-*Todd M. Firestone*  
-Submitted to *Advances in Applied Clifford Algebras*
-
 ---
 
 ## Overview
