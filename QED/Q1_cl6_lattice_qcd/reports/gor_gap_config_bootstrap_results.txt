@@ -1,0 +1,118 @@
+================================================================
+GOR INTERCEPT GAP -- CONFIG-LEVEL BOOTSTRAP
+  dir=C:\Users\ninjada\Documents\Research Papers\Cl6\Paper 1\sweep_results  N_BOOT=5000  seed=12345
+  confined beta=4.5  deconfined beta=6.0
+================================================================
+
+Files used (N, beta, m0, n_configs, file):
+  N=4   b=4.5  m0=0.05   ncfg=20  sweep_B_b4.5_m0.05_N4.txt
+  N=4   b=4.5  m0=0.1    ncfg=20  sweep_B_b4.5_m0.1_N4.txt
+  N=4   b=4.5  m0=0.2    ncfg=20  sweep_A_b4.5_m0.2_N4.txt
+  N=4   b=4.5  m0=0.2    ncfg=20  sweep_B_b4.5_m0.2_N4.txt
+  N=4   b=4.5  m0=0.3    ncfg=20  sweep_B_b4.5_m0.3_N4.txt
+  N=4   b=4.5  m0=0.5    ncfg=20  sweep_B_b4.5_m0.5_N4.txt
+  N=4   b=5.0  m0=0.2    ncfg=20  sweep_A_b5.0_m0.2_N4.txt
+  N=4   b=5.5  m0=0.05   ncfg=20  sweep_F_b5.5_m0.05_N4.txt
+  N=4   b=5.5  m0=0.2    ncfg=20  sweep_A_b5.5_m0.2_N4.txt
+  N=4   b=5.69 m0=0.05   ncfg=20  sweep_F_b5.69_m0.05_N4.txt
+  N=4   b=5.69 m0=0.2    ncfg=20  sweep_A_b5.69_m0.2_N4.txt
+  N=4   b=6.0  m0=0.05   ncfg=20  sweep_B_b6.0_m0.05_N4.txt
+  N=4   b=6.0  m0=0.1    ncfg=20  sweep_B_b6.0_m0.1_N4.txt
+  N=4   b=6.0  m0=0.2    ncfg=10  sweep_C_b6.0_m0.2_N4.txt
+  N=4   b=6.0  m0=0.2    ncfg=20  sweep_A_b6.0_m0.2_N4.txt
+  N=4   b=6.0  m0=0.2    ncfg=20  sweep_B_b6.0_m0.2_N4.txt
+  N=4   b=6.0  m0=0.3    ncfg=20  sweep_B_b6.0_m0.3_N4.txt
+  N=4   b=6.0  m0=0.5    ncfg=20  sweep_B_b6.0_m0.5_N4.txt
+  N=4   b=6.5  m0=0.05   ncfg=20  sweep_F_b6.5_m0.05_N4.txt
+  N=4   b=6.5  m0=0.2    ncfg=20  sweep_A_b6.5_m0.2_N4.txt
+  N=6   b=4.5  m0=0.02   ncfg=20  sweep_D_b4.5_m0.02_N6.txt
+  N=6   b=4.5  m0=0.03   ncfg=20  sweep_D_b4.5_m0.03_N6.txt
+  N=6   b=4.5  m0=0.04   ncfg=20  sweep_D_b4.5_m0.04_N6.txt
+  N=6   b=4.5  m0=0.05   ncfg=20  sweep_D_b4.5_m0.05_N6.txt
+  N=6   b=6.0  m0=0.02   ncfg=20  sweep_D_b6.0_m0.02_N6.txt
+  N=6   b=6.0  m0=0.03   ncfg=20  sweep_D_b6.0_m0.03_N6.txt
+  N=6   b=6.0  m0=0.04   ncfg=20  sweep_D_b6.0_m0.04_N6.txt
+  N=6   b=6.0  m0=0.05   ncfg=20  sweep_D_b6.0_m0.05_N6.txt
+  N=6   b=6.0  m0=0.2    ncfg=8   sweep_C_b6.0_m0.2_N6.txt
+  N=8   b=4.5  m0=0.001  ncfg=10  sweep_E_b4.5_m0.001_N8.txt
+  N=8   b=4.5  m0=0.005  ncfg=10  sweep_E_b4.5_m0.005_N8.txt
+  N=8   b=4.5  m0=0.008  ncfg=10  sweep_E_b4.5_m0.008_N8.txt
+  N=8   b=4.5  m0=0.05   ncfg=10  sweep_E_b4.5_m0.05_N8.txt
+  N=8   b=4.5  m0=0.1    ncfg=10  sweep_E_b4.5_m0.1_N8.txt
+  N=8   b=4.6  m0=0.05   ncfg=10  sweep_E_b4.6_m0.05_N8.txt
+  N=8   b=4.6  m0=0.1    ncfg=10  sweep_E_b4.6_m0.1_N8.txt
+  N=8   b=4.7  m0=0.05   ncfg=10  sweep_E_b4.7_m0.05_N8.txt
+  N=8   b=4.7  m0=0.1    ncfg=10  sweep_E_b4.7_m0.1_N8.txt
+  N=8   b=4.9  m0=0.05   ncfg=10  sweep_E_b4.9_m0.05_N8.txt
+  N=8   b=4.9  m0=0.1    ncfg=10  sweep_E_b4.9_m0.1_N8.txt
+  N=8   b=5.0  m0=0.05   ncfg=10  sweep_E_b5.0_m0.05_N8.txt
+  N=8   b=5.0  m0=0.1    ncfg=10  sweep_E_b5.0_m0.1_N8.txt
+  N=8   b=6.0  m0=0.001  ncfg=10  sweep_E_b6.0_m0.001_N8.txt
+  N=8   b=6.0  m0=0.005  ncfg=10  sweep_E_b6.0_m0.005_N8.txt
+  N=8   b=6.0  m0=0.008  ncfg=10  sweep_E_b6.0_m0.008_N8.txt
+  N=8   b=6.0  m0=0.05   ncfg=10  sweep_E_b6.0_m0.05_N8.txt
+  N=8   b=6.0  m0=0.1    ncfg=10  sweep_E_b6.0_m0.1_N8.txt
+  N=10  b=4.5  m0=0.001  ncfg=10  sweep_E_b4.5_m0.001_N10.txt
+  N=10  b=4.5  m0=0.002  ncfg=10  sweep_E_b4.5_m0.002_N10.txt
+  N=10  b=4.5  m0=0.003  ncfg=10  sweep_E_b4.5_m0.003_N10.txt
+  N=10  b=4.5  m0=0.004  ncfg=10  sweep_E_b4.5_m0.004_N10.txt
+  N=10  b=4.5  m0=0.005  ncfg=10  sweep_E_b4.5_m0.005_N10.txt
+  N=10  b=4.5  m0=0.01   ncfg=10  sweep_E_b4.5_m0.01_N10.txt
+  N=10  b=6.0  m0=0.001  ncfg=10  sweep_E_b6.0_m0.001_N10.txt
+  N=10  b=6.0  m0=0.002  ncfg=10  sweep_E_b6.0_m0.002_N10.txt
+  N=10  b=6.0  m0=0.003  ncfg=10  sweep_E_b6.0_m0.003_N10.txt
+  N=10  b=6.0  m0=0.004  ncfg=10  sweep_E_b6.0_m0.004_N10.txt
+  N=10  b=6.0  m0=0.005  ncfg=10  sweep_E_b6.0_m0.005_N10.txt
+  N=10  b=6.0  m0=0.01   ncfg=10  sweep_E_b6.0_m0.01_N10.txt
+
+----------------------------------------------------------------
+PER-N RESULTS
+----------------------------------------------------------------
+
+N=4  (5 mass points: [0.05, 0.1, 0.2, 0.3, 0.5])
+  Delta_B central (OLS)      = +0.30716
+  config bootstrap           = +0.30686 ± 0.02242   (13.7 sigma_stat)
+  95% CI                     = [+0.26295, +0.35184]
+  WLS cross-check            = +0.30920 ± 0.02249   (13.7 sigma_stat)
+
+N=6  (4 mass points: [0.02, 0.03, 0.04, 0.05])
+  Delta_B central (OLS)      = +0.39333
+  config bootstrap           = +0.39311 ± 0.06515   (6.0 sigma_stat)
+  95% CI                     = [+0.26613, +0.52121]
+  WLS cross-check            = +0.42201 ± 0.06428   (6.6 sigma_stat)
+
+N=8  (5 mass points: [0.001, 0.005, 0.008, 0.05, 0.1])
+  Delta_B central (OLS)      = +0.50472
+  config bootstrap           = +0.50482 ± 0.03067   (16.5 sigma_stat)
+  95% CI                     = [+0.44541, +0.56304]
+  WLS cross-check            = +0.53208 ± 0.02756   (19.3 sigma_stat)
+
+N=10  (6 mass points: [0.001, 0.002, 0.003, 0.004, 0.005, 0.01])
+  Delta_B central (OLS)      = +0.46066
+  config bootstrap           = +0.46072 ± 0.03028   (15.2 sigma_stat)
+  95% CI                     = [+0.40068, +0.51968]
+  WLS cross-check            = +0.43625 ± 0.03037   (14.4 sigma_stat)
+
+----------------------------------------------------------------
+VOLUME EXTRAPOLATION  Delta_B vs 1/N^2  (statistical only)
+----------------------------------------------------------------
+
+  Per-N central values (watch for non-monotonicity):
+    N=4   1/N^2=0.06250  Delta_B=+0.30716  ± 0.02242
+    N=6   1/N^2=0.02778  Delta_B=+0.39333  ± 0.06515
+    N=8   1/N^2=0.01562  Delta_B=+0.50472  ± 0.03067
+    N=10  1/N^2=0.01000  Delta_B=+0.46066  ± 0.03028
+
+  [all N] using N=[4, 6, 8, 10]
+    Delta_B(N->inf) = +0.52178 ± 0.02708 (analytic)  / ± 0.02724 (propagated)
+    (max input Delta_B = +0.50472)  <-- ABOVE all input points
+
+  [excl. N=6] using N=[4, 8, 10]
+    Delta_B(N->inf) = +0.52468 ± 0.02763 (analytic)  / ± 0.02761 (propagated)
+    (max input Delta_B = +0.50472)  <-- ABOVE all input points
+
+================================================================
+REMINDER: every sigma above is STATISTICAL ONLY. Systematics
+(linear-GOR ansatz, quenching, O(a), additive renorm, few-slice
+m_eff) are not included and dominate. Report accordingly.
+================================================================
