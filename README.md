@@ -50,7 +50,7 @@ The following sequence represents the conceptual development pathway of the rese
 - Q3, Q4, Q5, Q6, Q7
 
 ### 3. Gravity Model and Minkowski Space Comparison
-- G4, G5, G6
+- G1, G2, G4, G5, G6
 
 ### 4. Time Mechanics Extensions to the Standard Model
 - T1, T2, T3, T4
