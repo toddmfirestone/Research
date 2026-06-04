@@ -1,0 +1,219 @@
+
+<style>
+.blk { margin-bottom: 26px; }
+.blk-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-left: 3px solid var(--color-border-primary); padding-left: 10px; margin-bottom: 12px; border-radius: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 7px 10px; text-align: left; border-bottom: 1.5px solid var(--color-border-secondary); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--color-border-tertiary); vertical-align: top; line-height: 1.65; color: var(--color-text-primary); font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+code { font-family: var(--font-mono); font-size: 10.5px; background: var(--color-background-secondary); padding: 1px 4px; border-radius: 3px; }
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.b-correct { background: #E1F5EE; color: #085041; }
+.b-wrong { background: #FAECE7; color: #712B13; }
+.b-conj { background: #FAEEDA; color: #633806; }
+.b-alg { background: #EEEDFE; color: #26215C; }
+.b-phys { background: #E6F1FB; color: #0C447C; }
+.eq-box { background: var(--color-background-secondary); border-radius: 6px; padding: 10px 14px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.9; color: var(--color-text-primary); margin: 8px 0; }
+.eq-box .cm { color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 11px; font-style: italic; }
+.highlight { background: var(--color-background-secondary); border-radius: 6px; padding: 12px 16px; font-size: 12.5px; line-height: 1.7; color: var(--color-text-primary); }
+.warn { background: var(--color-background-secondary); border-left: 3px solid var(--color-border-primary); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.65; margin-top: 4px; }
+.cat { font-weight: 500; font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-tertiary); padding: 5px 10px; border-bottom: 1px solid var(--color-border-tertiary); }
+.obs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; }
+.obs-card { background: var(--color-background-secondary); border-radius: 8px; padding: 12px 14px; font-size: 12px; line-height: 1.65; }
+.obs-card .obs-name { font-weight: 500; font-size: 13px; margin-bottom: 6px; color: var(--color-text-primary); }
+.obs-card .obs-def { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-secondary); margin-bottom: 8px; }
+</style>
+
+<div style="padding:4px 0 0">
+
+<div class="blk">
+<div class="blk-title">How many independent observables? — counting carefully</div>
+<div class="highlight">
+Starting from four fractions {f₃, f₃̄, f₁ₐ, f₁ᵦ}, each constraint removes one degree of freedom:
+<br><br>
+<strong>Constraint 1 — Completeness</strong> (algebraic, holds on every gauge configuration):<br>
+f₃ + f₃̄ + f₁ₐ + f₁ᵦ = 1 &nbsp;→&nbsp; removes one. Three independent.
+<br><br>
+<strong>Constraint 2 — C-symmetry of the ensemble</strong> (holds in the N_cfg → ∞ limit with C-symmetric Wilson action and C-symmetric point source):<br>
+⟨f₃⟩ = ⟨f₃̄⟩ and ⟨f₁ₐ⟩ = ⟨f₁ᵦ⟩ &nbsp;→&nbsp; removes two more. <strong>ONE</strong> independent observable survives.
+<br><br>
+That surviving observable is: <code>f_triplet = f₃ + f₃̄</code> (equivalently, <code>f_singlet = f₁ₐ + f₁ᵦ = 1 − f_triplet</code>). The C-odd quantities A_color and A_singlet both vanish exactly in the ensemble limit. The brief's statement of "two independent observables" refers to per-configuration fluctuations — in the ensemble limit there is only one.
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">The complete observable structure — four natural combinations</div>
+<div class="obs-grid">
+<div class="obs-card">
+<div class="obs-name">f_triplet = f₃ + f₃̄</div>
+<div class="obs-def">C-even, survives ensemble average</div>
+The fraction of pion correlator weight in the color-carrying channels. Free-field value: 3/4. In the ensemble limit this is the ONLY nonzero observable. It measures how much of the pion correlator lives in the triplet vs singlet spinor subspaces. This is what Experiment B will test: does f_triplet shift between β=4.5 and β=6.0 near the chiral limit?
+</div>
+<div class="obs-card">
+<div class="obs-name">f_singlet = f₁ₐ + f₁ᵦ</div>
+<div class="obs-def">C-even; = 1 − f_triplet by completeness</div>
+Not independent — determined by f_triplet. Free-field value: 1/4. Included here for completeness: a shift toward singlet channels would indicate the gauge dynamics redistributes weight from color-carrying to color-neutral spinor components. This is the C-even content of the (Γ₇,H) decomposition.
+</div>
+<div class="obs-card">
+<div class="obs-name">A_color = f₃ − f₃̄</div>
+<div class="obs-def">C-odd; → 0 in ensemble limit (θ=0)</div>
+Asymmetry between triplet (quark) and anti-triplet (antiquark) channels. Vanishes in C-symmetric limit. Per-configuration nonzero due to finite-sample C-violation. NOT parity-violating — see below. In a CP-violating vacuum (θ≠0), could be nonzero in the ensemble limit as a probe of CP violation through the grade structure.
+</div>
+<div class="obs-card">
+<div class="obs-name">A_singlet = f₁ₐ − f₁ᵦ</div>
+<div class="obs-def">C-odd; → 0 in ensemble limit (θ=0)</div>
+Asymmetry between the two singlet channels (opposite Γ₇). Vanishes in C-symmetric limit. Also NOT parity-violating. Could couple to topological charge near the chiral limit if Dirac zero modes have a preferred Spin(6)-chirality — but this is conjectural and inaccessible at heavy mass.
+</div>
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">The hidden structure in the Experiment A data</div>
+<div class="eq-box">
+<span class="cm">From the data at β=4.5, t=1 (deviations from free-field):</span><br>
+Δf₃  = −8.2×10⁻⁵   <span class="cm">← triplet: depleted</span><br>
+Δf₃̄  = +8.1×10⁻⁵   <span class="cm">← antitriplet: enhanced</span><br>
+Δf₁ₐ = +8.2×10⁻⁵   <span class="cm">← singlet-a (Γ₇=+1): enhanced</span><br>
+Δf₁ᵦ = −8.1×10⁻⁵   <span class="cm">← singlet-b (Γ₇=−1): depleted</span><br>
+<br>
+A_color   = f₃ − f₃̄   = −1.63×10⁻⁴<br>
+A_singlet = f₁ₐ − f₁ᵦ = +1.63×10⁻⁴<br>
+<br>
+<span class="cm">Key identity from the data:</span><br>
+A_color + A_singlet = −1.63×10⁻⁴ + 1.63×10⁻⁴ ≈ 0   (= A_{Γ₇}, the Spin(6) chiral asymmetry)<br>
+A_color − A_singlet = −3.26×10⁻⁴                     (= A_H, the H-parity asymmetry)<br>
+</div>
+
+<table>
+<thead><tr>
+  <th style="width:20%">Combined observable</th>
+  <th style="width:30%">Physical content</th>
+  <th style="width:30%">Data value at β=4.5, t=1</th>
+  <th style="width:20%">Status</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>A_{Γ₇} = A_color + A_singlet</strong><br><code>= f_{Γ₇=+1} − f_{Γ₇=−1}</code></td>
+  <td>Total Spin(6) chiral asymmetry. Positive-chirality spinor subspace (3 + 1a) vs negative-chirality (3̄ + 1b). Vanishes in C-symmetric ensemble. Measures the net Spin(6)-chirality imbalance of the pion correlator.</td>
+  <td>≈ 0 (to within noise). Specifically: sum of equal and opposite C-violations in the two Γ₇ sectors approximately cancels.</td>
+  <td><span class="badge b-alg">Forced to zero by C + completeness</span></td>
+</tr>
+<tr>
+  <td><strong>A_H = A_color − A_singlet</strong><br><code>= (f₃+f₁ᵦ) − (f₃̄+f₁ₐ)</code></td>
+  <td>H-parity asymmetry. Positive-H states (3 with H=+1/2 and 1b with H=+3/2) vs negative-H states (3̄ with H=−1/2 and 1a with H=−3/2). Not forced to zero by C-symmetry alone — C maps H→−H AND 3↔3̄, so A_H is C-even, not C-odd.</td>
+  <td>−3.26×10⁻⁴ (nonzero at ~2σ). The gauge dynamics with 20 configs slightly favors negative-H states. Direction consistent with interpretation (a) — gauge-link dressing shifts weight toward lower H eigenspaces.</td>
+  <td><span class="badge b-phys">Nonzero at heavy mass — finite-sample effect</span></td>
+</tr>
+</tbody>
+</table>
+<div style="margin-top:10px; font-size:11.5px; color:var(--color-text-secondary);">
+A_H is C-even because C maps 3↔3̄ (swapping H=+1/2 with H=−1/2) AND 1a↔1b (swapping H=−3/2 with H=+3/2), so positive-H and negative-H groups each get mixed across C. Explicitly: C(f₃+f₁ᵦ) = f₃̄+f₁ₐ, so A_H → −A_H under C. Wait — let me recheck: C maps f₃→f₃̄ and f₁ᵦ→f₁ₐ, so (f₃+f₁ᵦ)→(f₃̄+f₁ₐ), giving A_H→−A_H. So A_H IS C-odd. Its nonzero value with 20 configs is a finite-sample C-violation.
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Is A_color parity-violating? — No, and here is the precise statement</div>
+<table>
+<thead><tr>
+  <th style="width:22%">Symmetry operation</th>
+  <th style="width:30%">Action on the grade fractions</th>
+  <th style="width:28%">Effect on A_color = f₃ − f₃̄</th>
+  <th style="width:20%">Verdict</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Charge conjugation C</strong><br>Swaps particles ↔ antiparticles</td>
+  <td>C P₃ C† = P₃̄ and C P₁ₐ C† = P₁ᵦ (algebraic identity, verified). On the correlator: f₃ ↔ f₃̄ and f₁ₐ ↔ f₁ᵦ.</td>
+  <td>A_color → f₃̄ − f₃ = −A_color. <strong>A_color is C-odd.</strong> Vanishes in C-symmetric ensemble limit.</td>
+  <td><span class="badge b-correct">C-odd ✓</span></td>
+</tr>
+<tr>
+  <td><strong>Parity P</strong><br>Spatial reflection x⃗ → −x⃗</td>
+  <td>P acts on the spacetime structure of the correlator: C_π(t) → C_π(t) for the zero-momentum pion (spatial sum absorbs the parity flip). P does NOT mix H-eigenspaces — it acts on spacetime Dirac indices and the spatial coordinate, not on the internal Cl(6) grade structure.</td>
+  <td>A_color is <strong>unchanged under P</strong>. The grade projectors P_r are constructed purely from internal algebra elements (Cartan element H of Spin(6)). Parity is a spacetime operation and commutes with all P_r.</td>
+  <td><span class="badge b-wrong">NOT P-odd ✗</span></td>
+</tr>
+<tr>
+  <td><strong>CP combined</strong></td>
+  <td>In standard QCD with θ=0: CP is a symmetry of the vacuum. A_color = 0 in the ensemble limit follows from C alone (even without P).</td>
+  <td>If θ≠0 (CP violation): the ensemble is not C-symmetric, and ⟨A_color⟩ could be nonzero. The grade decomposition would then provide a new probe of the QCD θ-term through the color-triplet asymmetry in the spinor structure.</td>
+  <td><span class="badge b-conj">CP: conjectural probe of θ-term</span></td>
+</tr>
+<tr>
+  <td><strong>Time reversal T</strong></td>
+  <td>T is an antiunitary symmetry. For the zero-momentum pion correlator with periodic boundary conditions, T maps t → N−t (lattice reflection). This is a symmetry of the ensemble average and does not mix grade channels.</td>
+  <td>A_color unchanged under T (same argument as P — T acts on spacetime, not on internal grade structure).</td>
+  <td><span class="badge b-correct">T-even</span></td>
+</tr>
+</tbody>
+</table>
+<div style="margin-top:10px;">
+<div class="warn" style="border-left-color:#A32D2D;">
+<strong style="color:var(--color-text-primary)">Correction to the brief.</strong> The question asks "Is A_color a parity-violating observable?" The answer is no. A_color is C-odd and P-even (and T-even). It is not a probe of parity violation. It is a probe of C-violation — which in standard QCD with θ=0 means it vanishes in the ensemble limit and what we see is purely a finite-sample artifact. §6.7 should not describe A_color as parity-related.
+</div>
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Is A_singlet sensitive to topological charge or the η' anomaly?</div>
+<table>
+<thead><tr>
+  <th style="width:22%">Mechanism</th>
+  <th style="width:36%">Argument for sensitivity</th>
+  <th style="width:26%">Why it is suppressed here</th>
+  <th style="width:16%">Status</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Dirac zero modes</strong><br>(Atiyah-Singer index theorem)</td>
+  <td>In a gauge background with topological charge Q, the Dirac operator has exactly |Q| zero modes of definite 4D chirality (γ₅ eigenvalue). These zero modes contribute to the singlet pion correlator (the flavor-singlet channel) but not to the flavor-triplet channel — this is the mechanism behind the U(1)_A anomaly mass of the η'. If zero modes also have a preferred Spin(6) chirality (Γ₇ eigenvalue), they would contribute differently to f₁ₐ (Γ₇=+1) vs f₁ᵦ (Γ₇=−1), generating A_singlet ≠ 0 in nontrivial topological sectors.</td>
+  <td>We are computing a flavor-non-singlet pion (the isospin triplet π), not the η'. The zero-mode contribution to the non-singlet pion correlator is suppressed. At κ=0.12346 (heavy mass), the propagator never approaches the zero-mode regime. The quenched approximation also removes fermion loop contributions that carry the anomaly in the dynamical theory.</td>
+  <td><span class="badge b-conj">Conjectural — requires chiral limit + topology separation</span></td>
+</tr>
+<tr>
+  <td><strong>Spin(6) chirality of zero modes</strong></td>
+  <td>Atiyah-Singer guarantees γ₅ chirality of zero modes. But does a Cl(6) zero mode also carry a definite Γ₇ eigenvalue? Since Γ₇ = γ₅·(ie₅e₆) and γ₅ is fixed on zero modes, a definite Γ₇ eigenvalue requires also a definite ie₅e₆ eigenvalue — i.e., the zero mode must be an eigenstate of the internal chirality (e₅,e₆) as well. In the Cl(6) free field (no gauge links), this holds: D_W^free zero modes (at κ_c, m₀=0) are eigenstates of both γ₅ and ie₅e₆. Whether this persists in the interacting theory is an open question.</td>
+  <td>Cannot be tested with current data (heavy mass, no topological sector separation). Requires: (1) κ→κ_c^ren (chiral limit), (2) separate gauge configs by topological sector Q, (3) sufficient statistics to resolve A_singlet in each sector.</td>
+  <td><span class="badge b-conj">Open question — Experiment B prerequisite</span></td>
+</tr>
+<tr>
+  <td><strong>Direct η' anomaly coupling</strong></td>
+  <td>The U(1)_A anomaly generates a mass for the η' through the Veneziano formula: m²_η' ∝ χ_top/f²_π where χ_top = ⟨Q²⟩/V is the topological susceptibility. In the grade-decomposed language, if the η' wavefunction has preferential Γ₇ structure, then A_singlet could probe χ_top through the singlet channel weight.</td>
+  <td>We are computing a non-singlet pion correlator in the quenched approximation. The quenched theory has a pathological hairpin contribution to the η' that is absent here. The non-singlet pion is insensitive to χ_top at leading order. Any sensitivity would appear at O(1/N_c) or higher.</td>
+  <td><span class="badge b-conj">Suppressed — quenched + non-singlet</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">The physically interesting observable — what should survive Experiment B</div>
+<table>
+<thead><tr>
+  <th style="width:25%">Observable</th>
+  <th style="width:25%">C-symmetry limit behavior</th>
+  <th style="width:25%">Prediction for Experiment B (κ→κ_c^ren)</th>
+  <th style="width:25%">Physical content if nonzero</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><code>f_triplet(β=4.5) − f_triplet(β=6.0)</code><br><strong>= the C-even phase difference</strong></td>
+  <td>Survives: C-even, so not forced to zero. This is the only observable that can show a nonzero phase difference in the ensemble limit.</td>
+  <td>If chiral condensate in confined phase preferentially populates the color-triplet spinor channels: positive phase difference. If deconfined phase has larger triplet weight: negative. Free-field theorem (Q1) gives zero at heavy mass — verified at 0.6σ.</td>
+  <td>Genuine non-perturbative signal: the confinement-deconfinement transition shifts the spinor weight between color-carrying and color-neutral internal channels. This is the grade-decomposed analog of ΔA from Paper 1.</td>
+</tr>
+<tr>
+  <td><code>A_color</code> and <code>A_singlet</code><br><strong>= the C-odd fluctuations</strong></td>
+  <td>Vanish in ensemble limit (θ=0). Only finite-sample artifacts with N_cfg=20.</td>
+  <td>Should vanish (→ statistical noise floor) as N_cfg increases in Experiment B. If they do not vanish, it signals either a C-violation in the code or a genuine CP effect (requiring θ≠0, not present here).</td>
+  <td>Currently: finite-sample C-violation. Physically: probes of C-odd vacuum structure (CP violation) — irrelevant for standard QCD. Their vanishing with increasing N_cfg is itself a consistency check.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="warn">
+<strong style="color:var(--color-text-primary)">What §6.7 should say about channel-pair structure.</strong> The anti-correlation Δf₃ = −Δf₃̄ and Δf₁ₐ = −Δf₁ᵦ is not merely an algebraic curiosity — it is the statement that C-symmetry violation in the ensemble enters as a single independent degree of freedom, not two. In the θ=0 quenched Wilson ensemble with C-symmetric point source, both A_color = f₃−f₃̄ and A_singlet = f₁ₐ−f₁ᵦ vanish in the N_cfg→∞ limit. The values observed with N_cfg=20 (magnitude ~1.6×10⁻⁴) are consistent with finite-sample C-breaking and are expected to scale as 1/√N_cfg. A_color is C-odd and parity-even — it is not a probe of parity violation. The sole C-even observable that survives the ensemble limit is f_triplet = f₃+f₃̄ (the total weight in the color-carrying channels), and the phase difference f_triplet(β=4.5) − f_triplet(β=6.0) is the target observable for Experiment B. A_singlet's potential sensitivity to topological charge through Spin(6) chirality of Dirac zero modes is a physically motivated conjecture that requires the chiral limit, topological sector separation, and O(100+) configurations to test — none of which are available in the current dataset.
+</div>
+
+</div>

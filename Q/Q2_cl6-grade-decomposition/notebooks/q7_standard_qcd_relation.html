@@ -1,0 +1,239 @@
+
+<style>
+.blk { margin-bottom: 26px; }
+.blk-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-left: 3px solid var(--color-border-primary); padding-left: 10px; margin-bottom: 12px; border-radius: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 7px 10px; text-align: left; border-bottom: 1.5px solid var(--color-border-secondary); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--color-border-tertiary); vertical-align: top; line-height: 1.65; color: var(--color-text-primary); font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+code { font-family: var(--font-mono); font-size: 10.5px; background: var(--color-background-secondary); padding: 1px 4px; border-radius: 3px; }
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.b-yes   { background: #E1F5EE; color: #085041; }
+.b-no    { background: #FAECE7; color: #712B13; }
+.b-part  { background: #FAEEDA; color: #633806; }
+.b-alg   { background: #EEEDFE; color: #26215C; }
+.b-phys  { background: #E6F1FB; color: #0C447C; }
+.eq-box { background: var(--color-background-secondary); border-radius: 6px; padding: 10px 14px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.9; color: var(--color-text-primary); margin: 8px 0; }
+.eq-box .cm { color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 11px; font-style: italic; }
+.highlight { background: var(--color-background-secondary); border-radius: 6px; padding: 12px 16px; font-size: 12.5px; line-height: 1.7; color: var(--color-text-primary); }
+.warn { background: var(--color-background-secondary); border-left: 3px solid var(--color-border-primary); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.65; margin-top: 4px; }
+.cat { font-weight: 500; font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-tertiary); padding: 5px 10px; border-bottom: 1px solid var(--color-border-tertiary); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; }
+.col-card { background: var(--color-background-secondary); border-radius: 8px; padding: 12px 14px; font-size: 12px; line-height: 1.65; }
+.col-card .cc-title { font-weight: 500; font-size: 12.5px; margin-bottom: 8px; color: var(--color-text-primary); }
+</style>
+
+<div style="padding:4px 0 0">
+
+<div class="blk">
+<div class="blk-title">The decisive algebraic obstruction</div>
+<div class="highlight">
+The grade projectors are Lagrange spectral projectors of H:
+<div class="eq-box" style="margin-top:8px">
+P_r  =  ∏_{s≠r}  (H − λ_s·I₈) / (λ_r − λ_s)<br>
+<br>
+H  =  B₁₂  +  B₃₄  +  <strong>B₅₆</strong><br>
+<br>
+B₅₆  =  (i/4)[e₅, e₆]<br>
+<br>
+<span class="cm">Standard 4-component Dirac algebra: generators {γ₁, γ₂, γ₃, γ₄} only.</span><br>
+<span class="cm">e₅ and e₆ do not exist in this algebra.</span><br>
+<span class="cm">Therefore B₅₆ does not exist. Therefore H does not exist. Therefore P_r does not exist.</span>
+</div>
+This is not a matter of convenience or notation. B₅₆ is structurally necessary: it is the bivector that labels the third qubit in the tensor product ℂ²⊗ℂ²⊗ℂ², which is the qubit that distinguishes the singlet states (H=±3/2) from the triplet/antitriplet states (H=±1/2). Without e₅ and e₆, there is no third qubit, no B₅₆, no H, and no grade decomposition. The standard 4-component algebra Cl(4) simply does not have room for this structure.
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">What exists in the two formulations</div>
+<div class="two-col">
+<div class="col-card">
+<div class="cc-title">Standard 4-component Wilson lattice QCD</div>
+Quark field: <code>ψ ∈ ℂ⁴ ⊗ ℂ³ = ℂ¹²</code> per site<br>
+Dirac algebra: <code>{γ₁,...,γ₄}</code> — four generators, 4×4 matrices<br>
+Cartan of Cl(4): <code>B₁₂^(4×4) + B₃₄^(4×4)</code><br>
+  — this is the helicity/spin operator in the (1,2) and (3,4) planes<br>
+  — it does NOT contain B₅₆ because e₅,e₆ do not exist<br><br>
+What <em>can</em> be projected: Dirac chirality (γ₅), Lorentz helicity (σ₁₂), positive/negative frequency. None of these correspond to SU(3) representation content of the spinor.<br><br>
+SU(3) structure: carried entirely by the color <code>ℂ³</code> factor. Projectors on color space give quark/antiquark in the obvious sense — but these are color projectors, not spinor-grade projectors.
+</div>
+<div class="col-card">
+<div class="cc-title">Cl(6) formulation (this work)</div>
+Quark field: <code>ψ ∈ ℂ⁸ ⊗ ℂ³ = ℂ²⁴</code> per site<br>
+Clifford algebra: <code>{e₁,...,e₆}</code> — six generators, 8×8 matrices<br>
+Cartan of Spin(6): <code>B₁₂ + B₃₄ + B₅₆</code><br>
+  — this is H, the Cartan element that grades the spinor by SU(3) content<br>
+  — B₅₆ is available because e₅,e₆ exist<br><br>
+What <em>can</em> be projected: everything standard QCD can project, PLUS the internal SU(3) grade structure via P_r. The projectors P_r are Lagrange spectral projectors of H — algebraically guaranteed, gauge-invariant, complete.<br><br>
+SU(3) structure: encoded TWICE — algebraically in the spinor <code>ℂ⁸</code> via H, and dynamically in the color <code>ℂ³</code> via U_μ. These two SU(3) structures are identified.
+</div>
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Could a standard QCD practitioner build an equivalent projector anyway?</div>
+<table>
+<thead><tr>
+  <th style="width:28%">Approach</th>
+  <th style="width:40%">Assessment</th>
+  <th style="width:18%">Requires Cl(6)?</th>
+  <th style="width:14%">Verdict</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Read off P_r as an explicit 8×8 numerical matrix and embed it in the standard 24×24 operator space</strong></td>
+  <td>Technically possible. P_r in the Cl(6) basis is a diagonal 8×8 matrix (e.g., P₃ = diag(0,0,0,1,0,1,1,0)). One could write down these numbers and use them in a standard lattice code — treating them as ad hoc projectors with no algebraic justification. This is equivalent to computing in Cl(6) by stealth.</td>
+  <td>Yes — to know which 8×8 matrix to write down, you need the Cl(6) construction. The matrix is algebraically unmotivated and uninterpretable without H.</td>
+  <td><span class="badge b-part">Possible, but imports Cl(6)</span></td>
+</tr>
+<tr>
+  <td><strong>Construct an analog of P_r in the standard 12×12 (ℂ⁴⊗ℂ³) space</strong></td>
+  <td>The standard propagator lives in ℂ¹² = ℂ⁴⊗ℂ³. There is no ℂ⁸ factor in this space. To act on the 8-dimensional grade structure, you would first need to embed ℂ¹² into ℂ²⁴ = ℂ⁸⊗ℂ³, which requires choosing an embedding of ℂ⁴ into ℂ⁸ — a non-unique choice that itself requires the Cl(6) structure to motivate.</td>
+  <td>Yes — the embedding ℂ⁴ → ℂ⁸ is not canonical without Cl(6).</td>
+  <td><span class="badge b-no">Not constructible without Cl(6)</span></td>
+</tr>
+<tr>
+  <td><strong>Construct a color projector in the standard formulation that is equivalent to P_r</strong></td>
+  <td>The color gauge group SU(3) acts on the ℂ³ factor of ℂ¹². Color projectors on ℂ³ project onto definite color states — but color is a gauge degree of freedom and collapses under gauge averaging. A color projector in standard QCD is not gauge-invariant and cannot produce a physical correlator. P_r in Cl(6) projects onto the SPINOR SU(3) representation structure, not the gauge color — these are different (though identified in the embedding).</td>
+  <td>Not applicable — wrong space entirely.</td>
+  <td><span class="badge b-no">Conceptually different object</span></td>
+</tr>
+<tr>
+  <td><strong>Use a Lorentz/helicity projector in the standard formulation to approximate P_r</strong></td>
+  <td>The available projectors in standard Dirac space are: chirality (γ₅), helicity (σ_μν), positive/negative frequency. These all involve only {γ₁,...,γ₄}. As shown in Q3, the grade structure cuts ACROSS the γ₅ chirality sectors (the triplet subspace contains states with both γ₅=+1 and γ₅=−1). No combination of standard Dirac projectors can reproduce P_r.</td>
+  <td>Yes — the grade and chirality sectors are incompatible in the standard formulation.</td>
+  <td><span class="badge b-no">Algebraically impossible</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">The grade structure cuts across γ5 chirality — why standard projectors cannot work</div>
+<div class="highlight">
+In standard QCD, the natural projectors on the 4-component Dirac space are γ₅ eigenprojectors (chiral projectors). Could P_r be expressed as a chiral projector or combination thereof?
+<br><br>
+No. The grade structure cuts across chirality sectors. Here are the explicit γ₅ eigenvalues of each basis state:
+</div>
+<table style="margin-top:10px">
+<thead><tr>
+  <th style="width:12%">State</th>
+  <th style="width:10%">Rep</th>
+  <th style="width:12%">γ₅ eigenvalue</th>
+  <th style="width:12%">Γ₇ eigenvalue</th>
+  <th style="width:12%">H eigenvalue</th>
+  <th style="width:42%">Consequence</th>
+</tr></thead>
+<tbody>
+<tr><td><code>|↑↑↑⟩</code></td><td>1a</td><td><code>−1</code></td><td><code>+1</code></td><td><code>−3/2</code></td><td rowspan="3" style="vertical-align:middle; background:var(--color-background-secondary)">
+  The triplet subspace 3 contains TWO states with γ₅=+1 and ONE state with γ₅=−1. It is NOT a γ₅ eigenspace. No chiral projector can isolate the triplet.
+</td></tr>
+<tr><td><code>|↑↓↓⟩</code></td><td>3</td><td><code>+1</code></td><td><code>+1</code></td><td><code>+1/2</code></td></tr>
+<tr><td><code>|↓↑↓⟩</code></td><td>3</td><td><code>+1</code></td><td><code>+1</code></td><td><code>+1/2</code></td></tr>
+<tr><td><code>|↓↓↑⟩</code></td><td>3</td><td><code>−1</code></td><td><code>+1</code></td><td><code>+1/2</code></td><td rowspan="4" style="vertical-align:middle; background:var(--color-background-secondary)">
+  The antitriplet 3̄ also mixes γ₅ eigenvalues: one state at −1 and two at +1. The singlets (1a, 1b) each have definite γ₅, but the triplets do not. Any projector built from γ₅ alone will mix grade channels.
+</td></tr>
+<tr><td><code>|↑↑↓⟩</code></td><td>3̄</td><td><code>−1</code></td><td><code>−1</code></td><td><code>−1/2</code></td></tr>
+<tr><td><code>|↑↓↑⟩</code></td><td>3̄</td><td><code>+1</code></td><td><code>−1</code></td><td><code>−1/2</code></td></tr>
+<tr><td><code>|↓↑↑⟩</code></td><td>3̄</td><td><code>+1</code></td><td><code>−1</code></td><td><code>−1/2</code></td></tr>
+<tr><td><code>|↓↓↓⟩</code></td><td>1b</td><td><code>−1</code></td><td><code>−1</code></td><td><code>+3/2</code></td><td>1b is a γ₅ eigenstate (γ₅=−1). Only the singlets are γ₅ eigenstates.</td></tr>
+</tbody>
+</table>
+<div style="margin-top:10px; font-size:11.5px; color:var(--color-text-secondary);">
+The grade decomposition (by H eigenvalue) and the Lorentz chirality decomposition (by γ₅ eigenvalue) are incompatible labelings of the same 8-dimensional space. They are compatible as operators — [γ₅, P_r] = 0 — meaning γ₅ maps each grade subspace to itself. But γ₅ is NOT proportional to the identity within the triplet or antitriplet subspaces. No combination of {γ₁,...,γ₄} can reproduce P_r.
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Novelty audit — what Cl(6) genuinely provides vs renames</div>
+<table>
+<thead><tr>
+  <th style="width:28%">Claim</th>
+  <th style="width:40%">Assessment</th>
+  <th style="width:16%">Cl(6) provides?</th>
+  <th style="width:16%">Standard QCD has?</th>
+</tr></thead>
+<tbody>
+<tr><td colspan="4" class="cat">Structural novelty</td></tr>
+<tr>
+  <td>Internal generators e₅, e₆ enabling B₅₆ and therefore H</td>
+  <td>The third "internal qubit" of the Cl(6) spinor, carrying the singlet/triplet distinction. Not present in Cl(4). Necessary for the grade decomposition.</td>
+  <td><span class="badge b-yes">Yes — from the algebra</span></td>
+  <td><span class="badge b-no">No — Cl(4) only has e₁,...,e₄</span></td>
+</tr>
+<tr>
+  <td>Natural, algebraically motivated grade projectors P_r</td>
+  <td>Arise as Lagrange spectral projectors of H. Require no external motivation. All algebraic properties (completeness, idempotency, SU(3) covariance, γ₅ commutativity) follow automatically from the Cl(6) structure.</td>
+  <td><span class="badge b-yes">Yes — natural consequence of H</span></td>
+  <td><span class="badge b-no">No natural analog exists</span></td>
+</tr>
+<tr>
+  <td>Automatic gauge invariance [T_a, P_r] = 0</td>
+  <td>Follows from [T_a, H] = 0 (verified to 2.4×10⁻¹⁵). In standard QCD, any ad hoc projector would require separate proof of gauge invariance.</td>
+  <td><span class="badge b-yes">Algebraically guaranteed</span></td>
+  <td><span class="badge b-part">Possible but requires separate proof</span></td>
+</tr>
+<tr>
+  <td>(Γ₇, H) double-grading labeling of each rep</td>
+  <td>The pair (Γ₇, H) uniquely labels each SU(3) rep in the spinor. Requires both the Spin(6) pseudoscalar Γ₇ = iI₆ and the Cartan element H — both internal to Cl(6). No standard QCD expression.</td>
+  <td><span class="badge b-yes">Natural in Cl(6)</span></td>
+  <td><span class="badge b-no">No analog in Cl(4)</span></td>
+</tr>
+<tr>
+  <td>Algebraic completeness ΣC_π^(r) = C_π (to 5.4×10⁻¹⁶)</td>
+  <td>A direct consequence of ΣP_r = I₈, which follows from H having exactly these four eigenvalues with these multiplicities. In a standard QCD construction with ad hoc projectors, completeness would need to be verified numerically and might fail if the projectors are not properly normalized.</td>
+  <td><span class="badge b-yes">Algebraic identity in Cl(6)</span></td>
+  <td><span class="badge b-part">Requires design and verification</span></td>
+</tr>
+<tr><td colspan="4" class="cat">What is genuinely just a renaming</td></tr>
+<tr>
+  <td>The total pion correlator C_π(t) = ΣC_π^(r)(t)</td>
+  <td>This is identical to the standard QCD pion correlator C_π^std(t). The Cl(6) calculation reproduces it with the same physics (16/16 benchmarks pass). No new information in the total.</td>
+  <td>—</td>
+  <td><span class="badge b-yes">Fully equivalent</span></td>
+</tr>
+<tr>
+  <td>The individual gauge sector observables (plaquette, Wilson loops, κ_c)</td>
+  <td>The Cl(6) gauge sector is identical to standard Wilson QCD — same action, same update algorithm, same Wilson loops. These are purely renamings.</td>
+  <td>—</td>
+  <td><span class="badge b-yes">Fully equivalent</span></td>
+</tr>
+<tr>
+  <td>The 24 DOF vs 12 DOF</td>
+  <td>The extra 12 DOF per site decouple. They contribute to computational cost but not to physical observables. Pure overhead.</td>
+  <td>—</td>
+  <td><span class="badge b-part">Decoupled — no new physics</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">The precise novelty statement for §6.7</div>
+<table>
+<thead><tr>
+  <th style="width:18%">Question</th>
+  <th style="width:82%">Answer</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Can C_π^(r)(t) be measured in standard 4-component Wilson QCD?</strong></td>
+  <td>Not naturally. The projector P_r requires the Cartan element H = B₁₂+B₃₄+B₅₆, which in turn requires the generators e₅ and e₆ that do not exist in the standard 4-component Dirac algebra Cl(4). A sufficiently informed practitioner could write down the explicit 8×8 matrix for P_r (after computing it in Cl(6)) and use it as an ad hoc 8×8 operator — but this imports the Cl(6) structure by stealth and provides no algebraic understanding of what P_r means or why it is gauge-invariant.</td>
+</tr>
+<tr>
+  <td><strong>Is the projector construction natural only in Cl(6)?</strong></td>
+  <td>Yes. The projectors arise as Lagrange spectral projectors of H, a specific Cartan element of Spin(6) ⊂ Cl(6). The naturalness derives from the fact that H is part of the algebra's own structure — it does not need to be imposed externally. In the standard formulation, no analog of H exists because e₅ and e₆ are absent. Furthermore, the grade structure cuts across the γ₅ chirality decomposition (the triplet and antitriplet each contain states of both chiralities), making it impossible to express P_r as any combination of standard Dirac projectors.</td>
+</tr>
+<tr>
+  <td><strong>What does Cl(6) buy beyond a renaming?</strong></td>
+  <td>Three concrete things. First: the internal generators e₅,e₆ — and therefore B₅₆ — which are necessary and sufficient to construct H and all four projectors P_r. Second: the algebraic guarantee that the projectors are gauge-invariant ([T_a, P_r] = 0), complete (ΣP_r = I₈), and compatible with chiral structure ([γ₅, P_r] = 0) — all following from the Cl(6) algebra without separate proof. Third: the physical interpretation through the (Γ₇, H) double-grading, which identifies each grade channel as a specific SU(3) representation subspace of the Spin(6) spinor — a labeling that has no standard QCD expression. What Cl(6) does NOT buy: new physics beyond standard QCD, computational efficiency, or results for standard observables (plaquette, GOR, κ_c) that differ from the standard formulation.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="warn">
+<strong style="color:var(--color-text-primary)">What §6.7 should say.</strong> The grade-projected correlator C_π^(r)(t) is a gauge-invariant physical observable — gauge invariance follows from [T_a, P_r] = 0, verified to 2.4×10⁻¹⁵. It cannot be naturally expressed in standard 4-component Wilson lattice QCD for a specific algebraic reason: the Cartan element H = B₁₂+B₃₄+B₅₆ requires the bivector B₅₆ = (i/4)[e₅,e₆], which involves generators e₅ and e₆ absent from the standard Dirac algebra Cl(4). The grade structure also cuts across the standard Lorentz chirality decomposition — the triplet and antitriplet subspaces each contain states of both γ₅ chirality — so no combination of standard Dirac projectors can reproduce P_r. An explicit numerical equivalent could in principle be constructed by reading off the Cl(6) matrices and using them as ad hoc operators, but this construction is unmotivated, uninterpretable, and algebraically unjustified without the Cl(6) framework. The Cl(6) formulation is therefore not a renaming: it provides the internal generators e₅,e₆ that enable the grade decomposition, the algebraic guarantees (completeness, gauge invariance, γ₅-compatibility) that follow automatically from the algebra, and the (Γ₇, H) interpretation that identifies the physical content of each channel. These have no standard QCD equivalents. What is shared with standard QCD: all gauge-sector and standard fermionic observables (the 16/16 benchmark equivalences of Paper 1). What is specific to Cl(6): the grade decomposition C_π^(r)(t) and the observables derived from it.
+</div>
+
+</div>

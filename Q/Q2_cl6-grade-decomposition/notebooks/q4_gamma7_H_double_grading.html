@@ -1,0 +1,192 @@
+
+<style>
+.blk { margin-bottom: 26px; }
+.blk-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-left: 3px solid var(--color-border-primary); padding-left: 10px; margin-bottom: 12px; border-radius: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 7px 10px; text-align: left; border-bottom: 1.5px solid var(--color-border-secondary); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--color-border-tertiary); vertical-align: top; line-height: 1.65; color: var(--color-text-primary); font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+code { font-family: var(--font-mono); font-size: 10.5px; background: var(--color-background-secondary); padding: 1px 4px; border-radius: 3px; }
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.b-known { background: #E1F5EE; color: #085041; }
+.b-novel { background: #EEEDFE; color: #26215C; }
+.b-correct { background: #E6F1FB; color: #0C447C; }
+.b-imprecise { background: #FAEEDA; color: #633806; }
+.b-caution { background: #FAECE7; color: #712B13; }
+.eq-box { background: var(--color-background-secondary); border-radius: 6px; padding: 10px 14px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.9; color: var(--color-text-primary); margin: 8px 0; }
+.eq-box .cm { color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 11px; font-style: italic; }
+.highlight { background: var(--color-background-secondary); border-radius: 6px; padding: 12px 16px; font-size: 12.5px; line-height: 1.7; color: var(--color-text-primary); }
+.warn { background: var(--color-background-secondary); border-left: 3px solid var(--color-border-primary); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.65; margin-top: 4px; }
+.cat { font-weight: 500; font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-tertiary); padding: 5px 10px; border-bottom: 1px solid var(--color-border-tertiary); }
+</style>
+
+<div style="padding:4px 0 0">
+
+<div class="blk">
+<div class="blk-title">What the double grading is, explicitly</div>
+<div class="eq-box">
+Γ₇ = iI₆ = i·e₁e₂e₃e₄e₅e₆  →  σz⊗σz⊗σz   eigenvalues ±1<br>
+H  = B₁₂+B₃₄+B₅₆             →  −½(σz⊗I₂⊗I₂ + I₂⊗σz⊗I₂ + I₂⊗I₂⊗σz)<br>
+<br>
+<span class="cm">In the computational (qubit) basis |s₁s₂s₃⟩ with sᵢ ∈ {↑,↓}:</span><br>
+Γ₇ eigenvalue = product of individual σz eigenvalues = (−1)^{N_↓}<br>
+H  eigenvalue = −½(total spin) = N_↓ − 3/2   where N_↓ = number of ↓ spins
+</div>
+
+<table>
+<thead><tr>
+  <th style="width:10%">N_↓</th>
+  <th style="width:12%">Γ₇</th>
+  <th style="width:10%">H</th>
+  <th style="width:10%">Rep</th>
+  <th style="width:10%">Dim</th>
+  <th style="width:20%">Basis states</th>
+  <th style="width:28%">SU(4) origin</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>0</td><td><code>+1</code></td><td><code>−3/2</code></td><td><strong>1a</strong></td><td>1</td>
+  <td><code>|↑↑↑⟩</code></td>
+  <td>Highest-weight state of <strong>4</strong> of SU(4) — the "stabilized" direction ξ₀ that defines the SU(3) embedding</td>
+</tr>
+<tr>
+  <td>1</td><td><code>−1</code></td><td><code>−1/2</code></td><td><strong>3̄</strong></td><td>3</td>
+  <td><code>|↑↑↓⟩, |↑↓↑⟩, |↓↑↑⟩</code></td>
+  <td>Three states of the <strong>4̄</strong> of SU(4) with color</td>
+</tr>
+<tr>
+  <td>2</td><td><code>+1</code></td><td><code>+1/2</code></td><td><strong>3</strong></td><td>3</td>
+  <td><code>|↑↓↓⟩, |↓↑↓⟩, |↓↓↑⟩</code></td>
+  <td>Three states of the <strong>4</strong> of SU(4) with color</td>
+</tr>
+<tr>
+  <td>3</td><td><code>−1</code></td><td><code>+3/2</code></td><td><strong>1b</strong></td><td>1</td>
+  <td><code>|↓↓↓⟩</code></td>
+  <td>Lowest-weight state of <strong>4̄</strong> of SU(4)</td>
+</tr>
+</tbody>
+</table>
+<div style="margin-top:8px; font-size:11.5px; color:var(--color-text-secondary);">
+The pattern is exact: Γ₇ = parity of the number of ↓ excitations. H = number of ↓ excitations − 3/2. The symmetry between 1a↔1b and 3↔3̄ under the map N_↓ → 3−N_↓ (flip all qubits) is the charge conjugation C acting on the spinor space.
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Is this a known structure? Yes — three places in the literature</div>
+<table>
+<thead><tr>
+  <th style="width:24%">Where it appears</th>
+  <th style="width:44%">What it says</th>
+  <th style="width:18%">Connection to (Γ₇, H)</th>
+  <th style="width:14%">Status</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>SU(4) ⊃ SU(3)×U(1) branching rules</strong><br><span style="font-size:11px;color:var(--color-text-secondary)">Standard representation theory; any GUT textbook</span></td>
+  <td>The fundamental <strong>4</strong> of SU(4) decomposes under the maximal-rank subgroup SU(3)×U(1) as: <code>4 → 3₊₁/₃ ⊕ 1₋₁</code> (using U(1) charge Q = (2/3)H). The <strong>4̄</strong> decomposes as <code>4̄ → 3̄₋₁/₃ ⊕ 1₊₁</code>. This is a standard weight diagram of SU(4) under its maximal-rank subgroup.</td>
+  <td>Γ₇ labels which of the two representations (4 or 4̄) the state lives in. H labels the U(1) charge within that representation. Together they give the complete branching rule.</td>
+  <td><span class="badge b-known">Known — textbook</span></td>
+</tr>
+<tr>
+  <td><strong>Pati-Salam SU(4)_color model (1974)</strong><br><span style="font-size:11px;color:var(--color-text-secondary)">Pati & Salam, Phys. Rev. D10, 275 (1974)</span></td>
+  <td>In Pati-Salam unification, quarks and leptons are unified under SU(4)_color where the lepton is the "fourth color." The SU(4) → SU(3)×U(1)_{B-L} decomposition gives: quarks with B−L = 1/3, leptons with B−L = −1. The U(1) generator is precisely H (up to normalization: Q_{B-L} = (2/3)H). The two singlets 1a,1b correspond to lepton and antilepton.</td>
+  <td>H eigenvalue of ±1/2 for triplets, ±3/2 for singlets maps to B−L charge with normalization (2/3)H = B−L. This is the first physical context where this specific double-grading structure appeared.</td>
+  <td><span class="badge b-known">Known — 1974</span></td>
+</tr>
+<tr>
+  <td><strong>Furey's algebraic classification program</strong><br><span style="font-size:11px;color:var(--color-text-secondary)">Refs [20–24] in Paper 1</span></td>
+  <td>Furey explicitly identifies the 8-dimensional minimal left ideal of Cl(6) with the spectrum of a single generation of Standard Model particles: 3 quarks, 3 antiquarks, 1 lepton, 1 antilepton. The grading operators used are precisely the analogs of Γ₇ and H. The SU(3)×U(1) identification is the same.</td>
+  <td>The (Γ₇, H) double grading in Paper 2 is the same structure Furey uses to classify particles algebraically. The difference: Furey works in the algebraic/kinematic setting; Paper 2 computes dynamics on a gauge ensemble.</td>
+  <td><span class="badge b-known">Known — Furey 2012–18</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">Does it have a name? — what the representation theory literature calls it</div>
+<div class="highlight">
+The (Γ₇, H) pair is a <strong>complete set of commuting observables (CSCO)</strong> for the SU(3) representation content of the Spin(6) ≅ SU(4) Dirac spinor.
+<br><br>
+More formally: the full Cartan subalgebra of Spin(6) (rank 3) is spanned by {B₁₂, B₃₄, B₅₆}. The three weight coordinates of a state in the spinor representation are its eigenvalues under these three generators. The SU(3) representation label requires one combination (H = B₁₂+B₃₄+B₅₆, the "trace" — the U(1) not in SU(3)), while the chirality label requires Γ₇ = iI₆ (the Spin(6) pseudoscalar, not a Cartan element but a central element). Together they uniquely identify which of the four SU(3) irreps a state belongs to.
+<br><br>
+In the GUT and group theory literature, this is called the <strong>SU(4) ⊃ SU(3)×U(1) weight decomposition</strong> of the fundamental (spinor) representation. In the language of Dynkin diagrams, SU(3)×U(1) is the Levi subgroup of the maximal parabolic subalgebra of A₃ (= SU(4)) obtained by removing the first Dynkin node. This is a standard construction and fully documented in Slansky's 1981 Physics Reports review of group theory for unified models.
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Are the physical labels in the brief correct?</div>
+<table>
+<thead><tr>
+  <th style="width:25%">Label as stated</th>
+  <th style="width:35%">Assessment</th>
+  <th style="width:25%">Better phrasing for §6.7</th>
+  <th style="width:15%">Verdict</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>"Γ₇ = Weyl chirality of Spin(6)"</strong></td>
+  <td>Exactly right. Γ₇ = iI₆ is the Spin(6) pseudoscalar, playing the same role for the 6-dimensional Euclidean rotation group that γ₅ plays for the 4-dimensional one. Its ±1 eigenvalues label the two Weyl spinor representations of Spin(6) (the 4 and 4̄ of SU(4)). This is the standard definition in the representation theory of Spin(2n).</td>
+  <td>Keep as is. Could add: "the two eigenspaces of Γ₇ are the two half-spinor representations of Spin(6) ≅ SU(4), namely the <strong>4</strong> and <strong>4̄</strong>."</td>
+  <td><span class="badge b-correct">Correct</span></td>
+</tr>
+<tr>
+  <td><strong>"H = Cartan hypercharge of SU(4)/SU(3)"</strong></td>
+  <td>"SU(4)/SU(3)" is not a standard group-theoretic term for this structure. SU(4)/SU(3) is a coset space (≅ S⁷), not a subgroup. The correct statement is that H generates the U(1) factor of the Levi subgroup SU(3)×U(1) ⊂ SU(4), where this U(1) is the commutant of SU(3) inside SU(4). In the Pati-Salam context, (2/3)H is the B−L generator.</td>
+  <td>"H generates the U(1) not contained in SU(3) within the decomposition SU(4) ⊃ SU(3)×U(1). Up to normalization, it coincides with the B−L generator of Pati-Salam SU(4)_color."</td>
+  <td><span class="badge b-imprecise">Needs tightening</span></td>
+</tr>
+<tr>
+  <td><strong>"Weyl chirality" vs "4D chirality γ₅"</strong></td>
+  <td>Critical distinction that must be stated explicitly in §6.7: Γ₇ ≠ γ₅. In the Pauli tensor product: γ₅ = −σz⊗σz⊗I₂ (acts trivially on third qubit) while Γ₇ = σz⊗σz⊗σz (acts on all three qubits). Their relationship is Γ₇ = γ₅·(ie₅e₆). Γ₇ is the Spin(6) chirality; γ₅ is the 4D Lorentz chirality used to define the pion correlator. Both commute with H, but for different reasons.</td>
+  <td>"The Spin(6) chirality Γ₇ = iI₆ must be distinguished from the 4D chiral operator γ₅ = e₁e₂e₃e₄. Both commute with H and with all four grade projectors P_r. The grade decomposition is labeled by (Γ₇, H); the pion correlator is projected using γ₅."</td>
+  <td><span class="badge b-caution">Must state explicitly</span></td>
+</tr>
+<tr>
+  <td><strong>Implication: 1a,1b = leptons?</strong></td>
+  <td>The Pati-Salam identification tempts the label "lepton" for 1a and 1b. This is wrong in the context of these papers. In Furey's kinematic program, the identification is valid (no dynamics, just quantum numbers). In the Cl(6) QCD calculation, the spinor ℂ⁸ is the spin space; color is carried by the separate ℂ³ factor. The singlets 1a,1b are color-singlet subspaces of the spinor, not lepton fields. A lepton would require removing the color ℂ³ factor entirely.</td>
+  <td>"The singlet subspaces 1a and 1b are the color-singlet components of the Cl(6) spinor space. Their identification with lepton quantum numbers in the Furey algebraic program is a structural analogy, not a physical identification in the dynamical QCD context of this work."</td>
+  <td><span class="badge b-caution">Must disclaim</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">The complete algebraic picture — what the (Γ₇, H) grading is and is not</div>
+<table>
+<thead><tr>
+  <th style="width:30%">The (Γ₇, H) double grading...</th>
+  <th style="width:35%">Is</th>
+  <th style="width:35%">Is not</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Origin in Lie theory</td>
+  <td>The standard weight decomposition of the 8-dim Dirac spinor of Spin(6) ≅ SU(4) under the Levi subgroup SU(3)×U(1). Fully determined by the embedding chain SU(3) = Stab_{SU(4)}(ξ₀).</td>
+  <td>A new mathematical structure. It is a known consequence of SU(4) ⊃ SU(3)×U(1) branching, appearing in Slansky (1981), Pati-Salam (1974), and Furey (2012–2018).</td>
+</tr>
+<tr>
+  <td>Relation to Cartan subalgebra</td>
+  <td>H = B₁₂+B₃₄+B₅₆ is in the Cartan subalgebra of Spin(6) (rank 3; all three bivectors commute). The (B₁₂, B₃₄, B₅₆) triple is the full Cartan data; H is the one combination that commutes with SU(3).</td>
+  <td>Γ₇ = iI₆ is NOT in the Cartan subalgebra — it is a central element of Spin(6), lying in the center ℤ₂ of Spin(6)/SO(6). The (Γ₇, H) pair mixes Cartan data with central data.</td>
+</tr>
+<tr>
+  <td>Completeness as a label</td>
+  <td>Complete for identifying which SU(3) representation a spinor state belongs to: (Γ₇, H) uniquely determines the rep from {3, 3̄, 1a, 1b}.</td>
+  <td>Complete for identifying which state within a representation. To distinguish the three states inside the triplet 3 (the three "colors"), you need the full Cartan data (B₁₂, B₃₄, B₅₆) or equivalently the SU(3) weight coordinates (T₃, T₈ eigenvalues).</td>
+</tr>
+<tr>
+  <td>Novel contribution of Paper 2</td>
+  <td>First dynamical computation using this grading. The grade-projected pion correlators C_π^(r)(t) implement the (Γ₇, H) decomposition on a Monte Carlo gauge ensemble. The completeness identity ΣC_π^(r) = C_π holds to 5.4×10⁻¹⁶. No prior work has computed dynamics in this grading.</td>
+  <td>A discovery of the grading itself. The algebraic structure is known. The claim is that it works dynamically in a Wilson lattice QCD setting — that the projectors commute with γ₅, are SU(3)-covariant, and produce a well-defined and complete decomposition of the pion correlator.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="warn">
+<strong style="color:var(--color-text-primary)">What §6.7 should say.</strong> The (Γ₇, H) double grading is the standard weight decomposition of the Spin(6) ≅ SU(4) Dirac spinor under the Levi subgroup SU(3)×U(1). This structure is known in the representation-theory literature (Slansky 1981) and appears physically in the Pati-Salam SU(4)_color model (1974), where H generates the B−L symmetry up to normalization. In the algebraic classification program of Furey [20–24], the same decomposition identifies the SU(3) quantum numbers of a single generation of Standard Model fermions. The contribution of the present work is not the discovery of this grading but its first dynamical implementation: the grade projectors P_r are constructed as Lagrange spectral projectors of H, verified to satisfy all required algebraic identities to residual ≤ 2.4×10⁻¹⁵, and used to decompose a physical pion correlator on a Monte Carlo gauge ensemble. The label Γ₇ = "Weyl chirality of Spin(6)" is exact; the label H = "Cartan hypercharge" should be stated precisely as the generator of the U(1) commutant of SU(3) in SU(4). The structural analogy between 1a,1b and lepton quantum numbers in the Furey program is noted but does not apply in the dynamical QCD context of this work, where color is carried by a separate ℂ³ factor.
+</div>
+
+</div>

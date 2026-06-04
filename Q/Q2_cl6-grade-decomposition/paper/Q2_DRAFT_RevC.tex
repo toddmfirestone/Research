@@ -1,0 +1,2147 @@
+% ============================================================
+%  Cl(6) Lattice QCD — Paper 2
+%  Todd M. Firestone
+%  DRAFT — not for circulation
+%  Target journal: Advances in Applied Clifford Algebras
+%  Typeset for arXiv submission
+%  Document class: article + geometry (generic, arXiv-compatible)
+%
+%  FLAGS USED IN THIS FILE:
+%    % NOTE:   — placeholder or missing content
+%    % REVIEW: — internal inconsistency; author decision required
+%    % ASK:    — ambiguity that cannot be resolved without author input
+% ============================================================
+
+\documentclass[12pt]{article}
+
+% --- Encoding & fonts ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% --- Page geometry (arXiv standard margins) ---
+\usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}
+
+% --- Mathematics ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+% --- Tables ---
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+
+% --- Graphics & color ---
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% --- Citations: numbered, sorted, compressed [1,2,3] style ---
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat}
+
+% --- Hyperlinks (arXiv-safe) ---
+\usepackage[
+colorlinks=true,
+linkcolor=blue!60!black,
+citecolor=blue!60!black,
+urlcolor=blue!60!black,
+pdftitle={Grade Decomposition of the Lattice QCD Pion Correlator
+	in the Cl(6) Framework},
+pdfauthor={Todd M. Firestone}
+]{hyperref}
+
+% --- Equation numbering: sequential (1),(2),(3)... ---
+% (arXiv single-paper standard; no section prefix)
+
+% ============================================================
+%  THEOREM ENVIRONMENTS
+% ============================================================
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ============================================================
+%  CUSTOM MACROS
+% ============================================================
+
+% --- Inherited from Paper 1 (unchanged) ---
+\newcommand{\cl}{\mathrm{Cl}}           % Clifford algebra: \cl(6)
+\newcommand{\spin}{\mathrm{Spin}}       % Spin group: \spin(6)
+\newcommand{\su}{\mathrm{SU}}           % SU group: \su(3)
+\newcommand{\tr}{\mathrm{Tr}}           % Trace
+\newcommand{\dW}{D_{\mathrm{W}}}        % Wilson--Dirac operator
+\newcommand{\SW}{S_{\mathrm{W}}}        % Wilson action
+\newcommand{\kc}{\kappa_{\mathrm{c}}}   % critical hopping parameter
+\newcommand{\half}{\tfrac{1}{2}}
+
+% --- New in Paper 2 ---
+\newcommand{\kcren}{\kappa_{c}^{\mathrm{ren}}}      % renormalized kappa_c
+\newcommand{\GaSeven}{\Gamma_7}                      % Spin(6) chirality
+\newcommand{\Isix}{I_6}                              % Cl(6) pseudoscalar
+\newcommand{\Qtil}{\widetilde{Q}}                    % 24x24 matrix in Theorem~\ref{thm:kinematic}
+\newcommand{\mPCAC}{m_{\mathrm{PCAC}}}               % PCAC mass
+\newcommand{\ftriplet}{f_{\mathrm{triplet}}}          % combined triplet fraction
+\newcommand{\fsinglet}{f_{\mathrm{singlet}}}          % combined singlet fraction
+\newcommand{\dftriplet}{\delta f_{\mathrm{triplet}}}  % triplet phase difference
+\newcommand{\Ncfg}{N_{\mathrm{cfg}}}                  % number of configurations
+\newcommand{\Ntherm}{N_{\mathrm{therm}}}              % thermalization sweeps
+
+% ============================================================
+%  DRAFT HEADER (matches Paper 1)
+% ============================================================
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textit{Cl(6) Lattice QCD $\cdot$ DRAFT --- not for circulation}}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ============================================================
+\begin{document}
+	% ============================================================
+	
+	% --- Title block ---
+	\title{%
+		\textbf{Grade Decomposition of the Lattice QCD Pion Correlator}\\[4pt]
+		\textbf{in the \texorpdfstring{$\cl(6)$}{Cl(6)} Framework}%
+	}
+	
+	\author{Todd M.\ Firestone}
+	
+	% NOTE: Replace [Date] with actual submission date before arXiv/journal submission.
+	\date{%
+		\small\textit{ }%
+	}
+	
+	\maketitle
+	\thispagestyle{fancy}
+	
+	% ============================================================
+	\begin{abstract}
+		% ============================================================
+		The Clifford algebra $\cl(6)$ embeds the $\su(3)$ color gauge group as a
+		subgroup of $\spin(6)\cong\su(4)$, making the $\su(3)$ representation
+		structure of the Wilson--Dirac spinor space algebraically explicit through
+		the decomposition
+		$\mathbf{8} = \mathbf{3}\oplus\bar{\mathbf{3}}\oplus\mathbf{1}\oplus\mathbf{1}$.
+		We construct the corresponding four-channel decomposition of the lattice
+		pion correlator and report its first numerical implementation on quenched
+		gauge ensembles.
+		
+		The four representation projectors are constructed as Lagrange spectral
+		projectors of the Cartan hypercharge $H = B_{12}+B_{34}+B_{56}$ of
+		$\mathrm{spin}(6)$, whose eigenspectrum
+		$\{\pm\tfrac{1}{2},\,\pm\tfrac{3}{2}\}$ matches the $\su(3)$
+		representation dimensions.  They satisfy completeness, idempotency,
+		mutual orthogonality, $\su(3)$ covariance, charge-conjugation pairing, and
+		commutativity with the 4D chiral operator $\gamma_5$ to numerical residual
+		$\leq 2.4\times 10^{-15}$.  The labeling $(\GaSeven, H)$, where
+		$\GaSeven = i\Isix$ is the $\spin(6)$ chirality, is the standard
+		$\su(4)\supset\su(3)\times\mathrm{U}(1)$ Levi decomposition of the Dirac
+		spinor of $\spin(6)$, known from representation theory and from the
+		Pati--Salam $\su(4)_{\mathrm{color}}$ model.
+		
+		A kinematic limit theorem follows from the algebraic structure: in the
+		free Wilson--Dirac theory, the grade fractions
+		$f_r(t)\equiv\langle C_\pi^{(r)}(t)\rangle/\langle C_\pi(t)\rangle$
+		equal $\dim(r)/8$ exactly, a consequence of
+		the residual $I_4{\otimes}U(2)$ symmetry of the free operator combined
+		with $\su(3)$ color and spatial-cubic invariance.
+		
+		On thermalized quenched ensembles at $N=6$, $\beta\in\{4.5,6.0\}$, and
+		bare quark mass $m_0=0.05$, the algebraic completeness identity
+		$\sum_r C_\pi^{(r)}(t)=C_\pi(t)$ is verified per configuration to
+		maximum residual $5.4\times 10^{-16}$, and the $\spin(6)$-chirality fractions
+		are fixed at $f_{(\GaSeven=\pm1)}=\tfrac12$ exactly on every configuration by
+		an identity independent of the gauge dynamics.  The measured grade fractions are
+		consistent with the kinematic free-field values at the $10^{-4}$ level,
+		and the phase differences between confined and deconfined regimes are
+		consistent with zero at heavy quark mass.  The decomposition admits no
+		natural analog within the standard four-component Wilson--Dirac algebra:
+		the bivector $B_{56}$ requires the internal generators $e_5,e_6$ that
+		are absent from $\cl(4)$, and the resulting grade structure cuts across
+		the $\gamma_5$ chirality decomposition.  The chiral-regime extension at
+		$\kappa\to\kcren$, required to test whether non-perturbative gauge
+		dynamics distinguish the four representation channels, is identified as
+		the target for follow-up investigation.
+	\end{abstract}
+	
+	\bigskip
+	\noindent\textit{Keywords:} Clifford algebra, lattice QCD, Wilson
+	fermions, pion correlator, grade decomposition, Cartan hypercharge,
+	$\su(3)$ representation theory, kinematic limit theorem, quenched
+	approximation.
+	
+	% ============================================================
+	\section{Introduction}
+	\label{sec:intro}
+	% ============================================================
+	
+	\subsection{Motivation}
+	\label{sec:motivation}
+	
+	The Clifford algebra $\cl(6)$ provides a natural home for the internal
+	algebraic structure of Wilson lattice QCD.  Its eight-dimensional minimal
+	left ideal decomposes under $\su(3)$ as
+	$\mathbf{3}\oplus\bar{\mathbf{3}}\oplus\mathbf{1}\oplus\mathbf{1}$---accommodating
+	quark color triplets, antiquark anti-triplets, and two gauge singlets---while
+	the 15 bivectors span the Lie algebra of $\spin(6)\cong\su(4)$, which
+	contains $\su(3)$ as the stabilizer subgroup of a preferred spinor direction.
+	This algebraic architecture was established by
+	Furey~\cite{Furey2012,Furey2014,Furey2015,Furey2018a,Furey2018b} and is
+	reviewed in Paper~1~\cite{FirestoneP1}; what was missing prior to Paper~1
+	was any dynamical calculation within the framework.
+	
+	Paper~1~\cite{FirestoneP1} supplied that missing step: a complete,
+	benchmark-verified Wilson lattice QCD simulation was constructed within
+	$\cl(6)$, demonstrating numerical equivalence with standard Wilson lattice
+	QCD across gauge and fermionic observables.  Section~5.6.4 of that paper
+	gestured toward what is now the subject of the present work:
+	\emph{grade-decomposed observables}, defined in terms of the $\cl(6)$ grade
+	structure and carrying $\su(3)$ representation-theoretic content that the
+	standard four-component formulation cannot express.
+	
+	This paper delivers what Section~5.6.4 of Paper~1 gestured at.  We construct
+	the grade decomposition of the pion correlator explicitly, prove a kinematic
+	limit theorem that governs its free-field behavior, and implement it on Monte
+	Carlo gauge ensembles.  The motivating physical question is whether
+	non-perturbative gauge dynamics---confinement, chiral symmetry breaking, the
+	quantum vacuum---distribute spinor weight unequally among the four
+	representation channels.  The present work establishes the algebraic machinery
+	and confirms the null result at heavy quark mass.  The chiral-regime test of
+	the central question is identified as future work.
+	
+	\subsection{Prior Work and the Gap}
+	\label{sec:priorwork}
+	
+	Three distinct bodies of literature are relevant to the present paper, and
+	none overlaps with its essential contribution.
+	
+	The first is the algebraic classification program in $\cl(6)$ and related
+	division algebras~\cite{Furey2012,Furey2014,Furey2015,Furey2018a,Furey2018b,
+		Dixon1994,Stoica2018}.  Furey's
+	work~\cite{Furey2012,Furey2014,Furey2015,Furey2018a,Furey2018b} identifies
+	the quantum numbers of a single Standard Model generation from the action of
+	$\cl(6)$ on its minimal left ideal, and connects the
+	$\su(3)\times\su(2)\times\mathrm{U}(1)$ symmetry to the algebra's automorphism
+	structure.  Stoica~\cite{Stoica2018} extends related constructions.
+	Dixon~\cite{Dixon1994} works in the division algebra context.  None of these
+	works computes dynamics, and none formulates a lattice theory.
+	
+	The second is the Pati--Salam $\su(4)_{\mathrm{color}}$
+	model~\cite{PatiSalam1974} and the associated branching rules of the
+	$\su(4)\supset\su(3)\times\mathrm{U}(1)$ Levi decomposition, tabulated by
+	Slansky~\cite{Slansky1981}.  These establish the representation-theoretic
+	content of the $(\GaSeven, H)$ double grading at the group theory level; the
+	present paper is the first work to implement this grading dynamically.
+	
+	The third is the broader landscape of alternative representations for
+	$\su(3)$ lattice gauge theory---loop-string-hadron formulations, tensor network
+	encodings, qubit-compatible embeddings; see Paper~1~\cite{FirestoneP1}~\S1.2
+	for a full survey.  None of these uses the Clifford algebra as the
+	reformulation language, and none introduces grade-projected correlators.
+	
+	The gap filled by this paper is the first dynamical implementation of the
+	$(\GaSeven, H)$ grading: construction of the projectors $P_r$, proof of the
+	kinematic limit theorem, and measurement of the grade fractions on thermalized
+	gauge ensembles.
+	
+	\subsection{Scope and Organization}
+	\label{sec:scope}
+	
+	This paper makes three contributions.  First, the algebraic construction of
+	the four-channel grade decomposition of the pion correlator, including the
+	Cartan hypercharge $H$ as the grading operator and the complete set of
+	projector identities (Secs.~\ref{sec:framework}
+	and~\ref{sec:projectors}).  Second, a kinematic limit theorem proving that
+	free-field grade fractions equal $\dim(r)/8$ exactly, with a full algebraic
+	proof from the $I_4{\otimes}U(2)$ symmetry of the free Wilson--Dirac operator
+	(Sec.~\ref{sec:kinematic-theorem}).  Third, the first numerical implementation
+	on quenched $\su(3)$ gauge ensembles, with $N=6$, $\beta\in\{4.5,6.0\}$, and
+	$m_0=0.05$ (Sec.~\ref{sec:experiment-A}).
+	
+	This paper does not claim to have measured a dynamical grade-fractionation
+	signal.  The heavy-mass data is consistent with the kinematic theorem at the
+	$10^{-4}$ level; the chiral-regime extension needed to test the central
+	hypothesis is identified as Experiment~B
+	(Sec.~\ref{sec:outlook}).
+	
+	The present work is deliberately restricted to the grade-decomposition
+	observable.  A broader programme---renormalized Gell-Mann--Oakes--Renner
+	analysis and Banks--Casher spectral measurements---was considered but is
+	not pursued here: the renormalized-GOR signal is dominated by additive
+	Wilson mass renormalization and does not cleanly isolate the physics of
+	interest, and the spectral-density measurement belongs to the
+	chiral-regime extension (Experiment~B, Sec.~\ref{sec:experiment-B-design}).
+	The $\kcren$ determination of Sec.~\ref{sec:kappa-c} is retained solely as
+	a prerequisite for that extension, not as input to any renormalized-GOR fit.
+	
+	Three limitations govern the current results:
+	single lattice volume ($N=6$), single lattice spacing ($\beta\in\{4.5,6.0\}$
+	fixed), and quenched approximation throughout.
+	
+	\medskip
+	\noindent\textit{Conventions.}\enspace
+	Euclidean signature throughout.  Spacetime indices $\mu,\nu\in\{1,2,3,4\}$;
+	$\cl(6)$ internal indices $i,j\in\{1,\ldots,6\}$.  Wilson parameter $r=1$
+	fixed; $\kappa=1/[2(m_0+4r)]$.  All conventions match
+	Paper~1~\cite{FirestoneP1} exactly; that paper is the primary foundational
+	reference for algebraic details not reprised here.
+	
+	% ============================================================
+	\section{Algebraic Framework}
+	\label{sec:framework}
+	% ============================================================
+	
+	\subsection{\texorpdfstring{$\cl(6)$}{Cl(6)} Basis and Grade Structure}
+	\label{sec:basis}
+	
+	The Clifford algebra $\cl(6)$ is generated by six orthonormal basis vectors
+	$\{e_1,\ldots,e_6\}$ satisfying
+	\begin{equation}
+		e_i e_j + e_j e_i = 2\delta_{ij}, \qquad i,j\in\{1,\ldots,6\}.
+		\label{eq:anticomm}
+	\end{equation}
+	An $8\times8$ matrix representation is given by Pauli tensor products:
+	\begin{equation}
+		\begin{aligned}
+			e_1 &= \sigma_x\otimes I_2\otimes I_2, &\quad
+			e_2 &= \sigma_y\otimes I_2\otimes I_2, \\
+			e_3 &= \sigma_z\otimes\sigma_x\otimes I_2, &\quad
+			e_4 &= \sigma_z\otimes\sigma_y\otimes I_2, \\
+			e_5 &= \sigma_z\otimes\sigma_z\otimes\sigma_x, &\quad
+			e_6 &= \sigma_z\otimes\sigma_z\otimes\sigma_y.
+		\end{aligned}
+		\label{eq:basis}
+	\end{equation}
+	All six are Hermitian and square to $I_8$; the anti-commutation
+	relations~\eqref{eq:anticomm} hold to maximum error $0.00\times10^0$ in
+	IEEE~754 double precision.  We refer to Paper~1~\cite{FirestoneP1}
+	Appendix~A for the complete 64-element basis enumeration and multiplication
+	table.  The grade decomposition
+	\begin{equation}
+		\cl(6) = \bigoplus_{k=0}^{6} \cl^k(6), \qquad
+		\dim \cl^k(6) = \binom{6}{k},
+		\label{eq:grade-decomp}
+	\end{equation}
+	has total dimension 64.  Of the seven grade subspaces, the relevant ones for
+	this work are the bivectors $\cl^2(6)$ (dimension 15), which contain the Lie
+	algebra of $\spin(6)\cong\su(4)$, and the pseudoscalar $\cl^6(6)$, spanned
+	by $\Isix = e_1 e_2 e_3 e_4 e_5 e_6$ with $\Isix^2 = -1$.  The 8-dimensional
+	minimal left ideal decomposes under $\su(3)$ as
+	\begin{equation}
+		\mathbf{8} = \mathbf{3} \oplus \bar{\mathbf{3}} \oplus \mathbf{1}_a
+		\oplus \mathbf{1}_b,
+		\label{eq:spinor-decomp}
+	\end{equation}
+	where $\mathbf{3}$ and $\bar{\mathbf{3}}$ are the color triplet and
+	anti-triplet and $\mathbf{1}_a$, $\mathbf{1}_b$ are two color singlets.
+	The full quark space is $\mathbb{C}^{24} = \mathbb{C}^8\otimes\mathbb{C}^3$,
+	with $\mathbb{C}^8$ the $\cl(6)$ spinor space and $\mathbb{C}^3$ the
+	standard QCD color space.
+	
+	\subsection{\texorpdfstring{$\su(3)$}{SU(3)} Embedding via
+		\texorpdfstring{$\spin(6)\cong\su(4)$}{Spin(6)≅SU(4)}}
+	\label{sec:embedding}
+	
+	The isomorphism chain
+	\begin{equation}
+		\su(3)_{\mathrm{color}} \subset \su(4) \cong \spin(6)
+		\subset \cl^+(6) \subset \cl(6)
+		\label{eq:embedding-chain}
+	\end{equation}
+	embeds $\su(3)$ as the stabilizer subgroup of a preferred spinor
+	$\xi_0=(0,0,0,1)^T\in\mathbb{C}^4$.  The 15 bivectors
+	$B_{ij}=(i/4)[e_i,e_j]$ span the Lie algebra of $\spin(6)$ and contain all
+	eight $\su(3)$ generators as a subalgebra.  Gell-Mann normalization
+	$\tr(T_a T_b)=\half\delta_{ab}$ is maintained; all 28 $\su(3)$ commutators
+	are verified to maximum deviation $1.24\times10^{-16}$ (see
+	Paper~1~\cite{FirestoneP1} Appendix~B).  Independently, the bivector
+	$\su(3)$ octet---derived as the stabilizer of the $H=-\tfrac{3}{2}$
+	eigenstate $|\xi_0\rangle$ within the 15-dimensional bivector
+	space---is verified to close as a Lie algebra under the matrix
+	commutator directly in the $8\times8$ representation (maximum
+	closure residual $6.2\times10^{-16}$; Appendix~\ref{app:B}).
+	$\su(3)$ gauge links act as
+	standard $3\times3$ unitary matrices on the $\mathbb{C}^3$ color factor and
+	are unchanged by the $\cl(6)$ embedding.  \textbf{$\su(3)$ is embedded by
+		construction, following the known isomorphism chain; it is not derived from
+		$\cl(6)$.}
+	
+	\subsection{The Cartan Hypercharge \texorpdfstring{$H$}{H}
+		and Its Eigenspectrum}
+	\label{sec:cartan}
+	
+	This section introduces algebraic content not present in
+	Paper~1~\cite{FirestoneP1}.  The Cartan hypercharge of $\mathrm{spin}(6)$
+	corresponding to the $\su(3)\times\mathrm{U}(1)$ Levi decomposition is
+	\begin{equation}
+		H = B_{12} + B_{34} + B_{56},
+		\label{eq:cartan-H}
+	\end{equation}
+	where $B_{ij}=(i/4)[e_i,e_j]$ are bivectors.  In the tensor product
+	representation~\eqref{eq:basis}, $H$ is diagonal:
+	\begin{align}
+		H &= -\half(\sigma_z\otimes I_2\otimes I_2)
+		- \half(I_2\otimes\sigma_z\otimes I_2)
+		- \half(I_2\otimes I_2\otimes\sigma_z)
+		\label{eq:H-tensor} \\
+		&= \half\,\mathrm{diag}(-3,-1,-1,+1,-1,+1,+1,+3).
+		\label{eq:H-diag}
+	\end{align}
+	The eigenspectrum is $\{-\tfrac{3}{2},-\tfrac{1}{2},+\tfrac{1}{2},+\tfrac{3}{2}\}$
+	with multiplicities $\{1,3,3,1\}$, matching the $\su(3)$ representation
+	dimensions in~\eqref{eq:spinor-decomp}.  Lagrange spectral projectors onto
+	each $H$-eigenspace are
+	\begin{equation}
+		P_r = \prod_{h' \neq h_r} \frac{H - h'\,I_8}{h_r - h'},
+		\label{eq:lagrange-projector}
+	\end{equation}
+	where $h_r$ is the $H$-eigenvalue of representation $r$.  The resulting
+	projectors satisfy $\tr(P_{\mathbf{3}})=3$, $\tr(P_{\bar{\mathbf{3}}})=3$,
+	$\tr(P_{\mathbf{1}_a})=1$, $\tr(P_{\mathbf{1}_b})=1$, and
+	$\sum_r P_r = I_8$, all to machine precision.  Idempotency
+	$P_r^2 = P_r$ and orthogonality $P_r P_s = 0$ for $r\neq s$ also hold to
+	machine precision.  Full verification in Appendix~\ref{app:C}.
+	
+	\subsection{The \texorpdfstring{$(\GaSeven, H)$}{(Γ₇, H)} Double Grading}
+	\label{sec:double-grading}
+	
+	The eight spinor basis states are simultaneously labeled by two commuting
+	operators.  The $\spin(6)$ chirality element
+	\begin{equation}
+		\GaSeven = i\Isix = i\cdot e_1 e_2 e_3 e_4 e_5 e_6
+		= \sigma_z\otimes\sigma_z\otimes\sigma_z
+		\label{eq:Gamma7}
+	\end{equation}
+	takes eigenvalues $\pm1$.  This is distinct from the 4D chiral operator
+	$\gamma_5 = e_1 e_2 e_3 e_4 = -\sigma_z\otimes\sigma_z\otimes I_2$ used in
+	the pion correlator.  The commutativity $[\GaSeven, H]=0$ holds identically
+	in the representation~\eqref{eq:basis}, and the four $\su(3)$ representations
+	are uniquely labeled by the pair $(\GaSeven, H)$:
+	
+	\begin{table}[ht]
+		\centering
+		\caption{The $(\GaSeven, H)$ double grading of the spinor basis states.
+			This is the standard $\su(4)\supset\su(3)\times\mathrm{U}(1)$ Levi
+			decomposition; see Ref.~\cite{Slansky1981}, Table~36.}
+		\label{tab:double-grading}
+		\begin{tabular}{@{}ccccp{4.5cm}@{}}
+			\toprule
+			\textbf{Rep} & $\GaSeven$ & $H$ & \textbf{dim} & \textbf{Basis states} \\
+			\midrule
+			$\mathbf{1}_a$ & $+1$ & $-3/2$ & 1
+			& $|\!\uparrow\uparrow\uparrow\rangle$ \\[3pt]
+			$\mathbf{3}$ & $+1$ & $+1/2$ & 3
+			& $|\!\uparrow\downarrow\downarrow\rangle$,\;
+			$|\!\downarrow\uparrow\downarrow\rangle$,\;
+			$|\!\downarrow\downarrow\uparrow\rangle$ \\[3pt]
+			$\bar{\mathbf{3}}$ & $-1$ & $-1/2$ & 3
+			& $|\!\uparrow\uparrow\downarrow\rangle$,\;
+			$|\!\uparrow\downarrow\uparrow\rangle$,\;
+			$|\!\downarrow\uparrow\uparrow\rangle$ \\[3pt]
+			$\mathbf{1}_b$ & $-1$ & $+3/2$ & 1
+			& $|\!\downarrow\downarrow\downarrow\rangle$ \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	The $(\GaSeven, H)$ labeling is the standard $\su(4)\supset\su(3)\times\mathrm{U}(1)$
+	Levi decomposition, tabulated by Slansky~\cite{Slansky1981} (Table~36).
+	With the normalization $Q_{B-L}=(2/3)H$, the triplets carry
+	baryon-minus-lepton charge $Q_{B-L}=\pm1/3$ and the singlets carry
+	$Q_{B-L}=\mp1$, matching the Pati--Salam $\su(4)_{\mathrm{color}}$
+	model~\cite{PatiSalam1974}.  The same decomposition arises in Furey's
+	algebraic classification
+	program~\cite{Furey2012,Furey2014,Furey2015,Furey2018a,Furey2018b} as the
+	identification of $\su(3)$ quantum numbers for a single generation of
+	Standard Model fermions from the $\cl(6)$ minimal left ideal.
+	
+	The key distinction for the dynamics of this paper is that $\GaSeven\neq\gamma_5$.
+	The relationship $\GaSeven = \gamma_5\cdot(ie_5 e_6)$ shows that $\GaSeven$
+	combines the 4D Lorentz chirality with the chirality of the internal
+	$(e_5,e_6)$ pair.  Both $\GaSeven$ and $\gamma_5$ commute with $H$ and with
+	all four projectors $P_r$, but the triplet subspace $\mathbf{3}$ contains
+	states of both $\gamma_5$ eigenvalues---a fact that is fundamental to the
+	analysis of Sec.~\ref{sec:cl6-specific}.
+	
+	% ============================================================
+	\section{Lattice Implementation}
+	\label{sec:lattice}
+	% ============================================================
+	
+	\subsection{Gauge Ensembles and Parameters}
+	\label{sec:ensembles}
+	
+	All production calculations use hypercubic lattices with periodic boundary
+	conditions in all four directions.  The production volume for the grade
+	decomposition calculations is $N=6$ ($V=1296$ sites).  Two gauge couplings
+	are employed: $\beta=4.5$ (confined phase, $\langle P\rangle\approx0.340$)
+	and $\beta=6.0$ (deconfined phase, $\langle P\rangle\approx0.593$).  The
+	phase boundary at $\beta_c\approx5.69$ was located in
+	Paper~1~\cite{FirestoneP1}~\S4.1.2 and is not remeasured here.
+	
+	Gauge configurations are generated by Metropolis updates at acceptance
+	rate $\approx50\%$.  Thermalization was extended to $\Ntherm=1000$ sweeps
+	at $\beta=4.5$ and $\Ntherm=800$ sweeps at $\beta=6.0$ (compared to
+	$\Ntherm=300$ sweeps in Paper~1~\cite{FirestoneP1}); this additional
+	thermalization was adopted following the checkerboard correction described
+	in Sec.~\ref{sec:checkerboard}.  Decorrelation uses $N_{\mathrm{decorr}}=5$
+	sweeps.  Production ensembles: $\Ncfg=20$ configurations per $\beta$ value.
+	
+	Table~\ref{tab:plaquette-gate} reports the plaquette equilibration gate;
+	both ensembles pass the $\pm1\%$ gate at $1\sigma$.
+	
+	\begin{table}[ht]
+		\centering
+		\caption{Plaquette equilibration gate.  Corrected even-odd sweep produces
+			$\langle P\rangle$ within $1\%$ of Paper~1~\cite{FirestoneP1} $N=6$
+			values in both phases.}
+		\label{tab:plaquette-gate}
+		\begin{tabular}{@{}ccccc@{}}
+			\toprule
+			$\beta$ & $\langle P\rangle$ measured
+			& Paper~1 $N=6$ $\langle P\rangle$
+			& Deviation & Gate \\
+			\midrule
+			4.5 & $0.34063\pm0.00050$ & $0.33816$ & $+0.73\%$
+			& $\checkmark$~\textsc{pass} \\
+			6.0 & $0.59580\pm0.00073$ & $0.59334$ & $+0.41\%$
+			& $\checkmark$~\textsc{pass} \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\subsection{Wilson--Dirac Operator}
+	\label{sec:wilson-dirac}
+	
+	The Wilson--Dirac operator in $\cl(6)$ is unchanged from
+	Paper~1~\cite{FirestoneP1}~\S3.3:
+	\begin{equation}
+		\begin{split}
+			(\dW\Psi)(x) = (m_0+4r)\,\Psi(x)
+			&- \tfrac{1}{2}\sum_\mu\bigl[(1-re_\mu)\,U_\mu(x)\,\Psi(x+\hat{\mu}) \\
+			&\quad + (1+re_\mu)\,U_\mu^\dagger(x-\hat{\mu})\,\Psi(x-\hat{\mu})\bigr],
+		\end{split}
+		\label{eq:wilson-dirac}
+	\end{equation}
+	with $r=1$ fixed and the action on $\mathbb{C}^8\otimes\mathbb{C}^3$ per site
+	given by $(1\pm e_\mu)\otimes U_\mu(x)$.  The bare quark mass parameter for
+	the heavy-mass production runs is $m_0=0.05$, corresponding to
+	$\kappa=1/(2(m_0+4))=0.12346$.
+	
+	The conjugate-gradient solver is applied to $\dW^\dagger\dW\,x = \dW^\dagger b$
+	with convergence criterion $\|\mathrm{r}\|/\|b\|<10^{-8}$ and maximum 500
+	iterations.  Mean CG iterations were 18.95 at $\beta=4.5$ and 21.85 at
+	$\beta=6.0$; there were zero CG failures in the $\Ncfg=20$ production
+	ensembles at $m_0=0.05$.  The pion propagator is built from a single point-to-all solve at the
+	origin, spanning all 24 spin--color source components ($8$ spinor $\times$
+	$3$ color); the solve is exact rather than stochastic, so each configuration
+	yields one deterministic correlator.  The three classes of measurement in
+	this work accordingly use distinct source types: the Experiment~A grade
+	fractions use this exact point-to-all solve; the $\kcren$/PCAC determination
+	uses $Z_2$ stochastic sources; and the free-field and completeness
+	diagnostics use a single $Z_2$ source, valid there because those identities
+	are source-independent.
+	
+	\subsection{Even-Odd Checkerboard Sweep Correction}
+	\label{sec:checkerboard}
+	
+	A methodological correction relative to some intermediate runs is documented
+	here.  Earlier runs employed a vectorized parallel Metropolis sweep that
+	computed all staples simultaneously before proposing any updates.  This
+	approach violates detailed balance: once a proposal at site $x$ is accepted,
+	its neighbors' staples are modified, but those neighbors were already
+	evaluated against pre-update values within the same sweep.  The resulting
+	bias scales with coupling strength and manifests as a systematic plaquette
+	deficit---approximately 5.1\% at $\beta=4.5$ and 2.4\% at $\beta=6.0$,
+	independent of sweep count.
+	
+	The corrected implementation uses an even-odd checkerboard sweep (see
+	Paper~1~\cite{FirestoneP1}~\S3.4 for the Metropolis update framework).  For
+	each direction $\mu$ and parity $p\in\{0,1\}$: staples for all parity-$p$
+	sites are computed using the current link configuration (including
+	freshly-updated parity-$(1-p)$ sites from the preceding half-step), and
+	proposals and acceptances for parity-$p$ sites are made in parallel.  Within
+	a parity class, no two sites share a same-direction, same-parity staple, so
+	detailed balance holds exactly at each half-step.  All production data in
+	this paper use the corrected checkerboard sweep.  We note that this
+	correction retroactively suggests that some intermediate-$\beta$ plaquette
+	values reported in Paper~1~\cite{FirestoneP1} ($\beta=5.0$ at 7\% low,
+	$\beta=5.5$ at 5\% low) may have the same origin and warrant re-examination.
+	
+	% ============================================================
+	\section{Grade Projectors: Construction and Verification}
+	\label{sec:projectors}
+	% ============================================================
+	
+	\subsection{Construction as Lagrange Spectral Projectors}
+	\label{sec:proj-construction}
+	
+	The four grade projectors are constructed as Lagrange spectral projectors of
+	the Cartan hypercharge $H$ defined in~\eqref{eq:cartan-H}.  The four
+	$H$-eigenvalues are $h_{\mathbf{1}_a}=-\tfrac{3}{2}$,
+	$h_{\mathbf{3}}=+\tfrac{1}{2}$, $h_{\bar{\mathbf{3}}}=-\tfrac{1}{2}$, and
+	$h_{\mathbf{1}_b}=+\tfrac{3}{2}$; the projector onto representation $r$ is
+	given by~\eqref{eq:lagrange-projector}.
+	
+	
+	This construction guarantees idempotency $P_r^2=P_r$ and orthogonality
+	$P_r P_s=0$ for $r\neq s$ by Lagrange interpolation theory, independently of
+	the specific form of $H$.  Completeness $\sum_r P_r = I_8$ follows from the
+	Lagrange basis being a partition of unity over any finite set of distinct
+	points.  Full algebraic verification is reported in
+	Appendix~\ref{app:C}, Table~\ref{tab:verif-C1}.
+	
+	The charge conjugation matrix $C$ in $\cl(6)$ is constructed from first
+	principles via the requirement $C e_i C^\dagger = -e_i^*$ for all
+	$i\in\{1,\ldots,6\}$.  It is not the standard $4\times4$ Dirac charge
+	conjugation matrix; it must be derived from the $8\times8$ $\cl(6)$
+	basis~\eqref{eq:basis}.  The resulting $C$ satisfies
+	$C P_{\mathbf{3}} C^\dagger = P_{\bar{\mathbf{3}}}$ and
+	$C P_{\mathbf{1}_a} C^\dagger = P_{\mathbf{1}_b}$ exactly (residual
+	$0.00\times10^0$); see Appendix~\ref{app:B}.
+	
+	\subsection{\texorpdfstring{$\su(3)$}{SU(3)} Covariance}
+	\label{sec:proj-covariance}
+	
+	The projectors commute with all eight $\su(3)$ generators:
+	$[T_a, P_r]=0$ for all $a\in\{1,\ldots,8\}$ and all $r$.  This is not a
+	separately proved identity but follows automatically from the algebraic
+	structure: $H$ is a polynomial in the Cartan generators of $\spin(6)$, and
+	the $\su(3)$ generators $T_a$ lie in the subalgebra that commutes with $H$
+	by definition of the Cartan decomposition.  Numerically, $\su(3)$ covariance
+	$U P_r U^\dagger = P_r$ is verified over 50 random $U\in\su(3)$ for all
+	four projectors, with maximum deviation $2.44\times10^{-15}$
+	(Table~\ref{tab:verif-C1}, row~C5).
+	
+	\subsection{Commutativity with
+		\texorpdfstring{$\gamma_5$}{gamma5}}
+	\label{sec:proj-gamma5}
+	
+	The commutativity $[\gamma_5, P_r]=0$ for all $r$ holds exactly (residual
+	$0.00\times10^0$).
+	This property is essential for the grade-projected pion correlator to be
+	well-defined: without it, the operator $P_r\gamma_5 P_r$ would mix
+	chiralities and $C_\pi^{(r)}(t)$ would not define a physical pseudoscalar
+	channel.  The commutativity follows from the observation that
+	$\gamma_5 = e_1 e_2 e_3 e_4$ acts only on the first two tensor factors
+	in~\eqref{eq:basis}, while $H$ acts on all three; the commutator vanishes
+	because $\gamma_5$ commutes with each $B_{ij}$ appearing in $H$.
+	
+	\subsection{\texorpdfstring{$H$}{H}-Grade Labeling via
+		\texorpdfstring{$\Isix$}{I6}}
+	\label{sec:proj-I6}
+	
+	The pseudoscalar $\Isix = e_1 e_2 e_3 e_4 e_5 e_6$ acts on the two singlet
+	subspaces as
+	\begin{equation}
+		\begin{aligned}
+			\Isix\,P_{\mathbf{1}_a} &= -i\,P_{\mathbf{1}_a}, \\
+			\Isix\,P_{\mathbf{1}_b} &= +i\,P_{\mathbf{1}_b},
+		\end{aligned}
+		\label{eq:I6-singlet}
+	\end{equation}
+	verified to residual $0.00\times10^0$.
+	This provides an alternative labeling of the singlet channels consistent with
+	the $(\GaSeven, H)$ double grading of Sec.~\ref{sec:double-grading}.
+	
+	\subsection{Complete Verification Table}
+	\label{sec:proj-verification}
+	
+	The full projector algebraic verification is reported as
+	Table~\ref{tab:verif-C1} (Appendix~\ref{app:C}).  All five algebraic checks
+	(C1--C5) and one stochastic check (S1) pass to machine precision.  The
+	$I_4{\otimes}U(2)$ symmetry argument of Sec.~\ref{sec:kinematic-theorem}
+	depends only on checks C1--C5; S1 is an additional stochastic verification
+	of group-averaging behavior under the Haar measure.
+	
+	% ============================================================
+	\section{Non-Perturbative \texorpdfstring{$\kcren$}{kappa_c^ren}
+		Determination}
+	\label{sec:kappa-c}
+	% ============================================================
+	
+	\subsection{PCAC Method}
+	\label{sec:pcac-method}
+	
+	The renormalized critical hopping parameter $\kcren(\beta)$ is the value of
+	$\kappa$ at which the PCAC quark mass vanishes:
+	\begin{equation}
+		\mPCAC(\kappa) = \frac{C_{AP}(t)}{4\,C_{PP}(t)},
+		\label{eq:mPCAC}
+	\end{equation}
+	where $C_{AP}(t)$ and $C_{PP}(t)$ are the axial-pseudoscalar and
+	pseudoscalar-pseudoscalar correlators, respectively, plateaued over
+	$t\in[N/4,\,3N/4]$.  In the $\cl(6)$ context, the axial current is
+	$A_4^a(x,t) = \bar\psi(x)(e_4\otimes I_3)(\gamma_5\otimes I_3)
+	(I_8\otimes\lambda^a/2)\psi(x)$, which requires the tensor product structure
+	of Paper~1~\cite{FirestoneP1}~\S2.3.  The pseudoscalar density is
+	$P^a(x,t) = \bar\psi(x)(\gamma_5\otimes I_3)(I_8\otimes\lambda^a/2)\psi(x)$.
+	
+	The zero crossing of $\mPCAC(\kappa)$ is located by Lagrange interpolation
+	between the two $\kappa$ values bracketing $\mPCAC=0$, with the bracket
+	selection requiring $\mathrm{SNR}>0.8$ on both endpoints to exclude
+	noise-dominated crossings.  $Z_2$ stochastic sources are used for the
+	correlator estimates.
+	
+	Method~B ($m_\pi^2$ extrapolation via cosh fit) was attempted but proved
+	unreliable on $N\leq6$ lattices due to the insufficient plateau window at
+	small volumes.  All $\kcren$ values quoted in this section use Method~A
+	(PCAC) only.
+	
+	Because Method~B did not yield a usable determination, the $\kcren$ values
+	reported here rest on the single PCAC method and carry no independent
+	cross-check: the two-method consistency test that would normally validate a
+	$\kcren$ determination could not be performed.  Accordingly these values are
+	used only to locate the chiral regime for Experiment~B
+	(Sec.~\ref{sec:experiment-B-design}); the $m_\pi^2$-extrapolation cross-check
+	is identified as follow-up work in Sec.~\ref{sec:future-directions}.
+	
+	\subsection{Results}
+	\label{sec:kappa-c-results}
+	
+	Block~1 of the computation produced partial results sufficient for the grade
+	decomposition program.  Two of six $\beta$ values were determined; the
+	remaining four are not required for Paper~2.
+	
+	\begin{table}[ht]
+		\centering
+		\caption{Non-perturbative $\kcren$ values used in this paper.
+			The $\beta=4.5$ value is systematic-dominated; see text.}
+		\label{tab:kappa-c}
+		\begin{tabular}{@{}clp{7.5cm}@{}}
+			\toprule
+			$\beta$ & $\kcren$ & Source and notes \\
+			\midrule
+			4.5 & $0.1468\pm0.0050$
+			& $N=6$, Method~A (PCAC); systematic-dominated.
+			$N=4$/$N=6$ spread ($0.127\to0.147$) propagated as
+			$\pm0.005$ systematic uncertainty. \\[4pt]
+			6.0 & $0.1513\pm0.0006$
+			& Weighted mean across four independent runs;
+			$0.9\sigma$ from literature value
+			$0.1518\pm0.0005$
+			(Paper~1~\cite{FirestoneP1}~\S5.5.1). \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	Monotonicity check: $\kcren(\beta=4.5)=0.1468 < 0.1513=\kcren(\beta=6.0)$,
+	consistent with the physical expectation that weaker coupling (larger $\beta$)
+	produces smaller additive mass renormalization and $\kcren$ closer to the
+	free-field value $0.125$.  The large uncertainty on $\kcren(\beta=4.5)$
+	reflects genuine $O(a)$ discretization effects at strong coupling that are
+	not yet resolved; this uncertainty will propagate as a systematic into any
+	chiral-regime calculation using this value.
+	
+	The present heavy-mass production runs at $m_0=0.05$ ($\kappa=0.12346$)
+	lie well below $\kcren$ at both $\beta$ values and do not require the
+	chiral-regime solver mitigations of Appendix~\ref{app:D}.  The
+	$\kcren$ values are provided as prerequisites for Experiment~B
+	(Sec.~\ref{sec:experiment-B-design}) and are referenced in
+	Sec.~\ref{sec:outlook}.
+	
+	% ============================================================
+	\section{Grade Decomposition of the Pion Correlator}
+	\label{sec:grade-decomp}
+	% ============================================================
+	
+	\subsection{The Grade-Projected Pion Correlator}
+	\label{sec:correlator-def}
+	
+	The standard pion correlator in the $\cl(6)$ framework is
+	\begin{equation}
+		C_\pi(t) = \sum_{\mathbf{x}}\Bigl\langle
+		\tr\bigl[S(\mathbf{x},t;\,\mathbf{0},0)\,\gamma_5\,
+		S^\dagger(\mathbf{x},t;\,\mathbf{0},0)\,\gamma_5\bigr]
+		\Bigr\rangle,
+		\label{eq:pion-correlator}
+	\end{equation}
+	where $S(\mathbf{x},t;\mathbf{0},0) = \dW^{-1}(\mathbf{x},t;\mathbf{0},0)$
+	is the quark propagator (a $24\times24$ matrix per site pair in
+	$\mathbb{C}^8\otimes\mathbb{C}^3$), the trace is over both spinor and color
+	indices, and $\gamma_5$ acts on the spinor sector only.  The grade-projected
+	pion correlator for representation $r$ is defined by inserting the projector
+	$P_r$ into the spinor trace:
+	\begin{multline}
+		C_\pi^{(r)}(t) = \sum_{\mathbf{x}}\Bigl\langle
+		\tr\bigl[(P_r\otimes I_3)\,\gamma_5\,(P_r\otimes I_3) \\
+		\cdot\,S(\mathbf{x},t;\,\mathbf{0},0)\,\gamma_5\,
+		S^\dagger(\mathbf{x},t;\,\mathbf{0},0)\bigr]
+		\Bigr\rangle.
+		\label{eq:grade-projected-correlator}
+	\end{multline}
+	The commutativity $[\gamma_5, P_r]=0$ of Sec.~\ref{sec:proj-gamma5} ensures
+	that $P_r$ and $\gamma_5$ can be commuted freely, so $C_\pi^{(r)}(t)$ defines
+	a valid pseudoscalar channel.  The grade fraction is
+	\begin{equation}
+		f_r(t) \;\equiv\; \frac{C_\pi^{(r)}(t)}{C_\pi(t)}.
+		\label{eq:grade-fraction}
+	\end{equation}
+	By the completeness identity $\sum_r P_r = I_8$, it follows algebraically that
+	\begin{equation}
+		\sum_r C_\pi^{(r)}(t) = C_\pi(t)
+		\quad\text{(exact, algebraically)},
+		\label{eq:correlator-completeness}
+	\end{equation}
+	and therefore $\sum_r f_r(t) = 1$ on every configuration and at every
+	timeslice.  This identity provides a per-configuration sanity check: any
+	violation indicates a bug in the projector construction or trace evaluation.
+	
+	\subsection{Algebraic Completeness Verification}
+	\label{sec:completeness-verification}
+	
+	The identity~\eqref{eq:correlator-completeness} is verified via the
+	per-configuration relative residual
+	\begin{equation}
+		\delta(t) = \frac{\bigl|C_\pi(t) - \sum_r C_\pi^{(r)}(t)\bigr|}
+		{\bigl|C_\pi(t)\bigr|}.
+		\label{eq:completeness-residual}
+	\end{equation}
+	In the free-field case ($U_\mu=I_3$ everywhere, $N=4$, $m_0=0.05$, single
+	$Z_2$ source), $\delta_{\max} = 1.26\times10^{-16}$ over
+	$t\in\{0,1,2,3\}$---six orders of magnitude below the target threshold
+	of $10^{-10}$.  In the production ensembles ($N=6$, $\Ncfg=20$, a single
+	point-to-all solve per configuration spanning 24 spin--color components):
+	\begin{align*}
+		\delta_{\max}(\beta=4.5)
+		&= 5.371\times10^{-16}
+		&&\text{(max over 20 configs $\times$ 6 timeslices),}\\
+		\delta_{\max}(\beta=6.0)
+		&= 5.366\times10^{-16}
+		&&\text{(max over 20 configs $\times$ 6 timeslices).}
+	\end{align*}
+	Both values are consistent with floating-point roundoff at
+	$O(\varepsilon_{\mathrm{mach}}\times N_{\mathrm{hops}})$.  The
+	identity~\eqref{eq:correlator-completeness} is verified to machine precision
+	on every configuration in the production ensemble.
+	
+	\subsection{Charge Conjugation and \texorpdfstring{$\gamma_5$}{gamma5}
+		Identities}
+	\label{sec:additional-idents}
+	
+	Three additional algebraic identities are verified to machine precision prior
+	to the production runs (Appendix~\ref{app:B}):
+	
+	\begin{itemize}
+		\item Charge conjugation pairing: $CP_3 C^\dagger = P_{\bar{3}}$ and
+		$CP_{1_a} C^\dagger = P_{1_b}$, each to residual $0.00\times10^0$.
+		\item $\gamma_5$ commutativity: $[\gamma_5, P_r] = 0$ for all $r$, to residual
+		$0.00\times10^0$.
+		\item $\Isix$ action on singlets: $\Isix\,P_{1_a} = -i\,P_{1_a}$ and
+		$\Isix\,P_{1_b} = +i\,P_{1_b}$, each to residual $0.00\times10^0$.
+	\end{itemize}
+	
+	These identities, together with the projector checks of
+	Appendix~\ref{app:C}, establish the algebraic infrastructure to machine
+	precision before any gauge configurations are introduced.
+	
+	\subsection{\texorpdfstring{$H$}{H} Eigenvalue and Additional Verifications}
+	\label{sec:H-eigenvalue-verif}
+	
+	The Cartan hypercharge $H$ is verified to have eigenvalues
+	$\{-\tfrac{3}{2},\,-\tfrac{1}{2},\,+\tfrac{1}{2},\,+\tfrac{3}{2}\}$ with
+	multiplicities $\{1,3,3,1\}$ in the explicit basis~\eqref{eq:basis}.
+	The commutativity $[\GaSeven,\,H]=0$ holds identically.  The commutativity
+	of $H$ with all eight $\su(3)$ generators,
+	\[
+	[H,\,T_a] = 0
+	\quad\text{for } a\in\{1,\ldots,8\},
+	\]
+	is verified numerically to maximum deviation $<10^{-15}$.  These
+	verifications confirm that $H$ generates the $\mathrm{U}(1)$ factor of the
+	$\su(3)\times\mathrm{U}(1)$ Levi subgroup, as required by the
+	representation-theoretic argument of Sec.~\ref{sec:double-grading}.
+	
+	% ============================================================
+	%  REMAINING SECTIONS — TO BE ADDED SECTION BY SECTION
+	% ============================================================
+	
+	\subsection{The Kinematic Limit Theorem}
+	\label{sec:kinematic-theorem}
+	
+	The central theoretical result of this paper is the following theorem,
+	which governs the free-field behavior of the grade fractions and provides
+	the null hypothesis for Experiment~B (Sec.~\ref{sec:experiment-B-design}).
+	
+	\begin{theorem}[Kinematic Limit]
+		\label{thm:kinematic}
+		Let $G_{\mathrm{free}} = (\dW^{\mathrm{free}})^{-1}$ be the free-field
+		quark propagator (all gauge links $U_\mu = I_3$).  Then
+		\begin{equation}
+			f_r^{\mathrm{free}}(t)
+			\;=\; \frac{C_\pi^{(r)}{}_{\!\mathrm{free}}(t)}{C_\pi^{\mathrm{free}}(t)}
+			\;=\; \frac{\dim(r)}{8}
+			\label{eq:kinematic-free}
+		\end{equation}
+		exactly, for all $r\in\{3,\,\bar{3},\,1_a,\,1_b\}$ and all timeslices $t$.
+		In the interacting theory, the same identity holds in the ensemble limit
+		\begin{equation}
+			\lim_{\Ncfg\to\infty}\langle f_r(t)\rangle \;=\; \frac{\dim(r)}{8},
+			\label{eq:kinematic-interacting}
+		\end{equation}
+		enforced by $\su(3)$ color symmetry and the hypercubic symmetry of the
+		ensemble measure.
+	\end{theorem}
+	
+	\begin{proof}
+		The proof requires two ingredients.  The first is the commutativity
+		$[\gamma_5, P_r]=0$ established in Sec.~\ref{sec:proj-gamma5}: without it,
+		the grade-projected pion operator $P_r\gamma_5 P_r$ would not define a valid
+		pseudoscalar channel.  The second concerns the Hermitian matrix
+		\begin{equation}
+			\Qtil(t) = \sum_{\mathbf{x}}(\gamma_5\otimes I_3)\,
+			G(\mathbf{x},t;\mathbf{0},0)\,(\gamma_5\otimes I_3)\,
+			G^\dagger(\mathbf{x},t;\mathbf{0},0),
+			\label{eq:Qtil-def}
+		\end{equation}
+		whose grade-projected traces give the channel correlators,
+		$C_\pi^{(r)} = \tr[(P_r\otimes I_3)\Qtil]$ and $C_\pi = \tr[\Qtil]$.  Since
+		each $P_r$ is diagonal in the $(\GaSeven,H)$ grade basis (in which $H$ is
+		diagonal), these traces depend only on the diagonal of $\Qtil$ in that
+		basis.  We show that for the free field this diagonal is constant:
+		\begin{equation}
+			\bigl[\Qtil_{\mathrm{free}}(t)\bigr]_{\text{grade diag}} = c(t)\,I_{24}.
+			\label{eq:Qtil-diag}
+		\end{equation}
+		Given~\eqref{eq:Qtil-diag},
+		\[
+		C_\pi^{(r)} = c\,\tr[P_r\otimes I_3] = 3c\,\dim(r),
+		\qquad
+		C_\pi = 24c,
+		\]
+		and $f_r = \dim(r)/8$ follows immediately, for all $r$ and all $t$.
+		
+		It remains to establish~\eqref{eq:Qtil-diag}.  In the tensor-product basis
+		of Sec.~\ref{sec:basis} the spacetime generators satisfy
+		$e_\mu = M_\mu\otimes I_2$ for all $\mu\in\{1,2,3,4\}$: the third Clifford
+		qubit factor is always $I_2$.  Hence $\dW^{\mathrm{free}}$ commutes with
+		every $I_4\otimes U''\otimes I_3$ for $U''\in\mathrm{U}(2)$, and by Schur's
+		lemma ($\mathrm{U}(2)$ acts irreducibly on the third $\mathbb{C}^2$) any
+		matrix commuting with all such elements has the form $X\otimes I_2$.  In the
+		free theory the propagator is color-diagonal ($U_\mu=I_3$), so
+		$X = A_4\otimes I_3$, with $A_4$ acting on the four-dimensional $(q_1,q_2)$
+		subspace.  Summing over spatial sinks at fixed $t$ projects onto zero spatial
+		momentum, where the residual invariance is the \emph{spatial-cubic group
+		$\times$ time reflection}, not the full hypercubic group.  Spatial-cubic
+		invariance removes the spatial generators $e_2,e_3,e_4$ (which form a cubic
+		vector and average to zero) together with all tensor structures, leaving
+		\begin{equation}
+			A_4(t) = \alpha(t)\,I_4 + \beta(t)\,e_1,
+			\label{eq:A4-form}
+		\end{equation}
+		where $e_1=\sigma_x\otimes I_2$ is the time-direction generator.  The term
+		$\beta\,e_1$ need not vanish---time reflection forces $\beta(t)$ to be odd
+		in $t$, so it vanishes only at the fixed timeslices $t=0$ and $t=L/2$---but
+		$e_1$ has \emph{identically zero diagonal} in the grade basis and so
+		contributes nothing to the diagonal of $\Qtil = A_4\otimes I_2\otimes I_3$,
+		which is therefore $\alpha(t)\,I_{24}$.  This
+		establishes~\eqref{eq:Qtil-diag}; the grade-fraction result rests only on
+		this zero-diagonal property and holds whether or not $\beta=0$.
+		
+		The interacting identity~\eqref{eq:kinematic-interacting} is a distinct,
+		ensemble-averaged statement: it follows from applying the same $\su(3)$
+		color and spatial-cubic symmetries to $\langle\Qtil\rangle$, and holds for
+		$\langle f_r\rangle$ in the $\Ncfg\to\infty$ limit rather than
+		configuration-by-configuration.
+	\end{proof}	
+	The physical content of the theorem is that the free Wilson--Dirac operator
+	generates no dynamics in the $e_5, e_6$ directions: those generators appear
+	nowhere in $\dW^{\mathrm{free}}$.  The grade decomposition is defined by
+	$H = B_{12}+B_{34}+B_{56}$, and the bivector
+	$B_{56} = \tfrac{i}{4}[e_5,e_6]$ is algebraically orthogonal to everything
+	$\dW^{\mathrm{free}}$ can do.
+	
+	\medskip
+	\noindent\textit{Numerical verification.}\enspace
+	The theorem is verified at machine precision on the free lattice
+	($U_\mu = I_3$ everywhere, $N=4$, $m_0=0.05$, single $Z_2$ source):
+	\begin{center}
+		\begin{tabular}{@{}lccc@{}}
+			\toprule
+			Grade & $f_r$ measured & $\dim(r)/8$ expected & Residual \\
+			\midrule
+			$\mathbf{3}$         & $0.375000$ & $0.375000$ & $8.5\times10^{-15}$ \\
+			$\bar{\mathbf{3}}$   & $0.375000$ & $0.375000$ & $8.5\times10^{-15}$ \\
+			$\mathbf{1}_a$       & $0.125000$ & $0.125000$ & $8.4\times10^{-15}$ \\
+			$\mathbf{1}_b$       & $0.125000$ & $0.125000$ & $8.4\times10^{-15}$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	Maximum residual from the expected free-field values:
+	$O(\varepsilon_{\mathrm{mach}})$ at all timeslices.
+	
+	
+	% ============================================================
+	%  REMAINING SECTIONS — TO BE ADDED SECTION BY SECTION
+	% ============================================================
+	
+	\subsection{Experiment~A: Heavy-Mass Production Results}
+	\label{sec:experiment-A}
+	
+	Experiment~A measures the grade fractions on thermalized quenched production
+	ensembles at $N=6$, $m_0=0.05$, $\beta\in\{4.5,\,6.0\}$, with $\Ncfg=20$
+	configurations per phase.  Parameters are as in Sec.~\ref{sec:ensembles};
+	the bare quark mass $m_0=0.05$ corresponds to $\kappa=0.123457$, placing
+	the quarks well below $\kcren$ at both $\beta$ values and deep in the
+	heavy-mass regime ($m_{\mathrm{phys}}\approx0.76$ in lattice units).
+	
+	\begin{table}[ht]
+		\centering
+		\caption{Grade fractions $f_r$ at $t=1$.  Free-field reference:
+			$f_r=\dim(r)/8\in\{0.375,\,0.375,\,0.125,\,0.125\}$.
+			$\Delta\equiv f_r(\beta{=}4.5)-f_r(\beta{=}6.0)$.
+			Errors are statistical, from a jackknife over the $\Ncfg=20$ gauge configurations (one point-to-all solve per configuration).}
+		\label{tab:grade-fractions}
+		\begin{tabular}{@{}llcccc@{}}
+			\toprule
+			Grade & Rep              & $f_r(\beta=4.5)$        & $f_r(\beta=6.0)$
+			& $\Delta$                & $\sigma$ \\
+			\midrule
+			$\mathbf{3}$
+			& Triplet
+			& $0.374918\pm0.000079$
+			& $0.374968\pm0.000028$
+			& $-0.000049\pm0.000084$
+			& $0.6$ \\[3pt]
+			$\bar{\mathbf{3}}$
+			& Anti-triplet
+			& $0.375081\pm0.000080$
+			& $0.375032\pm0.000028$
+			& $+0.000049\pm0.000085$
+			& $0.6$ \\[3pt]
+			$\mathbf{1}_a$
+			& Singlet $(-i)$
+			& $0.125082\pm0.000079$
+			& $0.125032\pm0.000028$
+			& $+0.000049\pm0.000084$
+			& $0.6$ \\[3pt]
+			$\mathbf{1}_b$
+			& Singlet $(+i)$
+			& $0.124919\pm0.000080$
+			& $0.124968\pm0.000028$
+			& $-0.000049\pm0.000085$
+			& $0.6$ \\
+			\midrule
+			Sum & Total
+			& $1.000000$
+			& $1.000000$
+			& $0.000000$
+			& — \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	Maximum deviation from the free-field reference at $t=1$:
+	$\approx8.2\times10^{-5}$
+	at $\beta=4.5$.  All four phase differences are consistent with zero at
+	$0.6\sigma$ significance.
+	
+	The charge-conjugation pairing is manifest in the data: $\Delta f_3 =
+	-\Delta f_{\bar{3}}$ and $\Delta f_{1_a} = -\Delta f_{1_b}$ to within
+	statistical precision, as required by the identity $CP_3 C^\dagger =
+	P_{\bar{3}}$ established in Sec.~\ref{sec:additional-idents}.  The four
+	$\sigma$-values group into two exactly-equal pairs:
+	$\sigma(f_{1_a})=\sigma(f_3)$ and $\sigma(f_{1_b})=\sigma(f_{\bar 3})$ hold
+	to machine precision, forced configuration-by-configuration by the exact
+	identity of Proposition~\ref{prop:gamma7-frozen}
+	($f_{1_a}=\half-f_3$, $f_{1_b}=\half-f_{\bar 3}$); the remaining equality
+	$\sigma(f_3)\approx\sigma(f_{\bar 3})$ holds only statistically, by the
+	ensemble-level charge-conjugation relation
+	$\langle f_3\rangle=\langle f_{\bar 3}\rangle$.  Per configuration the four
+	fractions therefore carry exactly two independent degrees of freedom,
+	reducing to the single C-even observable $\ftriplet$ only in the ensemble
+	average (Sec.~\ref{sec:cl6-specific}).
+	
+	\medskip
+	\noindent\textit{$t$-dependence.}\enspace
+	The grade fractions at all timeslices $t\in\{0,\ldots,5\}$ are provided in
+	the extended Table~6.1 of the Data Tables.  Errors increase rapidly with $t$
+	because the pion correlator decays as $e^{-m_\pi t}$ with $m_\pi\approx3.4$
+	in lattice units: by $t=3$, the signal has fallen by $e^{-10}\approx
+	5\times10^{-5}$.  An apparent $3.6\sigma$ deviation in $f_3$ at
+	$\beta=6.0$, $t=3$ is noise-dominated with $\Ncfg=20$ and does not
+	constitute a physical signal; this is documented further in
+	Sec.~\ref{sec:cl6-specific}.  At $t=0$, the grade fractions satisfy
+	$f_r\approx\dim(r)/8$ to within $\approx3\times10^{-6}$, consistent with
+	the short-range nature of the propagator at small $t$.
+	
+	\subsection{Discussion}
+	\label{sec:discussion}
+	
+	\subsubsection{The kinematic limit theorem}
+	\label{sec:kinematic-discussion}
+	
+	The result $f_r\approx\dim(r)/8$ observed throughout Table~\ref{tab:grade-fractions}
+	is not a counting argument.  It is a theorem with specific algebraic content
+	(Theorem~\ref{thm:kinematic}, Sec.~\ref{sec:kinematic-theorem}), and
+	identifying that content determines what the small deviations measure.
+	
+	The physical content is that $\dW^{\mathrm{free}}$ generates no dynamics in
+	the $e_5, e_6$ directions: those generators appear nowhere in $\dW^{\mathrm{free}}$.
+	The grade decomposition is defined by $H = B_{12}+B_{34}+B_{56}$, and the
+	bivector $B_{56} = \tfrac{i}{4}[e_5,e_6]$ is algebraically orthogonal to
+	everything $\dW^{\mathrm{free}}$ can do.  Uniform distribution across
+	$H$-eigenspaces follows not from any symmetry between $e_5, e_6$ and the
+	spacetime generators, but from the absence of any coupling between
+	$\dW^{\mathrm{free}}$ and the internal directions that define the grading.
+	
+	\subsubsection{The \texorpdfstring{$(\GaSeven, H)$}{(Gamma7, H)} double
+		grading and its place in the literature}
+	\label{sec:grading-literature}
+	
+	Each grade projector is labeled by a pair of eigenvalues of two commuting
+	operators.  The $\spin(6)$ chirality $\GaSeven = i\Isix$, where
+	$\Isix = e_1 e_2 e_3 e_4 e_5 e_6$ is the $\cl(6)$ pseudoscalar, takes
+	eigenvalues $\pm1$ and in the tensor product representation reads
+	$\GaSeven = \sigma_z\otimes\sigma_z\otimes\sigma_z$.  The Cartan hypercharge
+	$H = B_{12}+B_{34}+B_{56}$ takes eigenvalues
+	$\{-\tfrac{3}{2},\,-\tfrac{1}{2},\,+\tfrac{1}{2},\,+\tfrac{3}{2}\}$ with
+	multiplicities $\{1,3,3,1\}$.  Both operators are diagonal in the standard
+	computational basis of $\mathbb{C}^8$, and their commutativity $[\GaSeven, H]=0$
+	follows immediately.  The four representations are uniquely identified by the
+	pair $(\GaSeven, H)$:
+	\begin{center}
+		\begin{tabular}{@{}ccccp{4.5cm}@{}}
+			\toprule
+			Rep & $\GaSeven$ & $H$ & dim & Basis states \\
+			\midrule
+			$\mathbf{1}_a$     & $+1$ & $-3/2$ & $1$
+			& $|\!\uparrow\uparrow\uparrow\rangle$ \\[3pt]
+			$\mathbf{3}$       & $+1$ & $+1/2$ & $3$
+			& $|\!\uparrow\downarrow\downarrow\rangle$,
+			$|\!\downarrow\uparrow\downarrow\rangle$,
+			$|\!\downarrow\downarrow\uparrow\rangle$ \\[3pt]
+			$\bar{\mathbf{3}}$ & $-1$ & $-1/2$ & $3$
+			& $|\!\uparrow\uparrow\downarrow\rangle$,
+			$|\!\uparrow\downarrow\uparrow\rangle$,
+			$|\!\downarrow\uparrow\uparrow\rangle$ \\[3pt]
+			$\mathbf{1}_b$     & $-1$ & $+3/2$ & $1$
+			& $|\!\downarrow\downarrow\downarrow\rangle$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	A distinction central to the interpretation is that $\GaSeven\neq\gamma_5$.
+	The 4D chiral operator used in the pion correlator is
+	$\gamma_5 = e_1 e_2 e_3 e_4 = -\sigma_z\otimes\sigma_z\otimes I_2$, while
+	the $\spin(6)$ chirality is
+	$\GaSeven = \sigma_z\otimes\sigma_z\otimes\sigma_z$.  Their relationship is
+	$\GaSeven = \gamma_5\cdot(ie_5 e_6)$, reflecting the fact that $\GaSeven$
+	combines the 4D Lorentz chirality with the chirality of the internal $(e_5,e_6)$
+	pair.  Both commute with $H$ and with all four projectors $P_r$, but their
+	action on the spinor space differs: the triplet and antitriplet subspaces are
+	each invariant under $\gamma_5$ but are not $\gamma_5$ eigenspaces---a point
+	returned to in Sec.~\ref{sec:cl6-specific}.
+	
+	The $(\GaSeven, H)$ double grading is a known structure in the representation
+	theory of $\su(4)$.  The operator $H$ generates the $\mathrm{U}(1)$ factor of
+	the Levi subgroup $\su(3)\times\mathrm{U}(1)\subset\su(4)$, where
+	$\su(3) = \mathrm{Stab}_{\su(4)}(\xi_0)$ is the stabilizer of the preferred
+	spinor direction $\xi_0=(0,0,0,1)^T$ that defines the color embedding.  With
+	the normalization $Q_{B-L} = (2/3)H$, the triplet/antitriplet carry
+	$Q_{B-L} = \pm1/3$ and the singlets carry $Q_{B-L} = \mp1$, matching the
+	baryon-minus-lepton charges of the Pati--Salam $\su(4)_{\mathrm{color}}$
+	model~\cite{PatiSalam1974}.  The complete $\su(4)\supset\su(3)\times\mathrm{U}(1)$
+	branching table---$4\to3_{+1/3}\oplus1_{-1}$ and
+	$\bar{4}\to\bar{3}_{-1/3}\oplus1_{+1}$---is tabulated in
+	Ref.~\cite{Slansky1981} (Table~36).  In Furey's algebraic classification
+	program~\cite{Furey2012,Furey2014,Furey2015,Furey2018a,Furey2018b}, the same
+	decomposition identifies the $\su(3)$ quantum numbers of a single generation
+	of Standard Model fermions from the $\cl(6)$ minimal left ideal.
+	
+	The contribution of the present work is the first dynamical implementation of
+	this grading.  The projectors $P_r$ are constructed as Lagrange spectral
+	projectors of $H$, verified to satisfy completeness, idempotency,
+	orthogonality, $\su(3)$ covariance, and $\gamma_5$-commutativity to residual
+	$\leq 2.4\times10^{-15}$ (Table~\ref{tab:verif-C1}), and used to decompose a
+	physical pion correlator on a Monte Carlo gauge ensemble.  The algebraic
+	completeness identity $\sum_r C_\pi^{(r)}(t) = C_\pi(t)$ holds to
+	$\delta_{\max} = 5.4\times10^{-16}$ on every configuration.  We emphasize
+	that the structural analogy between the singlet subspaces $\mathbf{1}_a,
+	\mathbf{1}_b$ and lepton quantum numbers in the Furey program does not apply
+	in the dynamical QCD context of this work: here, color is carried by the
+	separate $\mathbb{C}^3$ factor of the full quark space
+	$\mathbb{C}^{24} = \mathbb{C}^8\otimes\mathbb{C}^3$, and the grade projectors
+	decompose the spinor sector $\mathbb{C}^8$ only.
+	
+	\subsubsection{Interpretation of the Experiment~A deviations}
+	\label{sec:deviation-interp}
+	
+	The production data of Table~\ref{tab:grade-fractions} show grade fractions
+	consistent with $\dim(r)/8$ at the $10^{-4}$ level.  All phase differences
+	$\Delta f_r = f_r(\beta{=}4.5) - f_r(\beta{=}6.0)$ are consistent with zero
+	at $0.6\sigma$ significance.  We identify three candidate mechanisms for the
+	observed deviations from free-field values and assess their relative importance
+	at the current parameter point.
+	
+	The primary driver is gauge-link color-spin entanglement.  The Wilson hopping
+	term $(1\pm e_\mu)\otimes U_\mu(x)$ does not preserve $H$-eigenspaces: one
+	finds $[H, e_\mu]\neq 0$ for all $\mu\in\{1,2,3,4\}$.  Explicitly,
+	\begin{equation}
+		[H,\, e_1]
+		\;=\;
+		\bigl[-\tfrac{1}{2}\sigma_z\otimes I_2\otimes I_2,\;
+		\sigma_x\otimes I_2\otimes I_2\bigr]
+		\;=\;
+		-i\,\sigma_y\otimes I_2\otimes I_2
+		\;\neq\; 0,
+		\label{eq:H-e1-commutator}
+	\end{equation}
+	and analogously for $\mu=2,3,4$.  Since $P_r$ is a polynomial in $H$, it
+	follows that $[P_r, \dW]\neq 0$: every lattice hop mixes grade channels, and
+	the propagator $G = \dW^{-1}$ accumulates this mixing with each step.  On a
+	single gauge configuration, $\Qtil_{\mathrm{int}}$ is a full $24\times24$
+	matrix rather than a multiple of $I_{24}$, and the grade fractions can deviate
+	from $\dim(r)/8$.  In the ensemble limit, $\su(3)$ and hypercubic symmetry
+	restore $\langle\Qtil_{\mathrm{int}}\rangle\propto I_{24}$, but this
+	convergence is slow: with $\Ncfg=20$, the residual per-configuration
+	entanglement is incompletely averaged.
+	
+	Subleading contributions arise from the Wilson term's explicit $O(a)$ breaking
+	of Lorentz symmetry, which introduces a small non-isotropic correction to
+	$\Qtil_{\mathrm{int}}$ that is independent of $\Ncfg$ and vanishes only in the
+	continuum limit.  Genuine non-perturbative vacuum dressing of grade
+	channels---mechanism (c), the target of Experiment~B---is suppressed at
+	$m_0=0.05$, where $m_{\mathrm{phys}}\approx0.76$ in lattice units and chiral
+	effects scale as $(m_\pi/\Lambda_{\mathrm{QCD}})^2$.
+	
+	The observed sign pattern is consistent with the primary mechanism.  At $t=1$
+	and $\beta=4.5$, the triplet fraction is depleted
+	($\Delta f_3\approx-8.2\times10^{-5}$) while the singlet-$a$ fraction is
+	correspondingly enhanced ($\Delta f_{1_a}\approx+8.2\times10^{-5}$).  This
+	direction is expected from a perturbative $O(g^2)$ analysis: gauge-link
+	dressing couples preferentially to color-charged spinor channels (the
+	triplets), transferring a small fraction of weight toward the color-neutral
+	singlet subspaces.
+	
+	The $t$-dependence carries additional diagnostic information but is currently
+	noise-limited.  Deviations grow from $\sim10^{-4}$ at $t=1$ to
+	$\sim7\times10^{-4}$ at $t=3$ at $\beta=6.0$, reflecting the accumulation of
+	grade mixing over additional hops as expected from~\eqref{eq:H-e1-commutator}.
+	However, at $m_0=0.05$ the pion correlator is suppressed as $e^{-m_\pi t}$
+	with $m_\pi\approx3.4$ in lattice units, so $C_\pi(t{=}3)\sim
+	e^{-10}\,C_\pi(0)$.  The apparent $3.6\sigma$ deviation at $t=3$ is
+	signal-to-noise dominated with $\Ncfg=20$ and does not constitute a physical
+	signal at current statistics; resolving the $t$-profile reliably requires
+	$\Ncfg\gtrsim200$.
+	
+	\subsubsection{Channel-pair structure and the C-symmetry reduction}
+	\label{sec:channel-pair}
+	
+	The algebraic charge-conjugation pairing $CP_3C^\dagger = P_{\bar{3}}$ and
+	$CP_{1_a}C^\dagger = P_{1_b}$ (Appendix~\ref{app:B}), together with the
+	completeness constraint $\sum_r f_r = 1$, determines the observable structure
+	precisely.
+	
+	In the ensemble limit with the C-symmetric Wilson gauge action and a
+	C-symmetric point source, charge conjugation enforces
+	$\langle f_3\rangle = \langle f_{\bar{3}}\rangle$ and
+	$\langle f_{1_a}\rangle = \langle f_{1_b}\rangle$.  Combined with completeness,
+	this reduces four apparent observables to one independent C-even quantity:
+	\begin{equation}
+		\ftriplet \;\equiv\; f_3 + f_{\bar{3}},
+		\label{eq:f-triplet}
+	\end{equation}
+	with $\fsinglet = 1 - \ftriplet$ determined by completeness.  The two C-odd
+	combinations
+	\begin{equation}
+		A_{\mathrm{color}} = f_3 - f_{\bar{3}},
+		\qquad
+		A_{\mathrm{singlet}} = f_{1_a} - f_{1_b},
+		\label{eq:C-odd-combos}
+	\end{equation}
+	both vanish in the $\Ncfg\to\infty$ ensemble limit for $\theta=0$.  Their
+	observed magnitudes ($\sim1.6\times10^{-4}$ at $\Ncfg=20$) are finite-sample
+	fluctuations expected to scale as $\Ncfg^{-1/2}$, and they serve as
+	self-consistency checks rather than physics signals.  We note explicitly that
+	$A_{\mathrm{color}}$ is C-odd and parity-even: it is not a probe of parity
+	violation.  A nonzero ensemble-average $A_{\mathrm{color}}$ would require
+	C violation; the $\theta$-term, being C-even, cannot generate it, and the
+	present calculations are C-symmetric.  By
+	Proposition~\ref{prop:gamma7-frozen} this is moot in any case, since
+	$A_{\mathrm{color}} = -A_{\mathrm{singlet}}$ exactly per configuration.
+	
+	\begin{proposition}[$\spin(6)$ chirality is dynamically frozen]
+	\label{prop:gamma7-frozen}
+		On every gauge configuration and at every timeslice,
+		\begin{equation}
+			C_\pi^{(\GaSeven=+1)}(t) = C_\pi^{(\GaSeven=-1)}(t),
+			\qquad\text{hence}\qquad
+			f_{(\GaSeven=+1)}(t) = f_{(\GaSeven=-1)}(t) = \half ,
+			\label{eq:gamma7-half}
+		\end{equation}
+		so that $A_{\GaSeven} \equiv A_{\mathrm{color}} + A_{\mathrm{singlet}} = 0$
+		identically.  The result is independent of $\beta$, of $t$, and of the
+		gauge field.
+	\end{proposition}
+	
+	\begin{proof}
+		The Wilson--Dirac operator is built only from the spacetime generators
+		$e_1,\ldots,e_4$, each acting as $M_\mu\otimes I_2$ on the third Clifford
+		qubit (Sec.~\ref{sec:basis}), while the gauge links multiply the color
+		index alone.  The third qubit is therefore inert and the propagator
+		factorizes as $G = \widehat{G}\otimes I_2$ on that qubit on \emph{every}
+		configuration, free or interacting---a property unquenching cannot remove,
+		as it alters the gauge measure but not this operator content.  The
+		$\gamma_5$-dressed correlator bilinear $M(\mathbf{x},t) =
+		(\gamma_5\otimes I_3)\,G\,(\gamma_5\otimes I_3)\,G^\dagger$ (the
+		per-configuration summand of $\Qtil$) inherits the same factorization,
+		$M = \widehat{M}\otimes I_2$, since $\gamma_5 = \widehat{\gamma}_5\otimes
+		I_2$ likewise leaves the third qubit untouched.  With $\GaSeven =
+		\sigma_z\otimes\sigma_z\otimes\sigma_z$, the grade-summed chiral asymmetry
+		factorizes across the third qubit,
+		\[
+		C_\pi^{(\GaSeven=+1)} - C_\pi^{(\GaSeven=-1)}
+		= \sum_{\mathbf{x}} \tr\!\bigl[(\GaSeven\otimes I_3)\,M\bigr]
+		= \sum_{\mathbf{x}}
+		\tr_{12c}\!\bigl[(\sigma_z\otimes\sigma_z\otimes I_3)\,\widehat{M}\bigr]\,
+		\tr_{q_3}[\sigma_z] ,
+		\]
+		and the factor $\tr_{q_3}[\sigma_z]=0$ annihilates it on every
+		configuration.  Dividing by $C_\pi$ and using the per-configuration
+		completeness $\sum_r f_r = 1$ gives $f_{(\GaSeven=\pm1)} = \half$.
+	\end{proof}
+	
+	This identity is structurally stronger than, and must not be conflated with,
+	the charge-conjugation relation.  It fixes the \emph{sum} $A_{\mathrm{color}}
+	+ A_{\mathrm{singlet}}$ to zero on \emph{every} configuration: the measured
+	residual is $\max|A_{\GaSeven}| \le 3.9\times10^{-16}$ across both ensembles,
+	all configurations and timeslices, i.e.\ $A_{\mathrm{color}} =
+	-A_{\mathrm{singlet}}$ \emph{exactly}, not ``to within statistical
+	precision.''  By contrast the individual asymmetries are each nonzero on a
+	given configuration (per-configuration $|f_3 - f_{\bar 3}|$ has rms
+	$\approx 1.1\times10^{-3}$); only their \emph{ensemble averages} vanish, by
+	the genuinely statistical charge-conjugation relation $\langle f_3\rangle =
+	\langle f_{\bar 3}\rangle$, $\langle f_{1_a}\rangle = \langle f_{1_b}\rangle$.
+	The $\spin(6)$-chirality direction therefore carries no dynamical information
+	whatsoever (Sec.~\ref{sec:cl6-specific}).
+	
+	The surviving observable $\ftriplet = f_3 + f_{\bar{3}}$ measures the fraction
+	of pion correlator weight in the color-carrying spinor channels.  Its
+	free-field value is $3/4$, verified in both phases at the $0.6\sigma$ level
+	(Table~\ref{tab:grade-fractions}).  The phase difference
+	$\dftriplet \equiv \ftriplet(\beta{=}4.5) - \ftriplet(\beta{=}6.0)$ is the
+	target observable of Experiment~B: it measures whether the gauge vacuum
+	distributes spinor weight differently between color-carrying and color-neutral
+	internal channels at the chiral point, and constitutes the grade-decomposed
+	analog of $\Delta A$ from Paper~1~\cite{FirestoneP1}.
+	
+	\subsubsection{The grade decomposition as a \texorpdfstring{$\cl(6)$}{Cl(6)}-specific
+		structure}
+	\label{sec:cl6-specific}
+	
+	A natural question is whether the grade-projected correlator $C_\pi^{(r)}(t)$
+	could be computed in the standard four-component Wilson lattice QCD formulation
+	by inserting an appropriate projector.  The answer is no, for a specific
+	algebraic reason.
+	
+	The grade projectors are Lagrange spectral projectors of
+	$H = B_{12}+B_{34}+B_{56}$, where
+	\begin{equation}
+		B_{56} \;=\; \frac{i}{4}[e_5,\, e_6].
+		\label{eq:B56}
+	\end{equation}
+	The bivector $B_{56}$ requires the internal Clifford generators $e_5$ and
+	$e_6$, which belong to $\cl(6)$ but have no counterpart in the standard
+	four-component Dirac algebra $\cl(4)$.  The generators available in the
+	standard formulation are $\{\gamma_1,\gamma_2,\gamma_3,\gamma_4\}$ and their
+	products; without $e_5$ and $e_6$, the bivector $B_{56}$ cannot be formed,
+	$H$ cannot be constructed, and therefore $P_r$ cannot be defined.
+	
+	A further obstruction arises from the structure of the $\gamma_5$ chirality
+	decomposition.  The triplet subspace $\mathbf{3}$ (the $H=+1/2$ eigenspace)
+	contains two basis states with $\gamma_5=+1$ and one with $\gamma_5=-1$; the
+	antitriplet $\bar{\mathbf{3}}$ similarly has mixed $\gamma_5$ eigenvalues.
+	The explicit assignments are:
+	\begin{center}
+		\begin{tabular}{@{}ccccc@{}}
+			\toprule
+			State & Rep & $\gamma_5$ & $\GaSeven$ & $H$ \\
+			\midrule
+			$|\!\uparrow\downarrow\downarrow\rangle$
+			& $\mathbf{3}$ & $+1$ & $+1$ & $+1/2$ \\
+			$|\!\downarrow\uparrow\downarrow\rangle$
+			& $\mathbf{3}$ & $+1$ & $+1$ & $+1/2$ \\
+			$|\!\downarrow\downarrow\uparrow\rangle$
+			& $\mathbf{3}$ & $-1$ & $+1$ & $+1/2$ \\[3pt]
+			$|\!\uparrow\uparrow\downarrow\rangle$
+			& $\bar{\mathbf{3}}$ & $-1$ & $-1$ & $-1/2$ \\
+			$|\!\uparrow\downarrow\uparrow\rangle$
+			& $\bar{\mathbf{3}}$ & $+1$ & $-1$ & $-1/2$ \\
+			$|\!\downarrow\uparrow\uparrow\rangle$
+			& $\bar{\mathbf{3}}$ & $+1$ & $-1$ & $-1/2$ \\[3pt]
+			$|\!\uparrow\uparrow\uparrow\rangle$
+			& $\mathbf{1}_a$ & $-1$ & $+1$ & $-3/2$ \\
+			$|\!\downarrow\downarrow\downarrow\rangle$
+			& $\mathbf{1}_b$ & $-1$ & $-1$ & $+3/2$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	No combination of standard Dirac projectors---chiral projectors
+	$(1\pm\gamma_5)/2$, helicity projectors, or spin projectors
+	$\sigma_{\mu\nu}$---can isolate a grade subspace, because the grade structure
+	cuts across the $\gamma_5$ sectors.  This is not an artifact of the chosen
+	basis; it is a consequence of the tensor product structure of the
+	eight-dimensional spinor and cannot be removed by any change of basis within
+	$\cl(4)$.
+	
+	The formal possibility of reconstructing $C_\pi^{(r)}(t)$ in the standard
+	formulation---by reading off the explicit $8\times8$ matrix for $P_r$ from the
+	$\cl(6)$ calculation and using it as an ad hoc operator---does not constitute
+	an independent standard QCD construction.  The matrix would be algebraically
+	unmotivated without $H$; its gauge invariance $[T_a, P_r]=0$ would require
+	separate verification; and its physical interpretation as a projector onto a
+	specific $\su(3)$ representation subspace of the spinor would be inaccessible.
+	Moreover, the $\cl(6)$ quark space
+	$\mathbb{C}^{24} = \mathbb{C}^8\otimes\mathbb{C}^3$ does not embed naturally
+	into the standard quark space $\mathbb{C}^{12} = \mathbb{C}^4\otimes\mathbb{C}^3$:
+	the factor-of-two mismatch in spinor dimension means $P_r$ cannot be directly
+	expressed as a matrix in the $12\times12$ space without first specifying an
+	embedding of $\mathbb{C}^4$ into $\mathbb{C}^8$, a choice that is itself
+	non-canonical and requires the $\cl(6)$ structure to motivate.
+	
+	The $\cl(6)$ formulation provides three things that the standard formulation
+	cannot: the internal generators $e_5, e_6$ that make $H$ and $P_r$ definable;
+	the algebraic guarantees---$[T_a, P_r]=0$ (gauge invariance),
+	$[\gamma_5, P_r]=0$ (chiral compatibility), $\sum_r P_r = I_8$
+	(completeness)---all following automatically from the algebra without separate
+	proof; and the $(\GaSeven, H)$ interpretation that identifies the $\su(3)$
+	representation content of each channel.  The grade decomposition of the pion
+	correlator is accordingly not a renaming of a standard QCD observable, but a
+	structure that is natural and algebraically guaranteed in $\cl(6)$ and has no
+	natural standard QCD expression.
+	
+	It is worth distinguishing two senses in which this structure might be called
+	novel.  The grade decomposition is \emph{definable} only in $\cl(6)$: the
+	construction above requires the internal generators $e_5,e_6$ and is independent
+	of any dynamics, so in that structural sense it is not a relabeling of a standard
+	color projection.  Whether it additionally \emph{carries} physical information
+	inaccessible to standard QCD is a distinct question, and one the present
+	heavy-mass data do not settle: at $m_0=0.05$ the measured fractions remain
+	pinned to their kinematic values $\dim(r)/8$ (Sec.~\ref{sec:experiment-A}), so
+	at this parameter point the decomposition exhibits no resolvable dynamical
+	content.  Testing the informational sense---whether the grade fractions resolve
+	gauge dynamics not already captured by ordinary color and chiral
+	observables---is the purpose of Experiment~B
+	(Sec.~\ref{sec:experiment-B-design}).
+	
+	Proposition~\ref{prop:gamma7-frozen} sharpens this question and bounds it
+	from one side.  The $\spin(6)$-chirality direction---the $(e_5,e_6)$ content
+	carried by $\GaSeven$---is \emph{provably} information-free:
+	$f_{(\GaSeven=+1)} = f_{(\GaSeven=-1)} = \half$ on every configuration,
+	independent of $\beta$, of $t$, and of the gauge field, precisely because
+	$e_5,e_6$ never enter $\dW$.  Whatever dynamical content the grade fractions
+	can ever resolve must therefore reside entirely in the splitting \emph{within}
+	a fixed $\GaSeven$ sector---the triplet-versus-singlet $H$-splitting of the
+	$(\GaSeven,H)$ double grading, a $\gamma_5$-type four-dimensional structure
+	dressed by color.  This is exactly the single C-even observable
+	$\ftriplet = f_3 + f_{\bar 3}$ isolated in Sec.~\ref{sec:channel-pair}, and it
+	is the target of Experiment~B.  The exact identity thus does not weaken the
+	novelty claim: it removes a direction in which no new information could ever
+	appear, and concentrates the informational question onto the one observable
+	capable of carrying it.
+	
+	
+	
+	\subsection{Outlook}
+	\label{sec:outlook}
+	
+	\subsubsection{The random-walk hypothesis for the chiral regime}
+	\label{sec:random-walk-hypothesis}
+	
+	The algebraic result~\eqref{eq:H-e1-commutator}, $[H,e_\mu]\neq0$, implies
+	that every spacetime hop of the quark shifts its $H$-eigenvalue.  More
+	precisely, each application of $e_\mu$ for $\mu\in\{1,2,3,4\}$ acts as a
+	$\pm1$ step on the $H$-eigenvalue ladder
+	$\{-\tfrac{3}{2},\,-\tfrac{1}{2},\,+\tfrac{1}{2},\,+\tfrac{3}{2}\}$, and
+	the accumulated product $G=\dW^{-1}$ therefore constitutes a random walk in
+	the grade space of the eight-dimensional spinor.  The stationary distribution
+	of this walk---the long-time limit of the grade fraction $f_r(t)$---is
+	determined by the gauge dynamics, not by free-field counting.
+	
+	At heavy quark mass ($m_0=0.05$, $m_{\mathrm{phys}}\approx0.76$), the
+	propagator is short-range and the walk effectively terminates after $O(1)$
+	hops.  The gauge-link weighting of each step is small ($|U_\mu-I_3|$ is
+	perturbative in $g^2$), the mixing is nearly symmetric, and the free-field
+	theorem controls the grade fractions: $f_r\approx\dim(r)/8$ at the $10^{-4}$
+	level, as confirmed by Experiment~A.
+	
+	At $\kappa\to\kcren$, the pion mass $m_\pi\to0$ and the propagator becomes
+	long-range.  For $t\,m_\pi\ll1$ the kinematic regime persists and the
+	free-field theorem still governs the grade fractions.  For $t\,m_\pi\sim1$,
+	however, the propagator has traversed $O(m_\pi^{-1})$ lattice spacings and
+	accumulated $O(m_\pi^{-1})$ gauge-link-weighted $H$-mixing steps.  The grade
+	fractions $f_r(t)$ will then curve from their free-field values toward an
+	asymptotic limit determined by the ground-state pion wavefunction in the grade
+	space: $f_r(t\to\infty)\to Z_\pi^{(r)}/Z_\pi$.
+	
+	The central hypothesis motivating Experiment~B is that the confined gauge
+	vacuum ($\beta=4.5$) biases this walk toward the color-triplet $H$-eigenspaces
+	more strongly than the deconfined vacuum ($\beta=6.0$), producing a nonzero
+	phase difference
+	\begin{equation}
+		\dftriplet \;\equiv\;
+		\ftriplet(\beta=4.5) \;-\; \ftriplet(\beta=6.0) \;\neq\; 0
+		\label{eq:delta-f-triplet}
+	\end{equation}
+	near $\kcren$.  The motivating argument has two parts, only the first of
+	which is established.
+	
+	The first part is a standard lattice-QCD expectation, not a measurement made
+	here.  In the chiral regime that Experiment~B would probe, the strongly
+	disordered gauge vacuum of the confined phase is expected to support a denser
+	spectrum of near-zero Dirac modes than the deconfined phase: by analogy with
+	the Banks--Casher mechanism $\Sigma=\pi\rho(0)$~\cite{BanksCasher1980}, in
+	which the chiral condensate $\Sigma$ is proportional to the spectral density
+	at the origin, $|\Sigma|$ would be larger at $\beta=4.5$ than at $\beta=6.0$.
+	Such low modes would dominate the long-range pion propagator near $\kcren$
+	through the spectral decomposition
+	$G(x,t;0,0)=\sum_n\psi_n(x,t)\psi_n^\dagger(0,0)/\lambda_n$, in which the
+	small-$\lambda_n$ contributions are weighted most heavily.  This chain is
+	conventional lattice QCD; the present heavy-mass work neither reaches that
+	regime nor measures $\rho(0)$.
+	
+	The second part is conjectural and is precisely what Experiment~B is designed
+	to test: that the low Dirac modes, when projected onto the $\cl(6)$ spinor
+	space, carry preferential weight in the color-triplet $H$-eigenspaces
+	($H=\pm1/2$) relative to the singlet $H$-eigenspaces ($H=\pm3/2$).  This
+	$H$-grade preference, if present, would propagate through the spectral sum to
+	produce the bias~\eqref{eq:delta-f-triplet}.  In standard QCD the
+	Atiyah--Singer index theorem fixes the $\gamma_5$ chirality of zero modes in
+	nontrivial topological sectors but does not constrain any analog of the
+	$H$-grade content.  No standard QCD argument predicts a preference between the
+	$H=\pm1/2$ and $H=\pm3/2$ eigenspaces of the $\cl(6)$ Cartan hypercharge, and
+	we are not aware of any prior work that addresses this question.  We offer the
+	hypothesis as a physically motivated guess, with the explicit acknowledgment
+	that the opposite sign (singlet enhanced) and the null result ($\dftriplet=0$)
+	are equally consistent with present knowledge.
+	
+	We stress that~\eqref{eq:delta-f-triplet} is a hypothesis, not a derived
+	result.  Both the magnitude and the sign of $\dftriplet$ require the
+	Experiment~B data to confirm or refute.  The free-field theorem provides the
+	null hypothesis: $\dftriplet=0$.  Experiment~A establishes this null at heavy
+	mass ($0.6\sigma$); Experiment~B will test it at the chiral point.
+	
+	\subsubsection{Experiment~B: design and falsification criteria}
+	\label{sec:experiment-B-design}
+	
+	Experiment~B will run at $\kappa\approx\kcren(\beta)$ determined from Block~1:
+	$\kappa\approx0.143$--$0.145$ at $\beta=4.5$ and $\kappa\approx0.150$ at
+	$\beta=6.0$ (systematic uncertainty $\pm0.005$ from the $N=4$/$N=6$ spread;
+	see Sec.~\ref{sec:pcac-method}).  The target observable is the C-even phase
+	difference $\dftriplet$ defined in Eq.~\eqref{eq:delta-f-triplet}.  The three
+	practical complications
+	identified in Sec.~\ref{sec:checkerboard} require specific mitigations before
+	running: ($i$) CG ill-conditioning near $\kcren$ is addressed by deflation of
+	the ten lowest eigenmodes, even--odd Schur complement preconditioning, and
+	adaptive solver tolerance set to $10^{-10}$, as detailed in
+	Appendix~\ref{app:D}; ($ii$) signal-to-noise degradation at large $t$ restricts
+	the analysis to timeslices satisfying $C_\pi(t)/\sigma_{C_\pi}(t)>3$ in both
+	phases; ($iii$) the $\kcren$ systematic is controlled by running at two values
+	$\kcren\pm0.003$ and verifying that $\dftriplet$ is stable across this range.
+	
+	The falsification criteria are as follows.  A positive outcome---$\dftriplet>0$
+	at $\geq3\sigma$ significance with $\Ncfg\gtrsim100$ at $N=6$---would
+	constitute evidence for the hypothesis: that the chiral gauge vacuum
+	distributes spinor weight preferentially into the color-carrying channels in
+	the confined phase.  Confirmation, in the lattice-QCD sense of an effect that
+	survives systematic checks, would require independent verification by volume
+	scaling to $N=8$ and a continuum-limit study at multiple $\beta$
+	(Sec.~\ref{sec:diagnostic-roadmap}); the present work cannot make a
+	confirmation claim on a single volume at a single lattice spacing regardless of
+	per-point significance.  A null outcome---$\dftriplet$ consistent with zero at
+	$\Ncfg\gtrsim100$---would establish that grade fractions are insensitive to the
+	confinement--deconfinement transition even at the chiral point, and that the
+	free-field theorem extends to the long-range propagator regime; this result
+	would itself be clean and publishable, establishing the grade fractions as a
+	renormalization-free null observable.  An anti-screening
+	outcome---$\dftriplet<0$---would be physically unexpected and would prompt
+	investigation of whether the effect is genuine (requiring volume scaling) or
+	numerical (CG convergence bias near $\kcren$).  Persistence of
+	$A_{\mathrm{color}}$ or $A_{\mathrm{singlet}}$ beyond the $\Ncfg^{-1/2}$
+	scaling at large statistics would indicate a C-symmetry violation in the code
+	or ensemble update and must be diagnosed before any physics interpretation is
+	attempted.
+	
+	\subsubsection{Diagnostic roadmap}
+	\label{sec:diagnostic-roadmap}
+	
+	Before any physical interpretation of Experiment~B results, a free-field
+	prerequisite test must be performed.  With all gauge links set to
+	$U_\mu(x)=I_3$, the projector code, the trace evaluation, and the propagator
+	pipeline must reproduce $f_r=\dim(r)/8$ to machine precision on every
+	configuration, in accordance with Theorem~\ref{thm:kinematic}.  This requires
+	no gauge generation and runs in minutes on a single workstation.  It is a
+	prerequisite for trusting any nonzero result from the chiral-regime
+	calculation: the test was verified for the heavy-mass production code
+	(Sec.~\ref{sec:experiment-A}, where $\delta_{\max}=5.4\times10^{-16}$ was
+	observed) and must be re-verified after any code modifications introduced for
+	the solver mitigations of Sec.~\ref{sec:experiment-B-design}.  Failure
+	indicates a bug in the projector or trace pipeline and invalidates any
+	subsequent physics interpretation; passing is necessary but not sufficient for
+	the chiral-regime results to be physical.
+	
+	Beyond this prerequisite, the three mechanisms identified in
+	Sec.~\ref{sec:deviation-interp} can be disentangled by a sequence of targeted
+	calculations ordered by computational cost.
+	
+	The first physics test is $\Ncfg$ scaling: increasing the ensemble size from
+	$\Ncfg=20$ to $\Ncfg\approx200$ at the current heavy-mass parameters
+	($\kappa=0.12346$, $\beta\in\{4.5,6.0\}$, $N=6$).  If per-channel deviations
+	from $\dim(r)/8$ scale as $\Ncfg^{-1/2}$ and approach zero, mechanism (a)
+	is confirmed as the primary driver and no floor from (b) or (c) is present.
+	If deviations approach a nonzero floor, the sign and structure would
+	distinguish a lattice artifact (mechanism b, positive-definite) from a
+	vacuum-dressing signal (mechanism c, phase-dependent).
+	
+	Separating mechanisms (b) and (c) rigorously requires a continuum-limit study:
+	repeating Experiment~B at multiple values of $\beta$ while holding the physical
+	pion mass fixed by adjusting $\kappa$ accordingly.  Mechanism (b) contributes
+	at $O(a)$ and vanishes as $\beta\to\infty$; mechanism (c) is physical and
+	survives the continuum limit.  A practical program would use
+	$\beta\in\{4.5,\,5.5,\,6.0,\,6.5\}$ with corresponding $\kcren$ values from
+	Block~1 (Sec.~\ref{sec:pcac-method}), on $N=6$ or $N=8$ lattices.  Concretely,
+	this requires three extensions beyond the present work: Block~1 must be
+	completed to all six $\beta$ values; the Wilson action should be improved to
+	remove leading $O(a)$ artifacts; and ensembles must be generated at multiple
+	lattice spacings.  Collectively this is a project at least an order of
+	magnitude larger than the present work and is beyond the single-workstation
+	budget within which this program currently operates.
+	
+	\subsubsection{Future directions}
+	\label{sec:future-directions}
+	
+	Two directions extend the grade-decomposition program beyond what
+	Sec.~\ref{sec:diagnostic-roadmap} addresses.  Both lie outside the scope of
+	the present work but are noted as natural targets for follow-up investigation.
+	
+	The first is the extension to dynamical fermions.  In the quenched
+	approximation used throughout, the fermion-loop contributions carrying the
+	$\mathrm{U}(1)_A$ anomaly are suppressed by construction; the singlet
+	subspaces $\mathbf{1}_a$ and $\mathbf{1}_b$ are therefore insensitive to
+	topological charge at the present level of approximation.  Unquenching could couple the axial anomaly to the grade channels through
+	near-zero Dirac modes, but Proposition~\ref{prop:gamma7-frozen} sharply
+	limits where such an effect can appear.  The $\spin(6)$-chirality combination
+	$A_{\GaSeven} = A_{\mathrm{color}} + A_{\mathrm{singlet}}$ vanishes identically
+	on every configuration because $e_5,e_6$ never enter $\dW$; unquenching
+	modifies the gauge \emph{measure} but not this operator content, so the
+	identity---and with it the per-configuration lock
+	$A_{\mathrm{singlet}} = -A_{\mathrm{color}}$ (equivalently $f_{1_a}=\half-f_3$,
+	$f_{1_b}=\half-f_{\bar 3}$)---survives unquenching unchanged.  The singlet
+	asymmetry therefore cannot acquire a topological-sector dependence
+	\emph{independent} of the color asymmetry: any topological response of
+	$A_{\mathrm{singlet}}$ is exactly minus that of $A_{\mathrm{color}}$, and the
+	chirality direction as a whole carries none.  The only grade observable in
+	which dynamical-fermion or anomaly effects could register is the
+	within-$\GaSeven$ $H$-splitting $\ftriplet = f_3 + f_{\bar 3}$
+	(Sec.~\ref{sec:cl6-specific})---equivalently the complementary singlet total
+	$f_{1_a}+f_{1_b}=1-\ftriplet$.  Whether the $\eta'$ anomaly leaves a measurable
+	imprint there is a speculative connection requiring dynamical-fermion ensembles
+	and explicit topological-charge measurement to test.
+	
+	The second is the connection to geometric-algebra-equivariant machine learning.
+	The four grade-projected correlators $\{C_\pi^{(r)}(t)\}$ share properties
+	that make them a natural target for GA-equivariant neural network architectures:
+	they are gauge-invariant by construction ($[T_a,P_r]=0$), mutually orthogonal
+	($P_rP_s=0$ for $r\neq s$), and labeled by a discrete quantum number---the
+	$(\GaSeven,H)$ pair---encoding the $\su(3)$ representation content of each
+	channel.  Clifford-equivariant
+	networks~\cite{Ruhe2023a,Brehmer2023,Brehmer2024,Ruhe2024} are designed to
+	respect exactly this type of graded algebraic structure as an inductive bias,
+	and the double grading of Sec.~\ref{sec:grading-literature} provides a
+	ready-made label set---triplet, antitriplet, singlet-$a$, singlet-$b$---for
+	supervised or unsupervised decomposition of lattice gauge data.  Whether this
+	algebraic compatibility translates into practical advantage in generalization
+	or data efficiency remains an open question that the present work does not
+	pursue; we note the connection as a possible application of the $\cl(6)$
+	framework to geometric-algebra-equivariant deep learning for physical systems,
+	and defer any concrete claims to future investigation.
+		
+		Finally, the broader programme deferred in Sec.~\ref{sec:scope} remains open as
+		independent follow-up: a renormalized Gell-Mann--Oakes--Renner analysis with
+		Symanzik-improved fermions to control the additive Wilson renormalization that
+		obscures it here, and a direct measurement of the infrared spectral density
+		$\rho(0)$ in the chiral regime to replace the heuristic Banks--Casher argument
+		of Sec.~\ref{sec:random-walk-hypothesis} with a computed quantity.  A second,
+		independent determination of $\kcren$---for instance via the $m_\pi^2$
+		extrapolation that proved unstable at $N\le6$ (Sec.~\ref{sec:pcac-method})---would
+		also supply the cross-check that the present single-method value lacks.
+	
+	% ============================================================
+	\section{Conclusion}
+	\label{sec:conclusion}
+	% ============================================================
+	
+	We have constructed and numerically implemented the grade decomposition of
+	the pion correlator in the Clifford algebra $\cl(6)$ framework.  The
+	principal findings are as follows.
+	
+	\noindent\textbf{Algebraic construction.}  The four-channel decomposition
+	$C_\pi(t) = \sum_r C_\pi^{(r)}(t)$ follows from the Lagrange spectral
+	projectors of the Cartan hypercharge $H = B_{12}+B_{34}+B_{56}$ of
+	$\mathrm{spin}(6)$.  The projectors satisfy six independent algebraic
+	identities---completeness, idempotency, orthogonality, $\su(3)$ covariance,
+	charge-conjugation pairing, and $\gamma_5$-commutativity---all verified to
+	machine precision $\leq 2.4\times10^{-15}$.  The $(\GaSeven, H)$ double
+	grading is the standard $\su(4)\supset\su(3)\times\mathrm{U}(1)$ Levi
+	decomposition; the present paper is its first dynamical implementation.
+	
+	\noindent\textbf{Kinematic limit theorem.}  In the free Wilson--Dirac theory,
+	the grade fractions $f_r(t) = \dim(r)/8$ exactly on every gauge
+	configuration.  The proof proceeds through the $I_4\otimes\mathrm{U}(2)$
+	symmetry of the free propagator, Schur's lemma, free-field color triviality,
+	and the spatial-cubic invariance of the spatially-summed correlator---the
+	residual time-direction term being removed by its vanishing grade-basis
+	diagonal (Theorem~\ref{thm:kinematic}).  The theorem is verified
+	at $\delta_{\max} = 1.26\times10^{-16}$---machine precision---on the free
+	lattice.
+	
+	\noindent\textbf{Experiment A: heavy-mass production.}  On thermalized
+	quenched ensembles at $N=6$, $m_0=0.05$, $\beta\in\{4.5,6.0\}$,
+	$\Ncfg=20$: the algebraic completeness identity holds to
+	$\delta_{\max}=5.4\times10^{-16}$ on every configuration; the measured
+	grade fractions are consistent with the kinematic free-field values at the
+	$10^{-4}$ level; and the phase differences are consistent with zero at
+	$0.6\sigma$.  These results establish that the grade decomposition machinery
+	works at machine precision and that the heavy-mass result is consistent with
+	the kinematic theorem.  They do not address the chiral regime.
+	
+	\noindent\textbf{Scope statement.}  Three limitations apply: single lattice
+	volume ($N=6$), single lattice spacing, and quenched approximation.  The
+	central physical question---whether non-perturbative gauge dynamics at the
+	chiral point distinguish the representation channels---requires Experiment~B
+	(Sec.~\ref{sec:experiment-B-design}), which is identified as the essential
+	follow-up.
+	
+	\noindent\textbf{Structural observation.}  The grade decomposition has no
+	natural analog in the standard four-component Wilson--Dirac formulation: the
+	bivector $B_{56}$~\eqref{eq:B56} requires the internal generators $e_5, e_6$
+	of $\cl(6)$ that are absent from $\cl(4)$, and the grade structure cuts
+	across the $\gamma_5$ chirality decomposition.  The observables
+	$C_\pi^{(r)}(t)$ are accordingly $\cl(6)$-specific; their gauge invariance,
+	completeness, and $\su(3)$ representation-theoretic interpretation all follow
+	automatically from the algebraic structure without separate proof.  A sharper
+	structural fact further constrains what they can measure: because $e_5,e_6$ do
+	not enter $\dW$, the $\spin(6)$-chirality fractions are frozen at
+	$f_{(\GaSeven=\pm1)}=\half$ on every configuration
+	(Proposition~\ref{prop:gamma7-frozen}), so the only dynamically resolvable
+	content resides in the within-$\GaSeven$ $H$-splitting
+	$\ftriplet = f_3 + f_{\bar 3}$---the observable Experiment~B is designed to
+	probe.
+	
+	Paper~1~\cite{FirestoneP1} established the $\cl(6)$ formulation as a valid
+	and computationally tractable framework for Wilson lattice QCD.  The present
+	paper establishes the algebraic infrastructure for grade-decomposed observables
+	and confirms the kinematic null result at heavy mass.  Experiment~B will
+	determine whether the grade decomposition is a $\cl(6)$-specific renaming of
+	the standard result or carries genuinely new physical information.
+	
+	\medskip
+	\noindent\textbf{Data and code availability.}  All simulation code, raw data,
+	and analysis scripts are publicly available under the MIT license.
+	% NOTE: Insert repository URL (github.com/...) before submission.
+	Environment: Python~3.11.9, NumPy~2.2.5,
+	SciPy~$\geq$~1.11.
+	
+	% ============================================================
+	\appendix
+	\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+	% ============================================================
+	
+	% ============================================================
+	\section{\texorpdfstring{$\cl(6)$}{Cl(6)} Basis and Grade Structure}
+	\label{app:A}
+	% ============================================================
+	
+	The $\cl(6)$ basis and multiplication structure are presented in full in
+	Paper~1~\cite{FirestoneP1} Appendix~A.  Here we collect only the elements
+	most directly relevant for the grade projector construction of
+	Sec.~\ref{sec:projectors}.
+	
+	The 15 bivectors $B_{ij}=(i/4)[e_i,e_j]$ are all Hermitian and traceless,
+	with eigenvalues exactly $\{-\tfrac{1}{2}\ (\times4),\,+\tfrac{1}{2}\ (\times4)\}$.
+	The Cartan hypercharge of the $\su(4)\supset\su(3)\times\mathrm{U}(1)$ Levi
+	decomposition is $H = B_{12}+B_{34}+B_{56}$.  In the tensor product
+	representation~\eqref{eq:basis},
+	\[
+	H \;=\; -\tfrac{1}{2}(\sigma_z\otimes I_2\otimes I_2)
+	- \tfrac{1}{2}(I_2\otimes\sigma_z\otimes I_2)
+	- \tfrac{1}{2}(I_2\otimes I_2\otimes\sigma_z),
+	\]
+	which is diagonal with entries
+	$\bigl(-\tfrac{3}{2},\,-\tfrac{1}{2},\,-\tfrac{1}{2},\,+\tfrac{1}{2},\,
+	-\tfrac{1}{2},\,+\tfrac{1}{2},\,+\tfrac{1}{2},\,+\tfrac{3}{2}\bigr)$
+	in tensor product order, consistent with~\eqref{eq:H-diag} and the
+	$(\GaSeven,H)$ double grading of Sec.~\ref{sec:double-grading}.
+	
+	The pseudoscalar $\Isix = e_1e_2e_3e_4e_5e_6$ satisfies $\Isix^2 = -1$, is anti-Hermitian, and
+	anticommutes with all odd-grade elements of $\cl(6)$.  The $\spin(6)$
+	chirality $\GaSeven = i\Isix$ is Hermitian with eigenvalues $\pm1$ and
+	commutes with $H$ and with every projector $P_r$.  The 4D chiral operator
+	$\gamma_5 = e_1e_2e_3e_4$ satisfies $\gamma_5^2 = I_8$, anticommutes with
+	$e_1,\ldots,e_4$, and commutes with $e_5$, $e_6$, $H$, and all $P_r$
+	(verified to $0.00\times10^0$ in Sec.~\ref{sec:proj-gamma5}).  The
+	distinction $\GaSeven \neq \gamma_5$ is central to the physics interpretation
+	of Sec.~\ref{sec:cl6-specific}.
+	
+	% ============================================================
+	\section{Numerical Verification Details}
+	\label{app:B}
+	% ============================================================
+	
+	\noindent\textbf{Environment:} Python~3.11.9 $\cdot$ NumPy~2.2.5 $\cdot$
+	SciPy~$\geq$1.11 $\cdot$ IEEE~754 double precision
+	(machine $\varepsilon \approx 2.22\times10^{-16}$)
+	% NOTE: Insert repository URL (github.com/...) before submission.
+	
+	The foundational $\cl(6)$ and $\su(3)$ algebraic verifications are reprised
+	from Paper~1~\cite{FirestoneP1} Appendix~B without change.  Table~B1 of that
+	appendix records the $\cl(6)$ gamma matrix properties; Table~B2 the $\su(3)$
+	generator properties (maximum commutator error $1.24\times10^{-16}$); Table~B5
+	the coupling structure.  Full details are given in
+	Paper~1~\cite{FirestoneP1} Appendix~B.
+	
+	New algebraic verifications introduced in this paper are collected in the
+	table below.  All residuals are maximum Frobenius norms over the relevant
+	index set.  The final block verifies that the bivector $\su(3)$ octet,
+	derived as the stabilizer of the preferred spinor $|\xi_0\rangle$ (the
+	$H=-\tfrac{3}{2}$ eigenstate) within the 15-dimensional bivector space,
+	closes as a genuine nonabelian Lie subalgebra of $\spin(6)$, and that
+	its centralizer in $\mathrm{span}(B_{ij})$ is exactly
+	$\mathrm{span}\{H\}$.
+	
+	\medskip
+	\begin{center}
+		\begin{tabular}{@{}lcc@{}}
+			\toprule
+			\textbf{Check} & \textbf{Target} & \textbf{Result} \\
+			\midrule
+			$H$ eigenvalue spectrum:
+			$\bigl\{-\tfrac{3}{2},-\tfrac{1}{2},+\tfrac{1}{2},+\tfrac{3}{2}\bigr\}$,
+			multiplicities $\{1,3,3,1\}$
+			& Exact & $\checkmark$\ Exact \\[6pt]
+			$[\GaSeven,\,H] = 0$
+			& $0.00\times10^{0}$ & $\checkmark$\ $0.00\times10^{0}$ \\[6pt]
+			$[H,\,T_a] = 0$,\; all $a\in\{1,\ldots,8\}$
+			& $<10^{-15}$ & $\checkmark$\ $<10^{-15}$ \\[6pt]
+			$\gamma_5$ commutativity:\;
+			$[\gamma_5,\,P_r] = 0$,\; all $r$
+			& $0.00\times10^{0}$ & $\checkmark$\ $0.00\times10^{0}$ \\[6pt]
+			Charge conjugation:\;
+			$C P_{\mathbf{3}} C^{\dagger} = P_{\bar{\mathbf{3}}}$,\;
+			$C P_{\mathbf{1}_a} C^{\dagger} = P_{\mathbf{1}_b}$
+			& $0.00\times10^{0}$ & $\checkmark$\ $0.00\times10^{0}$ \\[6pt]
+			$\Isix P_{\mathbf{1}_a} = -i\,P_{\mathbf{1}_a}$,\;
+			$\Isix P_{\mathbf{1}_b} = +i\,P_{\mathbf{1}_b}$
+			& $0.00\times10^{0}$ & $\checkmark$\ $0.00\times10^{0}$ \\[6pt]
+			\multicolumn{3}{@{}l}{\textit{Bivector $\su(3)$ octet
+			(stabilizer of $|\xi_0\rangle$, $H=-\tfrac{3}{2}$):}} \\[3pt]
+			\quad Stabilizer dimension in $\mathrm{span}(B_{ij})$
+			& $8$ & $\checkmark$\ $8$ \\[6pt]
+			\quad Lie-algebra closure:\;
+			$\max\bigl\|[X_a,X_b]-\mathrm{proj}_{\su(3)}[X_a,X_b]\bigr\|_F$
+			& $<10^{-14}$ & $\checkmark$\ $6.2\times10^{-16}$ \\[6pt]
+			\quad Nonabelian:\;
+			$\max\|[X_a,X_b]\|_F$
+			& $>0$ & $\checkmark$\ $2.0$ \\[6pt]
+			\quad Centralizer of $\su(3)$ in $\mathrm{span}(B_{ij})$:\;
+			$\dim=1$,\; $\bigl|\langle\hat{v},\,\hat{H}\rangle\bigr|$
+			& $1.0$ & $\checkmark$\ $1.0000000000$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	\medskip
+	
+	\noindent\textbf{Checkerboard sweep correctness.}\enspace
+	The corrected even-odd Metropolis sweep produces equilibrium plaquettes
+	within $0.7\%$ of the Paper~1~\cite{FirestoneP1} reference values at $N=6$
+	(Table~\ref{tab:plaquette-gate}), consistent with the residual difference
+	being attributable to the parallel-sweep systematic in earlier intermediate
+	runs; see Sec.~\ref{sec:checkerboard} for the methodological correction.
+	
+	% ============================================================
+	\section{Grade Projector Verification}
+	\label{app:C}
+	% ============================================================
+	
+	Table~\ref{tab:verif-C1} reports the six projector verification checks
+	referenced in Secs.~\ref{sec:proj-construction}
+	and~\ref{sec:proj-verification}.  All checks were performed in IEEE~754
+	double precision, Python~3.11.9, NumPy~2.2.5.  Checks C1--C5 must pass
+	to machine precision before any production computation proceeds; they are
+	algebraic prerequisites, not optional verifications.
+	
+	\setcounter{table}{0}
+	\begin{table}[htbp]
+		\centering
+		\caption{Grade projector algebraic verification.}
+		\label{tab:verif-C1}
+		\begin{tabular}{@{} c p{6.3cm} c c c @{}}
+			\toprule
+			\textbf{Check}
+			& \textbf{Identity}
+			& \textbf{Target}
+			& \textbf{Result}
+			& \textbf{Status} \\
+			\midrule
+			C1
+			& Completeness:\; $\max\bigl\|\sum_r P_r - I_8\bigr\|_F$
+			& $<10^{-14}$
+			& $0.00\times10^{0}$
+			& $\checkmark$\ PASS \\[4pt]
+			C2
+			& Idempotency:\; $\max\|P_r^2 - P_r\|_F$
+			& $<10^{-14}$
+			& $0.00\times10^{0}$
+			& $\checkmark$\ PASS \\[4pt]
+			C3
+			& Orthogonality:\; $\max\|P_r P_s\|_F$,\; $r\neq s$
+			& $<10^{-14}$
+			& $0.00\times10^{0}$
+			& $\checkmark$\ PASS \\[4pt]
+			C4
+			& Dimensions: $\tr(P_{\mathbf{3}})=3$,\; $\tr(P_{\bar{\mathbf{3}}})=3$,\;
+			$\tr(P_{\mathbf{1}_a})=1$,\; $\tr(P_{\mathbf{1}_b})=1$
+			& exact integers
+			& exact integers
+			& $\checkmark$\ PASS \\[4pt]
+			C5
+			& $\su(3)$ covariance: $\max\|U P_r U^\dagger - P_r\|_F$
+			over 50 random $U\in\su(3)$, all $r$
+			& $<10^{-12}$
+			& $2.44\times10^{-15}$
+			& $\checkmark$\ PASS \\[4pt]
+			S1$^\dagger$
+			& Haar average:
+			$\langle\rho(g)\rangle \to P_{\mathbf{1}_a}+P_{\mathbf{1}_b}$;\;
+			$N_{\mathrm{samples}}=50000$ random $U\in\su(3)$
+			& ${\sim}N_{\mathrm{samples}}^{-1/2}$
+			& $0.0050$\newline($1/\!\sqrt{N}$ OK)
+			& $\checkmark$\ PASS \\
+			\bottomrule
+		\end{tabular}
+		
+		\smallskip
+		\noindent\footnotesize
+		$^\dagger$\ Stochastic check.  The algebraic identity is established by
+		C1--C5; S1 verifies behavior under finite-sample group averaging.  Expected
+		error $\sigma_{\max}/\sqrt{N}\approx0.0026$; observed $0.0050$; the ratio
+		$1.9$ is of the order of, and bounded by, the max-over-element estimate
+		$\sqrt{2\ln 64}\approx 2.9$.
+		The $1/\sqrt{N}$ scaling is verified across $N_{\mathrm{samples}}=100$ to
+		$200{,}000$.
+	\end{table}
+	
+	% ============================================================
+	\section{CG Solver Mitigations for the Chiral Regime}
+	\label{app:D}
+	% ============================================================
+	
+	The heavy-mass production runs ($m_0=0.05$, $\kappa=0.12346$) required no
+	special solver treatment: mean CG iteration counts were $18.95$ at
+	$\beta=4.5$ and $21.85$ at $\beta=6.0$, with zero solver failures across
+	all $\Ncfg=20$ configurations.  This appendix provides the prerequisite
+	recipe for Experiment~B (Sec.~\ref{sec:experiment-B-design}) at
+	$\kappa\approx\kcren$, where the CG condition number
+	$\kappa_{\mathrm{cond}}\sim 1/m_{\mathrm{phys}}^2$ diverges.  The three
+	mitigations below are recommended in order of implementation priority.
+	
+	\medskip
+	\noindent\textbf{(i) Deflation of low modes.}\enspace
+	Compute the 10 lowest eigenmodes of $\dW^\dagger\dW$ using LOBPCG or a
+	Lanczos routine before the main CG sweeps.  Subtract the deflated
+	contribution exactly before applying CG; this removes the conditioning
+	bottleneck from the near-zero sector.  Expected speedup: $5$--$10\times$
+	near $\kcren$ on $N=6$ lattices.
+	
+	\medskip
+	\noindent\textbf{(ii) Even-odd Schur complement preconditioning.}\enspace
+	Decompose the lattice into even and odd sites.  The Schur complement
+	$D_{ee} - D_{eo}D_{oo}^{-1}D_{oe}$ has a better condition number than
+	$\dW$ itself at strong coupling.  $D_{oo}$ is diagonal in the hopping
+	parameter $\kappa$ representation and invertible exactly.  This reduces the
+	effective system size by a factor of two and removes the odd-site
+	contribution to conditioning.
+	
+	\medskip
+	\noindent\textbf{(iii) Adaptive tolerance.}\enspace
+	Within $5\%$ of $\kcren$ (estimated from Table~\ref{tab:kappa-c}), tighten
+	the CG stopping criterion to $\mathrm{rtol}=10^{-10}$ and raise
+	\texttt{max\_iter} to 5000.  Monitor the residual
+	$\|\dW x - b\|/\|b\|$ post-solve; if it exceeds $10^{-3}$, discard the
+	configuration and log the failure rather than proceeding with a spurious
+	propagator.
+	
+	\medskip
+	If CG still fails to converge on $N=10$ lattices after applying all three
+	mitigations, this is a hard limitation to be reported honestly.  No results
+	should be produced by forcing convergence.  Experiment~B is not required to
+	succeed on $N=10$ for the null-or-signal outcome to be interpretable on
+	$N=6$.
+	
+	% ============================================================
+	%  BIBLIOGRAPHY
+	%  Manual thebibliography — do NOT run BibTeX or replace with .bib.
+	%  Labels [20]–[28] enforced via \bibitem[N]{key} to preserve
+	%  continuity with Paper 1 reference numbering.
+	%  [P1] uses custom label \bibitem[{[P1]}]{FirestoneP1}.
+	%  NOTE TO EDITOR: reference numbers [12]--[19] are intentionally reserved so
+	%  that citations shared with Paper 1 retain identical numbers; the resulting
+	%  non-contiguous numbered list is deliberate, not an omission.  (This note is
+	%  also included in the submission cover letter.)
+	% ============================================================
+	
+	\begin{thebibliography}{99}
+		
+		%% [P1] — Paper 1 (custom label; not part of numbered sequence)
+		\bibitem[{[P1]}]{FirestoneP1}
+		T.~M. Firestone,
+		``Clifford algebra $\cl(6)$ formulation of lattice QCD: algebraic structure,
+		Dirac operator construction, and verification against standard benchmarks,''
+		% NOTE: Insert publication details (journal / arXiv ID / year) when available.
+		
+		%% [1]–[11]: standard numbered references
+		\bibitem[1]{PatiSalam1974}
+		J.~C. Pati and A.~Salam,
+		``Lepton number as the fourth color,''
+		\textit{Phys.\ Rev.}\ D~\textbf{10}, 275 (1974).
+		\href{https://doi.org/10.1103/PhysRevD.10.275}{doi:10.1103/PhysRevD.10.275}.
+		
+		\bibitem[2]{Slansky1981}
+		R.~Slansky,
+		``Group theory for unified model building,''
+		\textit{Phys.\ Rep.}\ \textbf{79}, 1 (1981).
+		\href{https://doi.org/10.1016/0370-1573(81)90092-2}{doi:10.1016/0370-1573(81)90092-2}.
+		
+		\bibitem[3]{BanksCasher1980}
+		T.~Banks and A.~Casher,
+		``Chiral symmetry breaking in confining theories,''
+		\textit{Nucl.\ Phys.}\ B~\textbf{169}, 103 (1980).
+		\href{https://doi.org/10.1016/0550-3213(80)90255-2}{doi:10.1016/0550-3213(80)90255-2}.
+		
+		\bibitem[4]{Wilson1974}
+		K.~G. Wilson,
+		``Confinement of quarks,''
+		\textit{Phys.\ Rev.}\ D~\textbf{10}, 2445 (1974).
+		\href{https://doi.org/10.1103/PhysRevD.10.2445}{doi:10.1103/PhysRevD.10.2445}.
+		
+		\bibitem[5]{KogutSusskind1975}
+		J.~B. Kogut and L.~Susskind,
+		``Hamiltonian formulation of Wilson's lattice gauge theories,''
+		\textit{Phys.\ Rev.}\ D~\textbf{11}, 395 (1975).
+		\href{https://doi.org/10.1103/PhysRevD.11.395}{doi:10.1103/PhysRevD.11.395}.
+		
+		\bibitem[6]{Gattringer2010}
+		C.~Gattringer and C.~B. Lang,
+		\textit{Quantum Chromodynamics on the Lattice}
+		(Springer, Berlin, 2010).
+		\href{https://doi.org/10.1007/978-3-642-01850-3}{doi:10.1007/978-3-642-01850-3}.
+		
+		\bibitem[7]{Sheikholeslami1985}
+		B.~Sheikholeslami and R.~Wohlert,
+		``Improved continuum limit lattice action for QCD with Wilson fermions,''
+		\textit{Nucl.\ Phys.}\ B~\textbf{259}, 572 (1985).
+		\href{https://doi.org/10.1016/0550-3213(85)90002-1}{doi:10.1016/0550-3213(85)90002-1}.
+		
+		\bibitem[8]{Ruhe2023a}
+		D.~Ruhe \textit{et al.},
+		``Clifford group equivariant neural networks,''
+		in \textit{Advances in Neural Information Processing Systems} (NeurIPS 2023).
+		arXiv:2305.11141.
+		
+		\bibitem[9]{Brehmer2023}
+		J.~Brehmer \textit{et al.},
+		``Geometric algebra transformer,''
+		in \textit{Advances in Neural Information Processing Systems} (NeurIPS 2023).
+		arXiv:2305.18415.
+		
+		\bibitem[10]{Brehmer2024}
+		L.~Brehmer \textit{et al.},
+		``L-GATr: Lorentz-equivariant geometric algebra transformer,''
+		(2024).
+		arXiv:2405.14806.
+		
+		\bibitem[11]{Ruhe2024}
+		D.~Ruhe \textit{et al.},
+		``Clifford-steerable convolutional neural networks,''
+		in \textit{International Conference on Machine Learning} (ICML 2024).
+		arXiv:2402.14730.
+		
+		% NOTE: References [12]–[19] are reserved and not assigned in this paper.
+		% This gap preserves continuity with the Furey et al.\ block numbered
+		% [20]–[26] in Paper~1 (\cite{FirestoneP1}).
+		
+		%% [20]–[28]: Furey programme, division algebras, and software
+		%% Numbers enforced via \bibitem[N]{key} to match Paper 1 reference list.
+		\bibitem[20]{Furey2012}
+		C.~Furey,
+		``Unified theory of ideals,''
+		\textit{Phys.\ Rev.}\ D~\textbf{86}, 025024 (2012).
+		\href{https://doi.org/10.1103/PhysRevD.86.025024}{doi:10.1103/PhysRevD.86.025024}.
+		
+		\bibitem[21]{Furey2014}
+		C.~Furey,
+		``Generations: Three prints, in colour,''
+		\textit{JHEP}~\textbf{2014}, 046 (2014).
+		\href{https://doi.org/10.1007/JHEP10(2014)046}{doi:10.1007/JHEP10(2014)046}.
+		
+		\bibitem[22]{Furey2015}
+		C.~Furey,
+		``Standard model physics from an algebra?''
+		Ph.D. thesis, University of Waterloo (2015).
+		arXiv:1611.09182.
+		
+		\bibitem[23]{Furey2018a}
+		C.~Furey,
+		``Three generations, two unbroken gauge symmetries, and one
+		eight-dimensional algebra,''
+		\textit{Phys.\ Lett.}\ B~\textbf{785}, 84 (2018).
+		\href{https://doi.org/10.1016/j.physletb.2018.08.032}{doi:10.1016/j.physletb.2018.08.032}.
+		
+		\bibitem[24]{Furey2018b}
+		C.~Furey,
+		``$\su(3)_C\times\su(2)_L\times\mathrm{U}(1)_Y$
+		$(\times\,\mathrm{U}(1)_X)$ as a symmetry of division algebraic ladder
+		operators,''
+		\textit{Eur.\ Phys.\ J.}\ C~\textbf{78}, 375 (2018).
+		\href{https://doi.org/10.1140/epjc/s10052-018-5844-7}{doi:10.1140/epjc/s10052-018-5844-7}.
+		
+		\bibitem[25]{Dixon1994}
+		G.~M. Dixon,
+		\textit{Division Algebras: Octonions, Quaternions, Complex Numbers and the
+			Algebraic Design of Physics}
+		(Kluwer Academic, Dordrecht, 1994).
+		\href{https://doi.org/10.1007/978-1-4757-2315-1}{doi:10.1007/978-1-4757-2315-1}.
+		
+		\bibitem[26]{Stoica2018}
+		O.~C. Stoica,
+		``Leptons, quarks, and gauge from $C\ell_6$,''
+		\textit{Adv.\ Appl.\ Clifford Algebras}~\textbf{28}, 52 (2018).
+		\href{https://doi.org/10.1007/s00006-018-0869-4}{doi:10.1007/s00006-018-0869-4}.
+		
+		\bibitem[27]{Harris2020}
+		C.~R. Harris \textit{et al.},
+		``Array programming with {NumPy},''
+		\textit{Nature}~\textbf{585}, 357 (2020).
+		\href{https://doi.org/10.1038/s41586-020-2649-2}{doi:10.1038/s41586-020-2649-2}.
+		
+		\bibitem[28]{Virtanen2020}
+		P.~Virtanen \textit{et al.},
+		``{SciPy}~1.0: Fundamental algorithms for scientific computing in {Python},''
+		\textit{Nature Methods}~\textbf{17}, 261 (2020).
+		\href{https://doi.org/10.1038/s41592-019-0686-2}{doi:10.1038/s41592-019-0686-2}.
+		
+	\end{thebibliography}
+	
+\end{document}

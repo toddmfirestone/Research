@@ -1,0 +1,208 @@
+
+<style>
+.blk { margin-bottom: 26px; }
+.blk-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-left: 3px solid var(--color-border-primary); padding-left: 10px; margin-bottom: 12px; border-radius: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 7px 10px; text-align: left; border-bottom: 1.5px solid var(--color-border-secondary); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--color-border-tertiary); vertical-align: top; line-height: 1.65; color: var(--color-text-primary); font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+code { font-family: var(--font-mono); font-size: 10.5px; background: var(--color-background-secondary); padding: 1px 4px; border-radius: 3px; }
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.b-exact { background: #E1F5EE; color: #085041; }
+.b-gen { background: #E6F1FB; color: #0C447C; }
+.b-phys { background: #EEEDFE; color: #26215C; }
+.b-warn { background: #FAEEDA; color: #633806; }
+.step { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+.step-num { min-width: 24px; height: 24px; background: var(--color-background-tertiary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); flex-shrink: 0; margin-top: 1px; }
+.step-body { font-size: 12.5px; line-height: 1.7; color: var(--color-text-primary); }
+.eq-box { background: var(--color-background-secondary); border-radius: 6px; padding: 10px 14px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.8; color: var(--color-text-primary); margin: 8px 0; }
+.eq-box .comment { color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 11px; font-style: italic; }
+.warn { background: var(--color-background-secondary); border-left: 3px solid var(--color-border-primary); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.65; margin-top: 4px; }
+.cat { font-weight: 500; font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-tertiary); padding: 5px 10px; border-bottom: 1px solid var(--color-border-tertiary); }
+.highlight { background: var(--color-background-secondary); border-radius: 6px; padding: 12px 16px; font-size: 12.5px; line-height: 1.7; }
+</style>
+
+<div style="padding:4px 0 0">
+
+<div class="blk">
+<div class="blk-title">Stage 1 — the explicit matrices, from first principles</div>
+
+<div class="step">
+<div class="step-num">1</div>
+<div class="step-body">
+<strong>Compute γ5 in the tensor product representation.</strong> Using the Pauli tensor product basis:
+<div class="eq-box">
+e₁e₂ = (σₓ⊗I₂⊗I₂)(σᵧ⊗I₂⊗I₂) = (σₓσᵧ)⊗I₂⊗I₂ = iσz⊗I₂⊗I₂<br>
+e₃e₄ = (σz⊗σₓ⊗I₂)(σz⊗σᵧ⊗I₂) = (σzσz)⊗(σₓσᵧ)⊗I₂ = I₂⊗iσz⊗I₂<br>
+<br>
+γ5 = (e₁e₂)(e₃e₄) = (iσz⊗I₂⊗I₂)(I₂⊗iσz⊗I₂)<br>
+   = i² · σz⊗σz⊗I₂<br>
+   = <strong>−σz⊗σz⊗I₂</strong>   <span class="comment">← acts trivially on the third qubit</span>
+</div>
+</div>
+</div>
+
+<div class="step">
+<div class="step-num">2</div>
+<div class="step-body">
+<strong>Compute H in the tensor product representation.</strong> Each bivector: <code>Bᵢⱼ = (i/4)[eᵢ,eⱼ] = (i/4)(2eᵢeⱼ) = (i/2)eᵢeⱼ</code> since <code>{eᵢ,eⱼ}=0</code> for <code>i≠j</code>.
+<div class="eq-box">
+B₁₂ = (i/2)·iσz⊗I₂⊗I₂  = −½ σz⊗I₂⊗I₂<br>
+B₃₄ = (i/2)·I₂⊗iσz⊗I₂  = −½ I₂⊗σz⊗I₂<br>
+B₅₆ = (i/2)·I₂⊗I₂⊗iσz  = −½ I₂⊗I₂⊗σz<br>
+<br>
+H  = B₁₂ + B₃₄ + B₅₆<br>
+   = <strong>−½(σz⊗I₂⊗I₂ + I₂⊗σz⊗I₂ + I₂⊗I₂⊗σz)</strong>
+</div>
+</div>
+</div>
+
+<div class="step">
+<div class="step-num">3</div>
+<div class="step-body">
+<strong>The commutator — explicit check of all three terms.</strong>
+<div class="eq-box">
+[γ5, H] = ½[σz⊗σz⊗I₂,  σz⊗I₂⊗I₂ + I₂⊗σz⊗I₂ + I₂⊗I₂⊗σz]<br>
+<br>
+Term 1: (σz⊗σz⊗I₂)(σz⊗I₂⊗I₂) − (σz⊗I₂⊗I₂)(σz⊗σz⊗I₂)<br>
+      = σz²⊗σzI₂⊗I₂ − σz²⊗I₂σz⊗I₂  <span class="comment">← σzI₂ = I₂σz, σz²=I₂</span><br>
+      = I₂⊗σz⊗I₂ − I₂⊗σz⊗I₂ = <strong>0</strong><br>
+<br>
+Term 2: (σz⊗σz⊗I₂)(I₂⊗σz⊗I₂) − (I₂⊗σz⊗I₂)(σz⊗σz⊗I₂)<br>
+      = σz⊗σz²⊗I₂ − σz⊗σz²⊗I₂ = <strong>0</strong><br>
+<br>
+Term 3: (σz⊗σz⊗I₂)(I₂⊗I₂⊗σz) − (I₂⊗I₂⊗σz)(σz⊗σz⊗I₂)<br>
+      = σz⊗σz⊗I₂σz − σz⊗σz⊗σzI₂ = <strong>0</strong>   <span class="comment">← I₂σz = σzI₂</span>
+</div>
+<strong>[γ5, H] = 0 exactly.</strong> &nbsp;<span class="badge b-exact">Verified to 2.4×10⁻¹⁵ in paper</span>
+</div>
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Stage 2 — why this works: the diagonal argument</div>
+<div class="highlight">
+The proof above is explicit but not illuminating. Here is the reason in one sentence:
+<br><br>
+<strong>In the Pauli tensor product basis, both γ5 and H are diagonal 8×8 matrices.</strong>
+<br><br>
+γ5 = −σz⊗σz⊗I₂ is diagonal: σz = diag(+1,−1), so σz⊗σz⊗I₂ = diag(+1,+1,−1,−1,+1,+1,−1,−1)⊗I₂... more precisely it is block-diagonal with entries ±1 in the standard basis.
+<br><br>
+H = −½(σz⊗I₂⊗I₂ + I₂⊗σz⊗I₂ + I₂⊗I₂⊗σz) is diagonal: it is a sum of σz in different qubit positions, each of which is diagonal. Its eigenvalues are −½(±1±1±1) ∈ {−3/2, −1/2, +1/2, +3/2}.
+<br><br>
+Diagonal matrices always commute. That is the entire theorem.
+<br><br>
+<strong>The non-trivial content</strong> is not the commutation itself — it is that the specific Pauli tensor product representation simultaneously diagonalises both γ5 and H. A generic grade-4 element of Cl(6) does not commute with a generic grade-2 element. It is only because of the specific bivector structure <code>H = B₁₂+B₃₄+B₅₆</code> — built from orthogonal, non-overlapping pairs — and the specific construction <code>γ5 = e₁e₂e₃e₄</code> that both operators are diagonal in the same basis.
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Stage 3 — from [γ5, H] = 0 to [γ5, P_r] = 0: one algebraic step</div>
+
+<div class="step">
+<div class="step-num">→</div>
+<div class="step-body">
+The grade projectors are Lagrange spectral projectors of H. With eigenvalues λ ∈ {−3/2, −1/2, +1/2, +3/2}:
+<div class="eq-box">
+P_r = ∏_{s≠r} (H − λ_s·I₈) / (λ_r − λ_s)<br>
+<br>
+<span class="comment">Example: P_3 = (H+3/2)(H+1/2)(H−3/2) / [(1/2+3/2)(1/2+1/2)(1/2−3/2)]</span><br>
+<br>
+P_r is a degree-3 polynomial in H.<br>
+[γ5, P_r] = [γ5, f_r(H)]  for a polynomial f_r<br>
+          = f_r commuted through γ5 using [γ5, H]=0 at each step<br>
+          = <strong>0</strong>   for all r ∈ {3, 3̄, 1a, 1b}
+</div>
+If A commutes with H, it commutes with every polynomial in H. The projectors are polynomials in H. QED.
+</div>
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Stage 4 — physical meaning</div>
+<table>
+<thead><tr>
+  <th style="width:20%">Operator</th>
+  <th style="width:30%">What it measures</th>
+  <th style="width:30%">Why they commute physically</th>
+  <th style="width:20%">Class</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><code>γ5 = e₁e₂e₃e₄</code></td>
+  <td>4D Lorentz chirality. Eigenvalues ±1 label left-handed and right-handed spinor components. Anticommutes with all four Dirac matrices <code>{γ5, eμ}=0</code> for μ=1,...,4. This is the standard QFT chirality operator — unchanged by the Cl(6) embedding.</td>
+  <td rowspan="2" style="vertical-align:middle; background:var(--color-background-secondary)">γ5 involves only <code>e₁,e₂,e₃,e₄</code> (spacetime generators). H involves <code>B₅₆ = (i/4)[e₅,e₆]</code> (purely internal) and <code>B₁₂, B₃₄</code> (which ARE shared with γ5 but are diagonal in the same basis). The spacetime part of the algebra and the internal grading of the spinor space are compatible — you can assign definite chirality AND definite SU(3) representation simultaneously. This is an algebraic reflection of the fact that chirality and color are independent quantum numbers.</td>
+  <td><span class="badge b-phys">Spacetime chirality</span></td>
+</tr>
+<tr>
+  <td><code>H = B₁₂+B₃₄+B₅₆</code></td>
+  <td>SU(3) Cartan hypercharge acting on the 8-dim spinor space. Eigenvalues {−3/2, −1/2, +1/2, +3/2} label the SU(3) representation content: 1a, 3̄, 3, 1b respectively. Commutes with all 8 SU(3) generators <code>[Tₐ, H]=0</code> as verified in paper.</td>
+  <td><span class="badge b-phys">Internal grading</span></td>
+</tr>
+<tr>
+  <td>Critical distinction</td>
+  <td colspan="2">This is NOT the same as saying SU(3) color generators <code>Tₐ = λₐ/2</code> commute with γ5. Those generators act on the color <code>ℂ³</code> factor of <code>ℂ²⁴ = ℂ⁸⊗ℂ³</code> via <code>I₈⊗Tₐ</code> — commutativity with γ5 is trivial by index separation. What is non-trivial is that H — which acts on the SAME <code>ℂ⁸</code> spinor space as γ5 — still commutes with γ5. Both are operators on the 8-dimensional space; their commutativity is a property of the specific algebraic structure, not of index separation.</td>
+  <td><span class="badge b-warn">Key distinction</span></td>
+</tr>
+<tr>
+  <td>What breaks without it</td>
+  <td colspan="2">If <code>[γ5, P_r] ≠ 0</code>, then <code>P_r γ5 P_r ≠ γ5 P_r²  = γ5 P_r</code>. The grade-projected pion operator <code>P_r γ5 P_r</code> would not be a valid pseudoscalar operator — it would mix chirality and grade, and the correlator <code>C_π^(r)(t)</code> would not have a definite transformation under γ5. The entire grade decomposition of the pion correlator requires this commutativity as a prerequisite.</td>
+  <td><span class="badge b-warn">If violated</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">Stage 5 — does it generalize to Cl(2n) for SU(n)?</div>
+<table>
+<thead><tr>
+  <th style="width:12%">n</th>
+  <th style="width:18%">Algebra</th>
+  <th style="width:22%">Spinor decomposition</th>
+  <th style="width:28%">[γ5, H_n] = 0?</th>
+  <th style="width:20%">Usefulness</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>n=2</td>
+  <td>Cl(4), SU(2)⊂Spin(4)</td>
+  <td><code>4 = 2⊕2̄</code> under SU(2). Two projectors.</td>
+  <td>Yes. <code>γ5 = e₁e₂e₃e₄ = −σz⊗σz</code>, <code>H₂ = B₁₂+B₃₄ = −½(σz⊗I₂+I₂⊗σz)</code>. Both diagonal in standard 4-dim basis. Commute trivially.</td>
+  <td>Physically trivial — SU(2) electroweak in 4D is the case. The decomposition 2⊕2̄ is the familiar left/right-handed doublet split.</td>
+</tr>
+<tr>
+  <td>n=3</td>
+  <td>Cl(6), SU(3)⊂Spin(6)</td>
+  <td><code>8 = 3⊕3̄⊕1⊕1</code> under SU(3). Four projectors — the physically rich case.</td>
+  <td>Yes — this is the result proved above. <code>γ5 = −σz⊗σz⊗I₂</code>, <code>H₃ = −½(σz⊗I₂⊗I₂+I₂⊗σz⊗I₂+I₂⊗I₂⊗σz)</code>. Both diagonal in standard 8-dim basis.</td>
+  <td>The QCD case. Physically richest: quarks, antiquarks, and two singlets in one spinor space.</td>
+</tr>
+<tr>
+  <td>n=4</td>
+  <td>Cl(8), SU(4)⊂Spin(8)</td>
+  <td><code>16 = 4⊕4̄⊕1⊕1⊕6</code> under SU(4). Six projectors.</td>
+  <td>Yes. <code>γ5 = −σz⊗σz⊗I₂⊗I₂</code> (grade-4, still same form), <code>H₄ = −½(σz⊗I₂⊗I₂⊗I₂ + I₂⊗σz⊗I₂⊗I₂ + I₂⊗I₂⊗σz⊗I₂ + I₂⊗I₂⊗I₂⊗σz)</code>. All diagonal. Commute.</td>
+  <td>SU(4) is the symmetry of a hypothetical 4-color QCD or Pati-Salam. Grade projectors exist and are algebraically clean, but no physical motivation for this case.</td>
+</tr>
+<tr>
+  <td>General n</td>
+  <td>Cl(2n), SU(n)⊂Spin(2n)</td>
+  <td><code>2ⁿ = n⊕n̄⊕ (lower reps)</code> under SU(n)</td>
+  <td><strong>Yes, for all n.</strong> In the Pauli tensor product on n qubits: <code>γ5 = −σz⊗σz⊗I₂⊗...⊗I₂</code> (σz in first two slots, I₂ in remaining n−2), <code>H_n = −½ Σᵢ I₂⊗...⊗σz⊗...⊗I₂</code> (σz in slot i). Both diagonal. Commute.</td>
+  <td>The γ5 structure is always 4D (spacetime is always 4D). The internal dimension grows with n. The commutation holds universally because γ5 never involves e₅,...,e_{2n}, and H_n is diagonal.</td>
+</tr>
+<tr>
+  <td colspan="5" style="padding:6px 10px; font-size:11.5px; color:var(--color-text-secondary);">
+    <strong>Important caveat:</strong> γ5 is fixed as the 4D chiral operator <code>e₁e₂e₃e₄</code> in all cases — spacetime is always 4D. The generalization is of the internal symmetry (n colors), not of spacetime. The full pseudoscalar <code>I_{2n} = e₁⋯e_{2n}</code> (which is <code>iΓ₇</code> in Cl(6)) also commutes with <code>H_n</code> by the same diagonal argument, but it is not the physically relevant chiral operator.
+  </td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="warn">
+<strong style="color:var(--color-text-primary)">What §6.7 should say.</strong> The commutativity <code>[γ5, H] = 0</code> — and therefore <code>[γ5, P_r] = 0</code> for all four grade projectors — follows from a single structural fact: in the Pauli tensor product representation of Cl(6), both operators are diagonal in the standard 8-dimensional basis. γ5 = −σz⊗σz⊗I₂ and H = −½(σz⊗I₂⊗I₂ + I₂⊗σz⊗I₂ + I₂⊗I₂⊗σz) are simultaneously diagonalised by the computational basis. Since P_r are degree-3 polynomials in H (Lagrange interpolation), <code>[γ5, H]=0</code> immediately implies <code>[γ5, P_r]=0</code>. The physical meaning is that Lorentz chirality and SU(3) grade are compatible quantum numbers in the Cl(6) spinor space — you can assign definite values to both simultaneously. This is an algebraic necessity for the grade-projected pion correlator to be a well-defined pseudoscalar operator, and it generalises to <code>[γ5, H_n]=0</code> in Cl(2n) for all n. It is algebraically forced — not a numerical coincidence, and not specific to the choice of lattice parameters.
+</div>
+
+</div>

@@ -1,0 +1,171 @@
+
+<style>
+.blk { margin-bottom: 26px; }
+.blk-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-left: 3px solid var(--color-border-primary); padding-left: 10px; margin-bottom: 12px; border-radius: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 7px 10px; text-align: left; border-bottom: 1.5px solid var(--color-border-secondary); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--color-border-tertiary); vertical-align: top; line-height: 1.6; color: var(--color-text-primary); font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+.cat { font-weight: 500; font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-tertiary); padding: 5px 10px; border-bottom: 1px solid var(--color-border-tertiary); }
+code { font-family: var(--font-mono); font-size: 10.5px; background: var(--color-background-secondary); padding: 1px 4px; border-radius: 3px; }
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.b-primary { background: #E1F5EE; color: #085041; }
+.b-secondary { background: #E6F1FB; color: #0C447C; }
+.b-suppressed { background: #F1EFE8; color: #444441; }
+.b-open { background: #FAEEDA; color: #633806; }
+.warn { background: var(--color-background-secondary); border-left: 3px solid var(--color-border-primary); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.65; margin-top: 4px; }
+.obs { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-secondary); }
+</style>
+
+<div style="padding:4px 0 0">
+
+<div class="blk">
+<div class="blk-title">Verdict: which interpretation is right, and when</div>
+<table>
+<thead><tr>
+  <th style="width:14%">Interpretation</th>
+  <th style="width:36%">Mechanism</th>
+  <th style="width:18%">At heavy mass (κ=0.12346)</th>
+  <th style="width:18%">At chiral limit (κ→κ_c^ren)</th>
+  <th style="width:14%">Status</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>(a) Gauge-link color-spin entanglement</strong></td>
+  <td>Each hopping step <code>(1±eμ)⊗Uμ(x)</code> entangles the spinor's H-eigenspaces with the gauge field. On a single config, <code>X_int</code> is a full 12×12 matrix, not proportional to <code>I₁₂</code>. The deviation from <code>dim(r)/8</code> measures how much the accumulated product of gauge links has broken the free-field isotropy in the (spin×color) space. With 20 configs this entanglement averages only partially to zero.</td>
+  <td>Primary driver. Perturbative in g²; each hop contributes O(g²) to off-diagonal X_int. Grows with t as more links are traversed. Suppressed by N_cfg → ∞.</td>
+  <td>Still present but dominated by (c). The propagator at κ_c^ren is long-range, so many more links contribute — larger per-config entanglement.</td>
+  <td><span class="badge b-primary">Primary at heavy mass</span></td>
+</tr>
+<tr>
+  <td><strong>(b) Lattice artifact (Wilson term)</strong></td>
+  <td>The Wilson mass term <code>r Σμ(1−cos pμ)</code> breaks Lorentz symmetry explicitly at O(a). This introduces a small non-isotropic contribution to X_int that is not present in the continuum Dirac operator. Does not vanish with N_cfg but does vanish in the continuum limit (larger β, finer lattice).</td>
+  <td>Subleading. On a N=6 lattice at β∈{4.5,6.0}, the O(a) corrections are at the few-percent level of the leading physics. Their contribution to the grade-fraction deviations is at most comparable to (a).</td>
+  <td>Still present; cannot be separated from (a) without a continuum-limit study at multiple β with fixed physical mass.</td>
+  <td><span class="badge b-secondary">Subleading, always present</span></td>
+</tr>
+<tr>
+  <td><strong>(c) Non-perturbative vacuum dressing</strong></td>
+  <td>If the chiral condensate or confining flux couples differently to the triplet vs singlet H-eigenspaces, the asymptotic (large-t) grade fractions of the pion ground state will differ between phases. This is a genuine non-perturbative signal — not removable by more statistics, and not a lattice artifact.</td>
+  <td>Suppressed. At m₀=0.05, the quark mass in lattice units is m_phys ≈ 0.76. Non-perturbative chiral effects scale as (m_π/Λ_QCD)² and are tiny at this mass. No evidence at 0.6σ.</td>
+  <td>This is the entire point of Experiment B. At κ→κ_c^ren the pion becomes light and non-perturbative dressing of the grade channels is no longer suppressed.</td>
+  <td><span class="badge b-suppressed">Suppressed at heavy mass</span> <span class="badge b-open">Target of Exp. B</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">The constraint-respecting structure — two observables, not four</div>
+<table>
+<thead><tr>
+  <th style="width:22%">Observable</th>
+  <th style="width:38%">Definition and data</th>
+  <th style="width:40%">Physical meaning</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Color asymmetry</strong><br><code>A_color = f₃ − f₃̄</code></td>
+  <td>At t=1, β=4.5: <code>0.374918 − 0.375081 = −1.63×10⁻⁴</code> (2.0σ)<br>At t=1, β=6.0: <code>0.374968 − 0.375032 = −6.4×10⁻⁵</code> (2.3σ)<br>Sign: triplet slightly depleted relative to anti-triplet.</td>
+  <td>Measures asymmetry between quark (3) and antiquark (3̄) channels. Forced to zero in the ensemble limit by C-symmetry. A nonzero value indicates finite-sample C-violation, or a genuine C-odd source (none present here — point source is C-symmetric). Nonzero value here is a finite-N_cfg artifact.</td>
+</tr>
+<tr>
+  <td><strong>Singlet asymmetry</strong><br><code>A_singlet = f₁ₐ − f₁ᵦ</code></td>
+  <td>At t=1, β=4.5: <code>0.125082 − 0.124919 = +1.63×10⁻⁴</code><br>At t=1, β=6.0: <code>0.125032 − 0.124968 = +6.4×10⁻⁵</code><br>Sign: singlet-a (Γ₇=+1, H=−3/2) slightly enhanced.</td>
+  <td>Measures asymmetry between pseudoscalar singlet (1a) and scalar singlet (1b). Also forced to zero by C-symmetry in ensemble limit. Currently mirrors A_color exactly in magnitude — an algebraic consequence of completeness + C-pairing: A_color = −A_singlet always.</td>
+</tr>
+<tr>
+  <td colspan="3" style="padding: 6px 10px; font-size: 11px; color: var(--color-text-secondary);">
+    The constraint Δf₃ = −Δf₃̄ and Δf₁ₐ = −Δf₁ᵦ (enforced by C-symmetry + completeness) reduces four apparent observables to ONE independent number. The triplet excess and singlet-a excess are the same number with opposite signs. There is no additional information in the four fractions beyond (f₃ − 3/8) and (f₃ − f₃̄)/2.
+  </td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">T-dependence: what the data says and what it means</div>
+<table>
+<thead><tr>
+  <th style="width:12%">t</th>
+  <th style="width:22%">β=4.5 deviation of f₃ from 3/8</th>
+  <th style="width:22%">β=6.0 deviation of f₃ from 3/8</th>
+  <th style="width:44%">Interpretation</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>t=1</td>
+  <td><code>−8.2×10⁻⁵ ± 7.9×10⁻⁵</code><br>≈ 1.0σ from 3/8</td>
+  <td><code>−3.2×10⁻⁵ ± 2.8×10⁻⁵</code><br>≈ 1.1σ from 3/8</td>
+  <td>Both consistent with zero at ~1σ. The propagator has traversed only one timeslice from the source — minimal gauge-link accumulation. Noise floor on 20 configs dominates.</td>
+</tr>
+<tr>
+  <td>t=3</td>
+  <td><code>~10⁻⁴</code> (rough)<br>smaller than β=6.0</td>
+  <td><code>+6.79×10⁻⁴ ± 1.87×10⁻⁴</code><br>≈ 3.6σ from 3/8</td>
+  <td>Deviation has grown by ~20× from t=1 to t=3 at β=6.0. Sign has also flipped (negative at t=1, positive at t=3). The 3.6σ figure is suggestive but must be treated with caution: at m₀=0.05, m_π·t ≈ 3.4×3 ≈ 10, so the correlator is suppressed by e⁻¹⁰ ≈ 5×10⁻⁵ relative to t=0. Signal-to-noise degrades rapidly; this is why errors grew 7× from t=1 to t=3. With 20 configs the t=3 value is not statistically stable.</td>
+</tr>
+<tr>
+  <td colspan="4" style="padding:6px 10px;">
+    <strong style="font-size:11.5px">Sign flip from t=1 to t=3.</strong> <span style="font-size:11.5px; color:var(--color-text-secondary)">The negative f₃ deviation at t=1 and positive at t=3 is not a contradiction — it reflects the cosh structure of the pion correlator. At t=1 you are measuring the propagator one step from the source (dominated by short-range gauge fluctuations). At t=N/2=3 you are at the temporal midpoint where backward-propagating states from the other side of the periodic lattice arrive with equal weight. The asymptotic grade fraction of the pion ground state (large t) need not match the t=1 fraction. However, with m_π·L ≈ 10, the signal at t=3 is noise-dominated. The sign flip is most likely a finite-sample fluctuation, not a physical sign change.</span>
+  </td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">Diagnostic tests that distinguish (a), (b), (c)</div>
+<table>
+<thead><tr>
+  <th style="width:26%">Test</th>
+  <th style="width:22%">Prediction from (a)</th>
+  <th style="width:22%">Prediction from (b)</th>
+  <th style="width:22%">Prediction from (c)</th>
+  <th style="width:8%">Cost</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Free-field run</strong> — set all links to <code>I₃</code>, compute grade fractions</td>
+  <td>Deviations exactly zero per configuration — no gauge links, no color-spin entanglement</td>
+  <td>Small nonzero deviation from Wilson term survives</td>
+  <td>Exactly zero — no vacuum dressing with trivial gauge field</td>
+  <td>Trivial — a few minutes of code</td>
+</tr>
+<tr>
+  <td><strong>Scale N_cfg from 20 → 200</strong> at same (β, κ, N)</td>
+  <td>Deviations shrink as 1/√N_cfg → consistent with finite-sample noise</td>
+  <td>Deviations reach a nonzero floor (the O(a) artifact persists)</td>
+  <td>Deviations reach a nonzero phase-dependent floor (the vacuum signal persists)</td>
+  <td>Medium — 10× more Monte Carlo</td>
+</tr>
+<tr>
+  <td><strong>Compare β=4.5 vs β=6.0 at fixed heavy mass</strong> — more configs</td>
+  <td>Deviations larger at β=4.5 (stronger coupling → larger per-config <code>|U−I|</code> → more entanglement)</td>
+  <td>Deviations larger at β=4.5 (larger lattice spacing → larger O(a) artifact)</td>
+  <td>Deviations phase-dependent but NOT necessarily ordered by β — depends on vacuum structure</td>
+  <td>Medium — already have ensembles</td>
+</tr>
+<tr>
+  <td><strong>Repeat at multiple β, fixed physical mass</strong> — continuum limit study</td>
+  <td>If (a) only: deviations vanish as O(g²) → 0 as β → ∞</td>
+  <td>Deviations vanish as O(a) → 0 — same qualitative behavior as (a)</td>
+  <td>Nonzero floor survives continuum limit — the vacuum contribution is physical</td>
+  <td>Heavy — requires Block 1 at multiple β</td>
+</tr>
+<tr>
+  <td><strong>Experiment B: κ → κ_c^ren</strong> at both phases</td>
+  <td>Deviations grow (more gauge links in long-range propagator) but phase difference remains ~0</td>
+  <td>Deviations grow (worse O(a) near chiral limit) but phase difference remains ~0</td>
+  <td>Phase difference ⟨f_r(β=4.5)⟩ − ⟨f_r(β=6.0)⟩ becomes nonzero — the smoking gun for (c)</td>
+  <td>Heavy — requires accurate κ_c^ren, CG mitigations from Appendix D</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="warn">
+  <strong style="color:var(--color-text-primary)">What §6.7 should say about the deviations.</strong> The ~10⁻⁴ deviations from <code>dim(r)/8</code> seen in Experiment A are consistent with finite-sample fluctuations (N_cfg=20) of gauge-link color-spin entanglement — interpretation (a) operating perturbatively at heavy mass. The constraint-respecting sign pattern (Δf₃ = −Δf₃̄, Δf₁ₐ = −Δf₁ᵦ) is algebraically forced and carries no additional information. The 3.6σ deviation at t=3 (β=6.0) is on a timeslice where m_π·t ≈ 10 and signal-to-noise is severely degraded with 20 configurations; it cannot be claimed as a physical signal at current statistics. The cleanest near-term test — a free-field run and N_cfg scaling — costs nothing algorithmically and would definitively separate (a) from (b). Interpretation (c) requires Experiment B at κ→κ_c^ren and is the physically interesting hypothesis that the current data neither confirms nor rules out.
+</div>
+
+</div>

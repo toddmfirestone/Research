@@ -1,0 +1,259 @@
+
+<style>
+.blk { margin-bottom: 26px; }
+.blk-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); border-left: 3px solid var(--color-border-primary); padding-left: 10px; margin-bottom: 12px; border-radius: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 7px 10px; text-align: left; border-bottom: 1.5px solid var(--color-border-secondary); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--color-border-tertiary); vertical-align: top; line-height: 1.65; color: var(--color-text-primary); font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+code { font-family: var(--font-mono); font-size: 10.5px; background: var(--color-background-secondary); padding: 1px 4px; border-radius: 3px; }
+.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.b-alg   { background: #EEEDFE; color: #26215C; }
+.b-pred  { background: #E1F5EE; color: #085041; }
+.b-conj  { background: #FAEEDA; color: #633806; }
+.b-open  { background: #E6F1FB; color: #0C447C; }
+.b-caution { background: #FAECE7; color: #712B13; }
+.eq-box { background: var(--color-background-secondary); border-radius: 6px; padding: 10px 14px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.9; color: var(--color-text-primary); margin: 8px 0; }
+.eq-box .cm { color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 11px; font-style: italic; }
+.highlight { background: var(--color-background-secondary); border-radius: 6px; padding: 12px 16px; font-size: 12.5px; line-height: 1.7; color: var(--color-text-primary); }
+.warn { background: var(--color-background-secondary); border-left: 3px solid var(--color-border-primary); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.65; margin-top: 4px; }
+.cat { font-weight: 500; font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-tertiary); padding: 5px 10px; border-bottom: 1px solid var(--color-border-tertiary); }
+.regime-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 0; }
+.regime-card { background: var(--color-background-secondary); border-radius: 8px; padding: 12px 13px; font-size: 11.5px; line-height: 1.65; }
+.regime-card .rc-title { font-weight: 500; font-size: 12px; margin-bottom: 6px; color: var(--color-text-primary); }
+.regime-card .rc-sub { font-size: 10.5px; color: var(--color-text-secondary); margin-bottom: 8px; font-family: var(--font-mono); }
+</style>
+
+<div style="padding:4px 0 0">
+
+<div class="blk">
+<div class="blk-title">The key algebraic fact — [P_r, D_W] ≠ 0</div>
+<div class="highlight">
+This has not been stated explicitly in any prior answer. It is the crux of everything in Experiment B.
+<br><br>
+From Question 3: <code>[H, γ5] = 0</code> (proven — both diagonal in tensor product basis).
+<br>
+From Question 1: <code>[H, e_μ] ≠ 0</code> for μ = 1,...,4 (the spacetime hopping generators).
+<br><br>
+Proof: <code>H = −½(σz⊗I₂⊗I₂ + I₂⊗σz⊗I₂ + I₂⊗I₂⊗σz)</code>, <code>e₁ = σx⊗I₂⊗I₂</code>.
+<div class="eq-box">
+[H, e₁] = [−½σz⊗I₂⊗I₂ , σx⊗I₂⊗I₂]<br>
+         = −½[σz, σx]⊗I₂⊗I₂<br>
+         = −½(2iσy)⊗I₂⊗I₂<br>
+         = −iσy⊗I₂⊗I₂  ≠  0
+</div>
+Since P_r is a polynomial in H, and [H, e_μ] ≠ 0, it follows that [P_r, e_μ] ≠ 0. Since D_W contains hopping terms proportional to e_μ:
+<div class="eq-box">
+D_W = (m₀+4r)I − ½Σ_μ [(1−e_μ)⊗U_μ + (1+e_μ)⊗U_μ†]<br>
+<br>
+[P_r, D_W] = −½Σ_μ [P_r, e_μ]⊗(−U_μ + U_μ†) + ...  ≠  0
+</div>
+<strong>Physical meaning:</strong> D_W maps the r-grade subspace INTO other grade subspaces. Every hop of the quark through the lattice (every application of e_μ) mixes the grade channels. The propagator G = D_W⁻¹ accumulates this mixing with every hop.
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">Three physical regimes — how grade fractions evolve</div>
+<div class="regime-grid">
+
+<div class="regime-card">
+<div class="rc-title">Free field — any mass</div>
+<div class="rc-sub">U_μ = I₃, all κ</div>
+[P_r, D_W^free] ≠ 0 — hops still mix grade channels per step. But D_W^free has I₄⊗U(2) symmetry (shown in Q1) that forces Q̃ ∝ I₂₄ EXACTLY on each config. Grade mixing is symmetric → no net bias. Result: f_r = dim(r)/8 exactly, for all m₀, all t.
+<br><br>
+<span class="badge b-alg">Algebraically exact</span>
+</div>
+
+<div class="regime-card">
+<div class="rc-title">Heavy mass — interacting</div>
+<div class="rc-sub">κ = 0.12346, m₀ = 0.05</div>
+Gauge links break I₄⊗U(2) symmetry per config. Hops through U_μ ≠ I₃ create asymmetric grade mixing. But: propagator is short-range (m_phys ~ 0.76 in lattice units → few effective hops). Grade mixing is small. Corrections O(g²) per hop, few hops → deviations ~10⁻⁴. Ensemble C-symmetry enforces ⟨f₃⟩ = ⟨f₃̄⟩, ⟨f₁ₐ⟩ = ⟨f₁ᵦ⟩.
+<br><br>
+<span class="badge b-pred">Verified at 0.6σ from dim(r)/8</span>
+</div>
+
+<div class="regime-card">
+<div class="rc-title">Chiral limit — interacting</div>
+<div class="rc-sub">κ → κ_c^ren, m_π → 0</div>
+Propagator becomes long-range: at t·m_π ~ 1, the quark has effectively traversed O(1/m_π) lattice spacings. Each hop mixes grades via [P_r, e_μ] ≠ 0. Many hops → large accumulated grade mixing. The STATIONARY DISTRIBUTION of this random walk in grade space is set by the gauge dynamics — NOT by the free-field theorem. This is where the physics lives.
+<br><br>
+<span class="badge b-open">Target of Experiment B</span>
+</div>
+
+</div>
+</div>
+
+<div class="blk">
+<div class="blk-title">The random walk picture — what sets the stationary distribution</div>
+<table>
+<thead><tr>
+  <th style="width:22%">Concept</th>
+  <th style="width:40%">Content</th>
+  <th style="width:38%">Implication for grade fractions</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>Grade mixing per hop</strong></td>
+  <td>Each spacetime hop e_μ changes the H-eigenvalue. From the tensor product: e₁ = σx⊗I₂⊗I₂ acting on |↑⟩₁ gives |↓⟩₁ (and vice versa). This shifts H by ±1 for the first-qubit contribution. So each hop is a ±1 step in the H-eigenvalue space {−3/2, −1/2, +1/2, +3/2}.</td>
+  <td>The propagator performs a random walk on the H-eigenvalue ladder. In the free field the walk is unbiased → stationary distribution = dim(r)/8. In the interacting theory, the gauge links U_μ weight different hop directions differently.</td>
+</tr>
+<tr>
+  <td><strong>Why the walk is biased by gluons</strong></td>
+  <td>The full hopping term is (1±e_μ)⊗U_μ(x). The color gauge link U_μ(x) acts on the ℂ³ factor. It does NOT directly bias the grade walk. However: in the confined phase, U_μ(x) is far from I₃ → the quark picks up a large phase from traversing the gauge link. This phase is entangled with the spinor indices through the hopping structure — the effective hopping amplitude between H-eigenspaces is gauge-link weighted.</td>
+  <td>In the confined phase (β=4.5): large |U_μ − I₃| → larger effective random-walk step size → more grade mixing per hop. In the deconfined phase (β=6.0): U_μ closer to I₃ → smaller effective step size → grade fractions closer to free-field value.</td>
+</tr>
+<tr>
+  <td><strong>Stationary distribution at long range</strong></td>
+  <td>At large t (t·m_π ≫ 1), C_π^(r)(t) → Z_π^(r) e^{−m_π t}. The grade fraction f_r(t → ∞) → Z_π^(r)/Z_π, the overlap of the pion ground state with the r-grade subspace. This is NOT dim(r)/8 unless the pion wavefunction is exactly uniformly distributed across grade channels.</td>
+  <td>The pion ground state wavefunction encodes the grade structure. Near the chiral limit, the pion is a Goldstone boson of chiral symmetry breaking. Its grade decomposition is a direct probe of how the gauge vacuum structures the spinor weight across the SU(3) subspaces.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">Concrete predictions for Experiment B</div>
+<table>
+<thead><tr>
+  <th style="width:28%">Observable</th>
+  <th style="width:22%">Heavy mass (verified)</th>
+  <th style="width:28%">Prediction at κ → κ_c^ren</th>
+  <th style="width:22%">Confidence</th>
+</tr></thead>
+<tbody>
+<tr><td colspan="4" class="cat">C-even observables — survive ensemble limit</td></tr>
+<tr>
+  <td><strong>f_triplet(β=4.5) − f_triplet(β=6.0)</strong><br>= the grade-decomposed phase signal</td>
+  <td>0.0 ± 0.6σ (consistent with zero). Free-field theorem dominates.</td>
+  <td><strong>Predicted nonzero and positive.</strong> Confined vacuum (β=4.5) should have MORE pion correlator weight in the color-triplet spinor channels than the deconfined vacuum (β=6.0). The chiral condensate — which is larger in the confined phase — is generated by the near-zero modes of D_W, which accumulate more grade mixing in the color-triplet direction due to the disordered gauge vacuum.</td>
+  <td><span class="badge b-conj">Physically motivated — requires Experiment B to confirm</span></td>
+</tr>
+<tr>
+  <td><strong>f_triplet(β) vs κ</strong><br>= grade fraction as function of quark mass</td>
+  <td>f_triplet ≈ 3/4 at κ=0.12346 in both phases.</td>
+  <td>f_triplet should INCREASE (depart from 3/4) as κ → κ_c^ren in the confined phase, and remain closer to 3/4 in the deconfined phase. The crossover from dim(r)/8 to the asymptotic value happens around t ~ 1/m_π, which diverges at the chiral limit. The t-dependence of f_r(t) is therefore a direct probe of m_π.</td>
+  <td><span class="badge b-conj">Predicted direction; magnitude unknown</span></td>
+</tr>
+<tr>
+  <td><strong>f_triplet(t → large) vs f_triplet(t ~ 1)</strong><br>= t-profile of grade fractions</td>
+  <td>Nearly flat in t at heavy mass — f_r ≈ dim(r)/8 at all t.</td>
+  <td>Near κ_c^ren: the grade fraction should be flat at dim(r)/8 for t·m_π ≪ 1 (kinematic regime, free-field theorem still operative) and curve toward the asymptotic pion ground-state value for t·m_π ~ 1. The shape of this t-profile encodes the pion wavefunction structure in the grade space.</td>
+  <td><span class="badge b-conj">Predicted qualitatively; profile shape is genuinely new information</span></td>
+</tr>
+<tr><td colspan="4" class="cat">C-odd observables — expected to remain noise-level</td></tr>
+<tr>
+  <td><strong>A_color = f₃ − f₃̄</strong></td>
+  <td>~1.6×10⁻⁴ at N_cfg=20 (finite-sample C-violation).</td>
+  <td>Should scale as 1/√N_cfg → noise floor as N_cfg increases. No physical mechanism generates a nonzero ensemble-average A_color in a C-symmetric theory with θ=0. If A_color persists at large N_cfg, it signals either a code error or a C-violation in the ensemble.</td>
+  <td><span class="badge b-pred">Expected to vanish — diagnostic check</span></td>
+</tr>
+<tr>
+  <td><strong>A_singlet = f₁ₐ − f₁ᵦ</strong></td>
+  <td>~+1.6×10⁻⁴ at N_cfg=20 (finite-sample C-violation).</td>
+  <td>Same as A_color — should vanish with increasing N_cfg. Topological sensitivity (η' anomaly channel coupling) is suppressed at quenched non-singlet level. Not expected to be a signal in this setup.</td>
+  <td><span class="badge b-pred">Expected to vanish — diagnostic check</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">Which channel pair responds more — triplet or singlet?</div>
+<table>
+<thead><tr>
+  <th style="width:18%">Channel</th>
+  <th style="width:20%">Color charge in spinor</th>
+  <th style="width:30%">Coupling to gauge dynamics</th>
+  <th style="width:20%">Predicted response</th>
+  <th style="width:12%">Confidence</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><strong>3 and 3̄</strong><br>(color triplet pair)<br>H = ±1/2</td>
+  <td>Color-charged within spinor: the 3 and 3̄ subspaces carry the SU(3) representation structure that couples to gluons in the full ℂ²⁴ space.</td>
+  <td>The gluon field (gauge links U_μ) acts on the color ℂ³ factor. Through the hopping (1±e_μ)⊗U_μ, the spinor grade mixing is entangled with the color degree of freedom. In the confined phase, where gluonic fluctuations are large and the Wilson residual mass is large (established in Paper 1: ΔA > 0), the triplet spinor channels accumulate more dressing per hop.</td>
+  <td>f_triplet = f₃+f₃̄ INCREASES toward 3/4+δ in the confined phase. The triplet pair is the PRIMARY responder.</td>
+  <td><span class="badge b-conj">Motivated prediction</span></td>
+</tr>
+<tr>
+  <td><strong>1a and 1b</strong><br>(singlet pair)<br>H = ±3/2</td>
+  <td>Color-neutral within spinor: the singlet subspaces are annihilated by all SU(3) raising/lowering operators in the grade space. They correspond to the extreme weight states |↑↑↑⟩ and |↓↓↓⟩.</td>
+  <td>The singlet channels are at the ends of the H-eigenvalue ladder. To reach them from the triplet requires TWO ΔH = ±1 hops, not one. They are therefore less directly accessible to the gauge-driven grade mixing. In the confined phase, they should LOSE weight as the triplet channels gain it.</td>
+  <td>f_singlet = f₁ₐ+f₁ᵦ DECREASES toward 1/4−δ in the confined phase. Singlet pair is the secondary responder (compensates triplet gain by completeness).</td>
+  <td><span class="badge b-conj">Follows from completeness + triplet prediction</span></td>
+</tr>
+<tr>
+  <td colspan="5" style="padding:6px 10px; font-size:11px; color:var(--color-text-secondary);">
+    Completeness forces: δf_triplet + δf_singlet = 0 exactly. Any triplet gain is a singlet loss. The question is just the sign (which gains), and both physical arguments and the structure of the H-eigenvalue ladder point toward triplet gain.
+  </td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">Falsification criteria — what would refute the prediction</div>
+<table>
+<thead><tr>
+  <th style="width:32%">Observation in Experiment B</th>
+  <th style="width:38%">What it would mean</th>
+  <th style="width:30%">Follow-up</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>f_triplet(β=4.5) − f_triplet(β=6.0) > 0 with significance ≥ 2σ</td>
+  <td>Prediction confirmed: chiral condensate preferentially weights the color-triplet spinor channels. The grade decomposition provides a new observable that distinguishes the two phases at the chiral level.</td>
+  <td>Report as primary result of §6. Extend to N=8 for volume scaling. Compare magnitude to ΔA from Paper 1.</td>
+</tr>
+<tr>
+  <td>f_triplet(β=4.5) − f_triplet(β=6.0) consistent with zero at ≥ 50 configs</td>
+  <td>The free-field theorem extends to the chiral regime — grade fractions are insensitive to the confinement-deconfinement transition even near κ_c^ren. The grade decomposition does not add discriminating power beyond the standard correlators of Paper 1.</td>
+  <td>Report as clean null result. Still a valid paper — establishes the grade fractions as a renormalization-free zero that can be used as a diagnostic check in future calculations.</td>
+</tr>
+<tr>
+  <td>f_triplet DECREASES (singlet channels enhanced in confined phase)</td>
+  <td>Gauge dynamics at strong coupling SCREENS the triplet channels and shields weight toward the color-neutral singlet subspaces. This would be the "anti-screening" scenario — physically unexpected but not impossible.</td>
+  <td>Investigate whether the effect is genuine (volume scaling) or an artifact (CG convergence near κ_c^ren biases toward singlet solutions). Report honestly.</td>
+</tr>
+<tr>
+  <td>A_color or A_singlet nonzero at large N_cfg (persists, doesn't scale as 1/√N_cfg)</td>
+  <td>Either: (a) a C-violation in the code or ensemble generation (must be fixed), or (b) a genuine CP effect (θ ≠ 0) — but the Wilson gauge action with θ=0 has no mechanism for this. Almost certainly (a).</td>
+  <td>Diagnose immediately. Check the point source is C-symmetric. Check that the gauge link update preserves C-symmetry statistically. Do not report as physics.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="blk">
+<div class="blk-title">Practical complications for Experiment B</div>
+<table>
+<thead><tr>
+  <th style="width:26%">Issue</th>
+  <th style="width:36%">Physical origin</th>
+  <th style="width:38%">Mitigation</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>CG solver ill-conditioning near κ_c^ren</td>
+  <td>[P_r, D_W] ≠ 0 also means that the grade mixing creates near-zero modes in D_W†D_W which are spread across grade channels. CG convergence deteriorates because eigenvalues of D_W†D_W approach zero.</td>
+  <td>All three mitigations from Appendix D: deflation of 10 lowest modes, even-odd Schur complement preconditioning, adaptive tolerance tightened to 10⁻¹⁰. Already specified in the computation brief — must be implemented before running Experiment B.</td>
+</tr>
+<tr>
+  <td>Signal-to-noise at large t</td>
+  <td>The t-profile of f_r(t) is most informative at t·m_π ~ 1 (transition from free-field to asymptotic). Near κ_c^ren, m_π is small, so this requires large t — where the correlator C_π(t) ∝ e^{−m_π t} is exponentially suppressed. Dividing C_π^(r) by C_π amplifies noise.</td>
+  <td>Use all-to-all propagators or stochastic noise sources to improve signal at large t. Restrict analysis to timeslices where C_π(t) > 3σ noise floor. Do not push beyond this — the grade fraction at noise-dominated timeslices is uninformative.</td>
+</tr>
+<tr>
+  <td>κ_c^ren systematic from Block 1</td>
+  <td>The Block 1 value κ_c^ren(β=4.5) = 0.1468 ± 0.0050 carries a ±0.005 systematic from the N=4/N=6 spread. Running Experiment B at this κ means the physical quark mass has an uncertainty of ~5% of a lattice unit from the κ_c^ren determination alone.</td>
+  <td>Run Experiment B at two κ values bracketing the best estimate: κ_c^ren ± 0.003. If the grade fractions are stable across this range, the κ_c^ren systematic is not dominant. If they shift, report the systematic separately.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="warn">
+<strong style="color:var(--color-text-primary)">What §6.7–6.8 should say as the prediction.</strong> The key algebraic result is <code>[P_r, D_W] ≠ 0</code> — established by <code>[H, e_μ] ≠ 0</code> (the spacetime hopping generators do not commute with the Cartan hypercharge). This means every lattice hop mixes H-eigenspaces: the quark propagator performs a random walk in grade space whose stationary distribution is set by the gauge dynamics, not by free-field counting. At heavy mass (many hop steps, small propagator range), the free-field theorem still controls the grade fractions because the gauge-link-driven bias is perturbatively small. At κ → κ_c^ren, the propagator becomes long-range, accumulating many gauge-link-weighted grade-mixing steps, and the stationary distribution can depart from dim(r)/8. The physical prediction is that the confined vacuum (β=4.5) drives the stationary distribution toward the color-triplet channels (f_triplet > 3/4) more strongly than the deconfined vacuum (β=6.0), generating a nonzero phase difference in f_triplet that grows as the chiral limit is approached. This is the grade-decomposed analog of ΔA from Paper 1, but is physically distinct: it measures how the vacuum structures the spinor weight across SU(3) representation subspaces, not just the total pion mass. At heavy mass, the phase difference is consistent with zero at 0.6σ — the null result that must be the baseline against which any chiral-limit signal is compared.
+</div>
+
+</div>
