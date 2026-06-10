@@ -6,3 +6,6 @@ This repository contains a structured collection of theoretical papers developed
 These documents are intended as exploratory mathematical and physical models rather than established physical theories.
 
 ---
+
+*Repository maintained by Todd M. Firestone.*  
+*Project contact: firestone.science@proton.me*
