@@ -160,4 +160,4 @@ MIT License
 ---
 
 *Repository maintained by Todd M. Firestone.*  
-*Project contact: firestone_rcho@proton.me*
+*Project contact: firestone.science@proton.me*
