@@ -51,3 +51,7 @@ claim is machine-checked, and all code and data are open (MIT). This
 is stated up front by design. The work is intended to stand or fall on
 the reproducible benchmarks — which is exactly how it should be judged.
 
+---
+
+*Repository maintained by Todd M. Firestone.*  
+*Project contact: firestone.science@proton.me*
